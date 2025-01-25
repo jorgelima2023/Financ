@@ -11,5 +11,6 @@ class Forma_pgto extends Model
     // nome da tabela sempre no plural
     protected $table = 'forma_pgtos';
     // indicar quais colunas devem receber dados, sempre que alterar tabela, deve descrever aqui
+    // nao precisa adicionar o ID
     protected $fillable = ['nome'];
 }
