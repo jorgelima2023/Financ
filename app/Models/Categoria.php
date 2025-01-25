@@ -12,5 +12,6 @@ class Categoria extends Model
     protected $table = 'categorias';
 
     // indicar quais colunas devem receber dados, sempre que alterar tabela, deve descrever aqui
+    // não precisa colocar o campo ID
     protected $fillable = ['nome', 'classif', 'soma'];
 }
