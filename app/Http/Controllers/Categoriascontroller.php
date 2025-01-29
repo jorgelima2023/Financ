@@ -19,9 +19,9 @@ class Categoriascontroller extends Controller
     }
 
     // Visualizar o curso
-    public function show(){
-
-        return view('categorias.show');
+    public function show(Categoria $categoria){
+        // Carregar a VIEW
+        return view('categorias.show', ['categoria' => $categoria] );
     }
 
     // Carregar o formulário cadastrar novo curso
