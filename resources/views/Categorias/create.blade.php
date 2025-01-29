@@ -11,6 +11,11 @@
         </p>
     @endif
 
+    {{-- 
+        @csrf protecao dados / metodo POST reforcar quanto ao uso metodo, 
+        mesmo estando no metodo do form  
+    --}}
+    
     <form action="{{ route('categorias.store') }}" method="POST">
         @csrf
         @method('POST')

@@ -9,12 +9,21 @@ class Categoriascontroller extends Controller
 {
     // Listar os cursos
     public function index(){
-        return view('categorias.index');  // Carregar a VIEW
+        // Recuperar os registros do banco dados
+        // $courses = Course::where('id', 1000)->get();
+        // $courses = Course::paginate(10);
+        $categorias = Categoria::orderBy('nome', 'ASC')->get();
+
+        // Carregar a VIEW
+        return view('categorias.index', ['categorias' => $categorias]);
     }
+
     // Visualizar o curso
     public function show(){
-        return view('categorias.show');  // Carregar a VIEW
+
+        return view('categorias.show');
     }
+
     // Carregar o formulário cadastrar novo curso
     public function create(){
         return view('categorias.create');  // Carregar a VIEW
