@@ -14,6 +14,8 @@
         {{ \Carbon\Carbon::parse($categoria->updated_at)->format('d/m/Y H:i:s') }}<br>
 
         <a href="{{ route('categorias.show', ['categoria' => $categoria->id ] ) }}">Visualizar</a>
+        <a href="{{ route('categorias.edit', ['categoria' => $categoria->id ] ) }}">Editar</a>
+
         <hr>
 
     @empty

@@ -32,22 +32,40 @@ class Categoriascontroller extends Controller
     public function store(Request $request){
         // Cadastrar no banco de dados na tabela categorias os valores de todos os campos
         // dd($request->name);
-        Categoria::create([
+        $categoria = Categoria::create([
             'nome' => $request->nome , 
             'classif' => '01' /*$request->classif*/ , 
             'soma' => 'N' /*$request->soma*/ , 
         ]);
         
         // Redirecionar o usuário, enviar a mensagem de sucesso
-        return redirect()->route('categorias.create')->with('success', 'categoria cadastrado com sucesso!');
+        // 'course->id' veio da funcao create , da model, que cadastrou o curso
+        // e na variavel tem o id novo
+        return redirect()->route('categorias.show', ['categoria' => $categoria->id ] )->with('success', 'categoria cadastrado com sucesso!');
     }
-    // Carregar o formulário editar curso
-    public function edit(){
-        return view('categorias.edit');  // Carregar a VIEW
+    // Carregar o formulário editar categorias
+    // a model 'Categoria' recebe o id na variavel '$categoria'
+    public function edit(Categoria $categoria){
+        // dd($categoria);
+        return view('categorias.edit', ['categoria' => $categoria]);  // Carregar a VIEW
     }
+
     // Editar no banco de dados o categorias
-    public function update(){
-        dd("Editar no banco de dados o categorias");
+    // receber os dados formulario via 'request'
+    // e na model 'Categoria' receber o id do categoria
+    public function update(Request $request, Categoria $categoria){
+
+        // editar as informacoes do banco de dados
+        $categoria->update([
+            'nome' => $request->nome
+        ]);
+
+        // dd("Editar no banco de dados o categorias");
+
+        // redirecionar para o form show
+        // na sessao 'success' e a msg 'Curso editado com sucesso'
+        return redirect()->route('categorias.show', ['categoria' => $categoria->id ])
+            ->with('success', 'categoria editado com sucesso');
     }
     // Excluir o categorias do banco de dados
     public function destroy(){

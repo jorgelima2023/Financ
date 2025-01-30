@@ -22,10 +22,10 @@ Route::get('/create-categoria',
 Route::post('/store-categoria', 
     [Categoriascontroller::class, 'store'])->name('categorias.store');
 
-Route::get('/edit-categoria', 
+Route::get('/edit-categoria/{categoria}', 
     [Categoriascontroller::class, 'edit'])->name('categorias.edit'); // carrega form
 
-Route::put('/update-categoria', 
+Route::put('/update-categoria/{categoria}', 
     [Categoriascontroller::class, 'update'])->name('categorias.update'); // receber dados form
 
 Route::delete('/destroy-categoria', 
