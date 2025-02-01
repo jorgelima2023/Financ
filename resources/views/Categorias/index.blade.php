@@ -16,10 +16,12 @@
     
     {{-- Imprimir os registros --}}
     @forelse ($categorias as $categoria)
-        {{ $categoria->id }}<br>
-        {{ $categoria->nome }}<br>
-        {{ \Carbon\Carbon::parse($categoria->created_at)->format('d/m/Y H:i:s') }}<br>
-        {{ \Carbon\Carbon::parse($categoria->updated_at)->format('d/m/Y H:i:s') }}<br>
+        id: {{ $categoria->id }}<br>
+        Nome: {{ $categoria->nome }}<br>
+        classif: {{ $categoria->classif }}<br>
+        Somar: {{ $categoria->soma }}<br>
+        Criado: {{ \Carbon\Carbon::parse($categoria->created_at)->format('d/m/Y H:i:s') }}<br>
+        Editado: {{ \Carbon\Carbon::parse($categoria->updated_at)->format('d/m/Y H:i:s') }}<br>
 
         <a href="{{ route('categorias.show', ['categoria' => $categoria->id ] ) }}">
             <button type="button">Visualizar</button>

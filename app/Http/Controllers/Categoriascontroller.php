@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CategoriaRequest;
 use App\Models\Categoria;
 use Illuminate\Http\Request;
 
@@ -29,7 +30,11 @@ class Categoriascontroller extends Controller
         return view('categorias.create');  // Carregar a VIEW
     }
     // Cadastrar no banco de dados o novo curso
-    public function store(Request $request){
+    public function store(CategoriaRequest $request){
+
+        // validar o fomulario
+        $validated = $request->validated();
+
         // Cadastrar no banco de dados na tabela categorias os valores de todos os campos
         // dd($request->name);
         $categoria = Categoria::create([
@@ -53,7 +58,10 @@ class Categoriascontroller extends Controller
     // Editar no banco de dados o categorias
     // receber os dados formulario via 'request'
     // e na model 'Categoria' receber o id do categoria
-    public function update(Request $request, Categoria $categoria){
+    public function update(CategoriaRequest $request, Categoria $categoria){
+
+        // validar o fomulario
+        $validated = $request->validated();
 
         // editar as informacoes do banco de dados
         $categoria->update([
