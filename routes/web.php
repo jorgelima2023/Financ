@@ -28,6 +28,6 @@ Route::get('/edit-categoria/{categoria}',
 Route::put('/update-categoria/{categoria}', 
     [Categoriascontroller::class, 'update'])->name('categorias.update'); // receber dados form
 
-Route::delete('/destroy-categoria', 
+Route::delete('/destroy-categoria/{categoria}', 
     [Categoriascontroller::class, 'destroy'])->name('categorias.destroy');
 

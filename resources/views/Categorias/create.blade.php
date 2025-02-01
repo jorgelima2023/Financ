@@ -3,7 +3,9 @@
 @section('content')
     <h2>Cadastrar o Curso</h2>
 
-    <a href="{{ route('categorias.index') }} ">Listar</a><br><br>
+    <a href="{{ route('categorias.index') }} ">
+        <button type="button">Listar</button>
+    </a><br><br>
 
     @if (session('success'))
         <p style="color: #082">

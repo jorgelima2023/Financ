@@ -68,9 +68,13 @@ class Categoriascontroller extends Controller
             ->with('success', 'categoria editado com sucesso');
     }
     // Excluir o categorias do banco de dados
-    public function destroy(){
+    public function destroy(Categoria $categoria){
 
-        dd("Excluir o categorias do banco de dados");
-        
+        // dd("Excluir o categorias do banco de dados");
+
+        // excluir o registro do banco de dados, no metodo 'delete' pode adiconar condicao
+        $categoria->delete();
+        // redirecionar o usuario, enviar msg de sucesso
+        return redirect()->route('categorias.index')->with('success', 'categoria apagado com sucesso');
     }
 }

@@ -9,8 +9,20 @@
         </p>
     @endif
     
-    <a href="{{ route('categorias.index') }}">Listar</a><br>
-    <a href="{{ route('categorias.edit', ['categoria' => $categoria->id ] ) }}">Editar</a><br><br>
+    <a href="{{ route('categorias.index') }}">
+        <button type="button">Listar</button>
+    </a><br>
+
+    <a href="{{ route('categorias.edit', ['categoria' => $categoria->id ] ) }}">
+        <button type="button">Editar</button>
+    </a>
+    <br><br>
+
+    <form action="{{ route('categorias.destroy', ['categoria' => $categoria->id ] ) }}" method="POST">
+        @csrf
+        @method('delete')
+        <button type="submit" onclick="return confirm('Confirma apagar esse registro {{ $categoria->id }} ?')">Apagar</button>
+    </form>
 
     ID: {{ $categoria->id }}<br>
     Nome: {{ $categoria->nome }}<br>

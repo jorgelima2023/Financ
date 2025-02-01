@@ -3,7 +3,9 @@
 @section('content')
     <h2>Editar o categorias</h2>    
 
-    <a href="{{ route('categorias.index') }}">Listar</a><br>
+    <a href="{{ route('categorias.index') }}">
+        <button type="button">Listar</button>
+    </a><br>
 
     {{-- dd($categoria) --}}
 
