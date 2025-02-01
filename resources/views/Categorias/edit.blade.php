@@ -7,14 +7,8 @@
         <button type="button">Listar</button>
     </a><br>
 
-    @if ($errors->any)
-        <span style="color:#f00">
-            @foreach ( $errors->all() as $error )
-                {{ $error }} <br>
-            @endforeach
-        </span>
-    @endif
-
+    <x-alert />
+    
     {{-- dd($categoria) --}}
 
     <form action="{{ route('categorias.update', ['categoria' => $categoria->id ] ) }}" method="POST">

@@ -3,12 +3,7 @@
 @section('content')
     <h2>Detalhes do categorias</h2>
 
-    @if (session('success'))
-        <p style="color: #082">
-            {{ session('success') }}
-        </p>
-    @endif
-    
+        
     <a href="{{ route('categorias.index') }}">
         <button type="button">Listar</button>
     </a><br>
@@ -24,6 +19,8 @@
         <button type="submit" onclick="return confirm('Confirma apagar esse registro {{ $categoria->id }} ?')">Apagar</button>
     </form>
 
+    <x-alert />
+    
     ID: {{ $categoria->id }}<br>
     Nome: {{ $categoria->nome }}<br>
     Cadastrado: {{ \Carbon\Carbon::parse($categoria->created_at)->format('d/m/Y H:i:s') }}<br>

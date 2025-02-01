@@ -1,29 +1,13 @@
 @extends('layouts.admin')
 
 @section('content')
-    <h2>Cadastrar o Curso</h2>
+    <h2>Cadastrar a categoria</h2>
 
     <a href="{{ route('categorias.index') }} ">
         <button type="button">Listar</button>
     </a><br><br>
 
-    @if (session('success'))
-        <p style="color: #082">
-            {{ session('success') }}
-        </p>
-    @endif
-
-    {{-- 
-        foreach, qual eh a colecao de erros, erros->all todos
-        percorre a lista de erros, e em error imprime o erro
-    --}}
-    @if ($errors->any)
-        <span style="color:#f00">
-            @foreach ( $errors->all() as $error )
-                {{ $error }} <br>
-            @endforeach
-        </span>
-    @endif
+    <x-alert />
 
     {{-- 
         @csrf protecao dados / metodo POST reforcar quanto ao uso metodo, 
