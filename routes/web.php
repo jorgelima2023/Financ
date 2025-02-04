@@ -33,5 +33,5 @@ Route::delete('/destroy-categoria/{categoria}',
     [Categoriascontroller::class, 'destroy'])->name('categorias.destroy');
 
 // ------------------------------ movimentos
-route::get('/index-movimento', 
+route::get('/index-movimento/{categoria}', 
     [MovimentoController::class, 'index'] )->name('movimentos.index');

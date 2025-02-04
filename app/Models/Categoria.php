@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Categoria extends Model
 {
@@ -19,6 +18,6 @@ class Categoria extends Model
     // return $this->hasMany('App\Cidade','estado_id');
     public function movimento()
     {
-        return $this->hasMany(Categoria::class);
+        return $this->hasMany(Movimento::class);
     }
 }

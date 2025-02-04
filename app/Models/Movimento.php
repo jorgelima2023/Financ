@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Movimento extends Model
 {
@@ -29,7 +28,10 @@ class Movimento extends Model
         return $this->belongsTo(Categoria::class);
     }
 
-
+    public function forma_pgto()
+    {
+        return $this->belongsTo(Forma_pgto::class);
+    }
 
 
    }

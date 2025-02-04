@@ -5,14 +5,18 @@
   
     --}}
 
-@foreach($movimentos as $movimento)
-<tr>
-    <td>{{$movimento->descricao}}</td>
-</tr>
-    @foreach($movimento->categoria_id as $categoria)
-        <tr>
-            <td>{{$categoria->nome}}</td>
-        </tr>
-    @endforeach
+{{-- dd($movimentos) --}}
 
-@endforeach
+@forelse ( $movimentos as $movimento )
+    id movimento: {{ $movimento->id }} <br>
+    descricao: {{ $movimento->descricao }} <br>
+    Data: {{ $movimento->dt }} <br>
+    categoria_id: {{ $movimento->categoria_id }} <br>
+    categoria_nome: {{ $movimento->categoria->nome }} <br>
+    categoria_classif: {{ $movimento->categoria->classif }} <br> 
+    forma_pgto_id:  {{ $movimento->forma_pgto_id }} <br>
+    forma_pgto_nome: {{ $movimento->forma_pgto->nome }} <br> <br>
+    
+@empty
+    <p style="color: #f00">Nenhum movimento encontrado!</p>
+@endforelse

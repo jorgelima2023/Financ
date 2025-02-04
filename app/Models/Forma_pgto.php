@@ -15,5 +15,8 @@ class Forma_pgto extends Model
     // nao precisa adicionar o ID
     protected $fillable = ['nome'];
 
-
+    public function movimento()
+    {
+        return $this->hasMany(Movimento::class);
+    }
 }
