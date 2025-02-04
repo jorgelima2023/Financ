@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Categoriascontroller;
+use App\Http\Controllers\MovimentoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -31,3 +32,6 @@ Route::put('/update-categoria/{categoria}',
 Route::delete('/destroy-categoria/{categoria}', 
     [Categoriascontroller::class, 'destroy'])->name('categorias.destroy');
 
+// ------------------------------ movimentos
+route::get('/index-movimento', 
+    [MovimentoController::class, 'index'] )->name('movimentos.index');

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Forma_pgto extends Model
 {
@@ -13,4 +14,6 @@ class Forma_pgto extends Model
     // indicar quais colunas devem receber dados, sempre que alterar tabela, deve descrever aqui
     // nao precisa adicionar o ID
     protected $fillable = ['nome'];
+
+
 }

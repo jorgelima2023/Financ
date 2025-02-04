@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('forma_pgtos', function (Blueprint $table) {
+        Schema::create('categorias', function (Blueprint $table) {
             $table->id()->primary();
-            $table->string('nome');
-            $table->timestamps();
+            $table->string('nome'); 
+            $table->string('classif');
+            $table->string('soma');
+            //$table->foreignId('movimento_id')->constrained('movimentos');
+            $table->timestamps();  // created_at , updated_at
         });
     }
 
@@ -23,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('forma_pgtos');
+        Schema::dropIfExists('categorias');
     }
 };

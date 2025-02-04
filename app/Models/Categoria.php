@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Categoria extends Model
 {
@@ -14,4 +15,10 @@ class Categoria extends Model
     // indicar quais colunas devem receber dados, sempre que alterar tabela, deve descrever aqui
     // não precisa colocar o campo ID
     protected $fillable = ['nome', 'classif', 'soma'];
+
+    // return $this->hasMany('App\Cidade','estado_id');
+    public function movimento()
+    {
+        return $this->hasMany(Categoria::class);
+    }
 }
