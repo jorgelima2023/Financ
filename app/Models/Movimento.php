@@ -5,9 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Movimento extends Model
+use \OwenIt\Auditing\Auditable as AuditingAiuditable;
+use OwenIt\Auditing\Contracts\Auditable;
+
+class Movimento extends Model implements Auditable
 {
-    use HasFactory; 
+    use HasFactory, AuditingAiuditable; 
 
     // nome da tabela sempre no plural
     protected $table = 'movimentos';
