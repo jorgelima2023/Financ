@@ -4,12 +4,13 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Celk</title>
+        <title>Financeiro</title>
 
 
     </head>
     <body>
         <h1>Projeto Laravel - financeiro</h1>
+        <a href="{{ route('categorias.index') }}">Listar categorias</a>
         <p>Data Atual: {{ \Carbon\Carbon::now()->format('d/m/Y H:i:s') }}</p>
-    </body></body>
+    </body>
 </html>
