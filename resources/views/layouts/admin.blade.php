@@ -15,7 +15,7 @@
 
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
         <!-- Navbar Brand-->
-        <a class="navbar-brand ps-3" href="index.html">Celke</a>
+        <a class="navbar-brand ps-3" href="#">Celke</a>
         <!-- Sidebar Toggle-->
         <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
         <!-- Navbar Search-->
@@ -41,17 +41,17 @@
                 <div class="sb-sidenav-menu">
                     <div class="nav">
                         
-                        <a class="nav-link" href="index.html">
+                        <a class="nav-link" href="#">
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Dashboard
                         </a>
 
-                        <a class="nav-link" href="index.html">
+                        <a class="nav-link" href="{{ route('categorias.index') }}">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
-                            Cursos
+                            Categorias
                         </a>
 
-                        <a class="nav-link" href="index.html">
+                        <a class="nav-link" href="#">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
                             Sair
                         </a>
@@ -74,9 +74,9 @@
                     <div class="d-flex align-items-center justify-content-between small">
                         <div class="text-muted">Copyright &copy; Celke {{ date('Y') }}</div>
                         <div>
-                            <a href="#">Política de Privacidade</a>
+                            <a href="#" class="text-decoration-none">Política de Privacidade</a>
                             &middot;
-                            <a href="#">Termos de Uso</a>
+                            <a href="#" class="text-decoration-none">Termos de Uso</a>
                         </div>
                     </div>
                 </div>
