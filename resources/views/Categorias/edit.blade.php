@@ -1,40 +1,66 @@
 @extends('layouts.admin')
 
 @section('content')
-    <h2>Editar o categorias</h2>    
+    <div class="container-fluid px-4">
+        <div class="mb-1 hstack gap-2">
+            <h2 class="mt-3">Categoria</h2>
 
-    <a href="{{ route('categorias.index') }}">
-        <button type="button">Listar</button>
-    </a><br>
+            <ol class="breadcrumb mb-3 mt-3 ms-auto">
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-decoration-none">Dashboard</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ route('categorias.index') }}" class="text-decoration-none">Categorias</a>
+                </li>
+                <li class="breadcrumb-item active">Categoria</li>
+            </ol>
+        </div>
 
-    <x-alert />
-    
-    {{-- dd($categoria) --}}
+        <div class="card mb-4">
 
-    <form action="{{ route('categorias.update', ['categoria' => $categoria->id ] ) }}" method="POST">
-        @csrf
-        @method('PUT')
-        
-        <label for="">id:{{ $categoria->id }}</label> <br>
+            <div class="card-header hstack gap-2">
+                <span>Editar</span>
 
-        <label for="">Nome:</label>
-        <input type="text" name="nome" id="nome" 
-            placeholder="Nome da categoria" 
-             value="{{ old('nome', $categoria->nome) }}"><br>
-        
-        <label for="">classificação:</label>
-        <input type="text" name="classif" id="classif" 
-            placeholder="classificação da categoria" 
-             value="{{ old('classif', $categoria->classif) }}"><br>
+                <span class="ms-auto d-sm-flex flex-row">
 
-        <label for="">Soma categoria:</label>
-        <input type="text" name="soma" id="soma" 
-            placeholder="soma a categoria (S/N)" 
-             value="{{ old('soma', $categoria->soma) }}"><br>
+                    <a href="{{ route('categorias.index') }}" class="btn btn-info btn-sm me-1 mb-1 mb-sm-0">Listar</a>
 
-        <br><br>
+                    <a href="{{ route('categorias.show', ['categoria' => $categoria->id ] ) }}"  class="btn btn-primary btn-sm me-1 mb-1 mb-sm-0">Visualizar</a>
 
-        <button type="submit">Salvar</button>
-    </form>
+                </span>
+            </div>
 
+            <div class="card-body">
+
+                <x-alert />
+
+                <form class="row g-3" action="{{ route('categorias.update', ['categoria' => $categoria->id ] ) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="col-12">
+                      <label for="nome" class="form-label">Nome</label>
+                      <input type="text" name="nome" class="form-control" id="nome" placeholder="Nome da categoria" value="{{ old('nome', $categoria->nome) }}" required>
+                    </div>
+
+                    <div class="col-12">
+                      <label for="classif" class="form-label">classificação</label>
+                      <input type="text" name="classif" class="form-control" id="classif" placeholder="classificação da categoria" value="{{ old('classif', $categoria->classif) }}" required>
+                    </div>
+
+                    <div class="col-12">
+                      <label for="soma" class="form-label">Soma categoria</label>
+                      <input type="text" name="soma" class="form-control" id="soma" placeholder="classificação da categoria" value="{{ old('soma', $categoria->soma) }}" required>
+                    </div>
+
+                    <div class="col-12">
+                      <button type="submit" class="btn btn-warning btn-sm">Editar</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
 @endsection

@@ -1,40 +1,64 @@
 @extends('layouts.admin')
 
 @section('content')
-    <h2>Cadastrar a categoria</h2>
+    <div class="container-fluid px-4">
+        <div class="mb-1 hstack gap-2">
+            <h2 class="mt-3">Categoria</h2>
 
-    <a href="{{ route('categorias.index') }} ">
-        <button type="button">Listar</button>
-    </a><br><br>
+            <ol class="breadcrumb mb-3 mt-3 ms-auto">
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-decoration-none">Dashboard</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ route('categorias.index') }}" class="text-decoration-none">Categorias</a>
+                </li>
+                <li class="breadcrumb-item active">Categoria</li>
+            </ol>
+        </div>
 
-    <x-alert />
+        <div class="card mb-4">
 
-    {{-- 
-        @csrf protecao dados / metodo POST reforcar quanto ao uso metodo, 
-        mesmo estando no metodo do form  
-    --}}
-    
-    <form action="{{ route('categorias.store') }}" method="POST">
-        @csrf
-        @method('POST')
+            <div class="card-header hstack gap-2">
+                <span>Cadastrar</span>
 
-        <label>Nome: </label>
-        <input type="text" name="nome" id="nome" 
-            placeholder="Nome do categorias" value="{{ old('nome')}}" 
-            ><br><br>
+                <span class="ms-auto d-sm-flex flex-row">
 
-        <label>Classificação: </label>
-        <input type="text" name="classif" id="classif" 
-            placeholder="Classificação da categorias" value="{{ old('classif')}}" 
-            ><br><br>
+                    <a href="{{ route('categorias.index') }}" class="btn btn-info btn-sm me-1 mb-1 mb-sm-0">Listar</a>
 
-        <label>Somar: </label>
-        <input type="text" name="soma" id="soma" 
-            placeholder="Somar a categoria (S/N)" value="{{ old('soma')}}" 
-            ><br><br>
+                </span>
+            </div>
 
-        <button type="submit">Cadastrar</button>
+            <div class="card-body">
 
-    </form>
+                <x-alert />
 
+                <form class="row g-3" action="{{ route('categorias.store') }}" method="POST">
+                    @csrf
+                    @method('POST')
+
+                    <div class="col-12">
+                      <label for="nome" class="form-label">Nome</label>
+                      <input type="text" name="nome" class="form-control" id="nome" placeholder="Nome da categoria" value="{{ old('nome') }}" required>
+                    </div>
+
+                    <div class="col-12">
+                      <label for="classif" class="form-label">Classificação</label>
+                      <input type="text" name="classif" class="form-control" id="classif" placeholder="Classificação da categoria" value="{{ old('classif') }}" required>
+                    </div>
+                    
+                    <div class="col-12">
+                      <label for="soma" class="form-label">Somar</label>
+                      <input type="text" name="soma" class="form-control" id="soma" placeholder="Somar a categoria (S/N)" value="{{ old('soma') }}" required>
+                    </div>
+
+                    <div class="col-12">
+                      <button type="submit" class="btn btn-success btn-sm">Cadastrar</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
 @endsection
