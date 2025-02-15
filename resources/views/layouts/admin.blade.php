@@ -6,6 +6,7 @@
 
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/styles_sbadmin.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/styles_admin.css') }}" rel="stylesheet">
     <link href="{{ asset('css/all.min.css') }}" rel="stylesheet">
 
     <title>Financeiro</title>
@@ -13,7 +14,9 @@
 
 <body class="sb-nav-fixed">
 
-    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <!-- <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark"> -->
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-nav">
+
         <!-- Navbar Brand-->
         <a class="navbar-brand ps-3" href="#">Celke</a>
         <!-- Sidebar Toggle-->
@@ -37,7 +40,9 @@
 
     <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
-            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <!-- <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion"> -->
+            <nav class="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
+
                 <div class="sb-sidenav-menu">
                     <div class="nav">
                         

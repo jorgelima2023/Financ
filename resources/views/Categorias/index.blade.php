@@ -14,19 +14,21 @@
         </ol>
     </div>
     
-    <div class="card mb-5">
+    <!-- <div class="card mb-5"> -->
+    <div class="card mb-5 border-light shadow">
         <!-- cabecalho -->
         <div class="card-header hstack gap-2">   
             <span>Listar</span>
             <span class="ms-auto">
-                <a href="{{ route('categorias.create') }}" class="btn btn-success btn-sm">Cadastrar</a>
+                <a href="{{ route('categorias.create') }}" class="btn btn-success btn-sm"> <i class="fa-regular fa-square-plus"></i> Cadastrar</a>
             </span>
         </div>
 
         <div class="card-body">
             <x-alert />
 
-            <table class="table table-striped table-hover table-bordered">
+            <!-- <table class="table table-striped table-hover table-bordered"> -->
+            <table class="table table-striped table-hover">
                 <thead>
                     <tr>
                     <th class="d-none d-md-table-cell">id</th>
@@ -45,12 +47,12 @@
                         <td class="d-none d-sm-table-cell">{{ $categoria->soma }}</td>
                         <!-- acoes  -->
                         <td class="d-md-flex flex-row justify-content-center">
-                            <a href="{{ route('categorias.show', ['categoria' => $categoria->id ] ) }}" class="btn btn-primary btn-sm me-1 mt-1 mt-md-0">Visualizar</a>
-                            <a href="{{ route('categorias.edit', ['categoria' => $categoria->id ] ) }}" class="btn btn-warning btn-sm me-1 mt-1 mt-md-0">Editar</a>
+                            <a href="{{ route('categorias.show', ['categoria' => $categoria->id ] ) }}" class="btn btn-primary btn-sm me-1 mt-1 mt-md-0"> <i class="fa-regular fa-eye"></i> Visualizar</a>
+                            <a href="{{ route('categorias.edit', ['categoria' => $categoria->id ] ) }}" class="btn btn-warning btn-sm me-1 mt-1 mt-md-0"> <i class="fa-regular fa-pen-to-square"></i> Editar</a>
                             <form action="{{ route('categorias.destroy', ['categoria' => $categoria->id ] ) }}" method="POST">
                                 @csrf
                                 @method('delete')
-                                <button type="submit" class="btn btn-danger btn-sm me-1 mt-1 mt-md-0" onclick="return confirm('Confirma apagar esse registro {{ $categoria->id }} ?')">Apagar</button>
+                                <button type="submit" class="btn btn-danger btn-sm me-1 mt-1 mt-md-0" onclick="return confirm('Confirma apagar esse registro {{ $categoria->id }} ?')"> <i class="fa-regular fa-trash-can"></i> Apagar</button>
                             </form>
                         </td>
                     </tr>

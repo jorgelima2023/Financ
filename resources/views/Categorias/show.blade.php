@@ -13,21 +13,22 @@
             </ol>
         </div>
 
-        <div class="card mb-3">
+        <!-- <div class="card mb-3"> -->
+        <div class="card mb-3 border-light shadow">
 
             <div class="card-header hstack gap-2">
                 <span>Visualizar</span>
 
                 <span class="ms-auto d-sm-flex flex-row">
 
-                    <a href="{{ route('categorias.index') }}" class="btn btn-info btn-sm me-1 mb-1 mb-sm-0">Listar</a>
+                    <a href="{{ route('categorias.index') }}" class="btn btn-info btn-sm me-1 mb-1 mb-sm-0"> <i class="fa-solid fa-list"></i> Listar</a>
 
-                    <a href="{{ route('categorias.edit', ['categoria' => $categoria->id ] ) }}" class="btn btn-warning btn-sm me-1 mb-1 mb-sm-0">Editar</a>
+                    <a href="{{ route('categorias.edit', ['categoria' => $categoria->id ] ) }}" class="btn btn-warning btn-sm me-1 mb-1 mb-sm-0"> <i class="fa-regular fa-pen-to-square"></i> Editar</a>
 
                     <form action="{{ route('categorias.destroy', ['categoria' => $categoria->id ] ) }}" method="POST">
                         @csrf
                         @method('delete')
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Confirma apagar esse registro {{ $categoria->id }} ?')">Apagar</button>
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Confirma apagar esse registro {{ $categoria->id }} ?')"> <i class="fa-regular fa-trash-can"></i> Apagar</button>
                     </form>
 
                 </span>

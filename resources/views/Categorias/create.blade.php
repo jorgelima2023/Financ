@@ -23,7 +23,7 @@
 
                 <span class="ms-auto d-sm-flex flex-row">
 
-                    <a href="{{ route('categorias.index') }}" class="btn btn-info btn-sm me-1 mb-1 mb-sm-0">Listar</a>
+                    <a href="{{ route('categorias.index') }}" class="btn btn-info btn-sm me-1 mb-1 mb-sm-0"> <i class="fa-solid fa-list"></i> Listar</a>
 
                 </span>
             </div>
