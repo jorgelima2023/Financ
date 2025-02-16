@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/styles_sbadmin.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/styles_admin.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/all.min.css') }}" rel="stylesheet">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet"> -->
+    <!-- <link href="{{ asset('css/styles_sbadmin.css') }}" rel="stylesheet"> -->
+    <!-- <link href="{{ asset('css/styles_admin.css') }}" rel="stylesheet"> -->
+    <!-- <link href="{{ asset('css/all.min.css') }}" rel="stylesheet"> -->
 
     <title>Financeiro</title>
 </head>
@@ -93,9 +95,9 @@
 
     
 
-    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('js/scripts_sbadmin.js') }}"></script>
-    <script src="{{ asset('js/all.min.js') }}"></script>
+    <!-- <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script> -->
+    <!-- <script src="{{ asset('js/scripts_sbadmin.js') }}"></script> -->
+    <!-- <script src="{{ asset('js/all.min.js') }}"></script> -->
     
 </body>
 

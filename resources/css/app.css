@@ -1,3 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* importar o css do laiaute */
+@import 'styles_sbadmin.css';
+/* importar css personalizado */
+@import 'styles_admin.css';
+/* importar font awesome */
+@import '@fortawesome/fontawesome-free/css/all.css';
+
