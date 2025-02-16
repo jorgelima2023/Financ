@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Categoriascontroller;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MovimentoController;
 use Illuminate\Support\Facades\Route;
 
@@ -8,7 +9,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
+// Dashboard
+Route::get('/index-dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
 // ------------------------------ categorias 
 route::get('/index-categoria', 
