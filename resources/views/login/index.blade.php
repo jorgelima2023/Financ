@@ -13,8 +13,13 @@
                                     <h3 class="text-center font-weight-light my-4">Área Restrita</h3>
                                 </div>
                                 <div class="card-body">
-                                    <form>
 
+                                    <x-alert />
+
+                                    <form action="{{ route('login.process') }}" method="POST">
+                                        @csrf
+                                        @method('POST')
+                                        
                                         <div class="form-floating mb-3">
                                             <input type="email" name="email" class="form-control" id="email" placeholder="Digite o e-mail de usuário" />
                                             <label for="email">E-mail</label>
