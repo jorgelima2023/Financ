@@ -9,12 +9,24 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <title>Financeiro - Login</title>
+    <title>Celke - Login</title>
 </head>
 
-<body class="bg-primary">   
+<body class="bg-primary">  
     
-    @yield('content')
+    <div id="layoutAuthentication">
+        <div id="layoutAuthentication_content">
+            <main>
+                <div class="container">
+                    <div class="row justify-content-center">
+    
+                        @yield('content')
+
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
 
 </body>
 
