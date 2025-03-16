@@ -9,11 +9,12 @@ use Illuminate\Notifications\Notifiable;
 
 use \OwenIt\Auditing\Auditable as AuditingAiuditable;
 use OwenIt\Auditing\Contracts\Auditable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements Auditable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, AuditingAiuditable;
+    use HasFactory, Notifiable, AuditingAiuditable, HasRoles;
 
     /**
      * The attributes that are mass assignable.

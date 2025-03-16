@@ -51,25 +51,32 @@ Route::group(['middleware' => 'auth'], function () {
 
     // ------------------------------ categorias 
     route::get('/index-categoria', 
-        [Categoriascontroller::class, 'index'] )->name('categorias.index');
+        [Categoriascontroller::class, 'index'] )->name('categorias.index')
+        ->middleware('permission:index-categoria');
 
     Route::get('/show-categoria/{categoria}', 
-        [Categoriascontroller::class, 'show'])->name('categorias.show');
+        [Categoriascontroller::class, 'show'])->name('categorias.show')
+        ->middleware('permission:show-categoria');
 
     Route::get('/create-categoria', 
-        [Categoriascontroller::class, 'create'])->name('categorias.create');
+        [Categoriascontroller::class, 'create'])->name('categorias.create')
+        ->middleware('permission:create-categoria');
 
     Route::post('/store-categoria', 
-        [Categoriascontroller::class, 'store'])->name('categorias.store');
+        [Categoriascontroller::class, 'store'])->name('categorias.store')
+        ->middleware('permission:create-categoria');
 
     Route::get('/edit-categoria/{categoria}', 
-        [Categoriascontroller::class, 'edit'])->name('categorias.edit'); // carrega form
+        [Categoriascontroller::class, 'edit'])->name('categorias.edit')
+        ->middleware('permission:edit-categoria'); // carrega form
 
     Route::put('/update-categoria/{categoria}', 
-        [Categoriascontroller::class, 'update'])->name('categorias.update'); // receber dados form
+        [Categoriascontroller::class, 'update'])->name('categorias.update')
+        ->middleware('permission:edit-categoria'); // receber dados form
 
     Route::delete('/destroy-categoria/{categoria}', 
-        [Categoriascontroller::class, 'destroy'])->name('categorias.destroy');
+        [Categoriascontroller::class, 'destroy'])->name('categorias.destroy')
+        ->middleware('permission:destroy-categoria');
 
     // ------------------------------ movimentos
     route::get('/index-movimento/{categoria}', 

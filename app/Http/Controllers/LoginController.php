@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Permission;
 
 class LoginController extends Controller
 {
@@ -34,6 +36,27 @@ class LoginController extends Controller
             // Redirecionar o usuário para página anterior "login", enviar a mensagem de erro
             return back()->withInput()->with('error', 'E-mail ou senha inválido!');
         }
+
+        // Obter o usuário autenticado
+        $user = Auth::user();
+        $user = User::find($user->id);
+
+        // Verificar se a permissões é Super Admin, tem acesso a todas as páginas
+        if($user->hasRole('Super Admin')){
+
+            // O usuário tem todas as permissões
+            // recuperar permissoes em um array
+            $permissions = Permission::pluck('name')->toArray();
+        }else{
+
+            // Recuperar no banco de dados as permissões que o papel possui
+            // recuperar permissoes em um array
+            $permissions = $user->getPermissionsViaRoles()->pluck('name')->toArray();
+        }
+
+        // Atribuir as permissões ao usuário
+        // o metodo recebe o array de permissoes
+        $user->syncPermissions($permissions);
 
         // Redirecionar o usuário
         return redirect()->route('dashboard.index');
