@@ -58,10 +58,12 @@
                             Usuários
                         </a>
                         
-                        <a class="nav-link" href="{{ route('categorias.index') }}">
-                            <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
-                            Categorias
-                        </a>
+                        @can('index-categoria')
+                            <a class="nav-link" href="{{ route('categorias.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                                Categorias
+                            </a>
+                        @endcan
 
                         <a class="nav-link" href="{{ route('login.destroy') }}">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
