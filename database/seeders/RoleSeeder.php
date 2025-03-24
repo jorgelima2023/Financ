@@ -24,6 +24,7 @@ class RoleSeeder extends Seeder
         }
         // Cadastrar permissão para o papel
         $admin->givePermissionTo([
+            'index-user', 'show-user', 'create-user', 'edit-user', 'edit-user-password', 'destroy-user',
             'index-categoria', 'show-categoria', 'create-categoria', 'edit-categoria', 'destroy-categoria',
         ]);
     

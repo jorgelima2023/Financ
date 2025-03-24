@@ -14,6 +14,14 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
+
+            ['title'=> 'Listar usuarios', 'name' => 'index-user'],
+            ['title'=> 'Visualizar usuarios', 'name' => 'show-user'],
+            ['title'=> 'Cadastrar usuarios', 'name' => 'create-user'],
+            ['title'=> 'Editar usuarios', 'name' => 'edit-user'],
+            ['title'=> 'Editar senha usuarios', 'name' => 'edit-user-password'],
+            ['title'=> 'Apagar usuarios', 'name' => 'destroy-user'],
+
             ['title'=> 'Listar categoria', 'name' => 'index-categoria'],
             ['title'=> 'Visualizar categoria', 'name' => 'show-categoria'],
             ['title'=> 'Cadastrar categoria', 'name' => 'create-categoria'],

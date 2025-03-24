@@ -18,17 +18,24 @@
 
                 <span class="ms-auto d-sm-flex flex-row">
 
+                    @can('index-user')
                     <a href="{{ route('user.index') }}" class="btn btn-info btn-sm me-1"><i class="fa-solid fa-list"></i>
                         Listar</a>
+                    @endcan
 
+                    @can('edit-user')
                     <a href="{{ route('user.edit', ['user' => $user->id]) }}" class="btn btn-warning btn-sm me-1"><i
                             class="fa-solid fa-pen-to-square"></i> Editar
                     </a>
+                    @endcan
 
+                    @can('edit-user-password')
                     <a href="{{ route('user.edit-password', ['user' => $user->id]) }}" class="btn btn-warning btn-sm me-1"><i
                             class="fa-solid fa-pen-to-square"></i> Editar Senha
                     </a>
+                    @endcan
 
+                    @can('destroy-user')
                     <form method="POST" action="{{ route('user.destroy', ['user' => $user->id]) }}">
                         @csrf
                         @method('delete')
@@ -36,6 +43,8 @@
                             onclick="return confirm('Tem certeza que deseja apagar este registro?')"><i
                                 class="fa-regular fa-trash-can"></i> Apagar</button>
                     </form>
+                    @endcan
+                    
                 </span>
             </div>
             <div class="card-body">
@@ -53,6 +62,16 @@
                     <dt class="col-sm-3">E-mail: </dt>
                     <dd class="col-sm-9">{{ $user->email }}</dd>
 
+                    <dt class="col-sm-3">Papel/permissão: </dt>
+                    <!-- e funcao getRoleNames do laravel permission -->
+                    <dd class="col-sm-9">
+                        @forelse ($user->getRoleNames() as $role)
+                            {{ $role }}
+                        @empty
+                            {{ "-" }}
+                        @endforelse    
+                    </dd>
+                    
                     <dt class="col-sm-3">Cadastrado: </dt>
                     <dd class="col-sm-9">
                         {{ \Carbon\Carbon::parse($user->created_at)->tz('America/Sao_Paulo')->format('d/m/Y H:i:s') }}

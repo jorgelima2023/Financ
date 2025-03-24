@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -31,9 +32,10 @@ class UserController extends Controller
     // Carregar o formulário cadastrar novo usuário
     public function create()
     {
-
         // Carregar a VIEW
-        return view('users.create', ['menu' => 'users']);
+        return view('users.create', ['menu' => 'users', 'roles' => $roles ]);
+        // Carregar a VIEW
+        //return view('users.create', ['menu' => 'users']);
     }
 
     // Cadastrar no banco de dados o novo curso
@@ -54,6 +56,9 @@ class UserController extends Controller
                 'email' => $request->email,
                 'password' => $request->password,
             ]);
+
+            // Cadastrar papel para o usuário
+            $user->assignRole($request->roles);
 
             // Salvar log
             //Log::info('Usuário cadastrado.', ['id' => $user->id, $user]);
@@ -80,8 +85,16 @@ class UserController extends Controller
     public function edit(User $user)
     {
 
+        // Recuperar os papéis
+        $roles = Role::pluck('name')->all();
+
+        // Recuperar o papel do usuário
+        $userRoles = $user->roles->pluck('name')->first();
+
         // Carregar a VIEW
-        return view('users.edit', ['menu' => 'users', 'user' => $user]);
+        // return view('users.edit', ['menu' => 'users', 'user' => $user]);
+        return view('users.edit', ['menu' => 'users', 'user' => $user, 'roles' => $roles, 'userRoles' => $userRoles]);
+
     }
 
     // Editar no banco de dados o usuário
@@ -101,6 +114,9 @@ class UserController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
             ]);
+
+            // Editar papel para o usuário
+            $user->syncRoles($request->roles);
 
             // Salvar log
             //Log::info('Usuário editado.', ['id' => $user->id]);
@@ -181,6 +197,9 @@ class UserController extends Controller
             // Excluir o registro do banco de dados
             $user->delete();
 
+            // Remove todos os papéis atribuídos ao usuário
+            $user->syncRoles([]);
+            
             // Salvar log
             //Log::info('Usuário excluído.', ['id' => $user->id]);
 

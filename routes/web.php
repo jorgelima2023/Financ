@@ -39,15 +39,15 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/update-profile-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
     
     // ------------------------------ Usuários
-    Route::get('/index-user', [UserController::class, 'index'])->name('user.index');
-    Route::get('/show-user/{user}', [UserController::class, 'show'])->name('user.show');
-    Route::get('/create-user', [UserController::class, 'create'])->name('user.create');
-    Route::post('/store-user', [UserController::class, 'store'])->name('user.store');
-    Route::get('/edit-user/{user}', [UserController::class, 'edit'])->name('user.edit');
-    Route::put('/update-user/{user}', [UserController::class, 'update'])->name('user.update');
-    Route::get('/edit-user-password/{user}', [UserController::class, 'editPassword'])->name('user.edit-password');
-    Route::put('/update-user-password/{user}', [UserController::class, 'updatePassword'])->name('user.update-password');
-    Route::delete('/destroy-user/{user}', [UserController::class, 'destroy'])->name('user.destroy');
+    Route::get('/index-user', [UserController::class, 'index'])->name('user.index')->middleware('permission:index-user');
+    Route::get('/show-user/{user}', [UserController::class, 'show'])->name('user.show')->middleware('permission:show-user');
+    Route::get('/create-user', [UserController::class, 'create'])->name('user.create')->middleware('permission:create-user');
+    Route::post('/store-user', [UserController::class, 'store'])->name('user.store')->middleware('permission:create-user');
+    Route::get('/edit-user/{user}', [UserController::class, 'edit'])->name('user.edit')->middleware('permission:edit-user');
+    Route::put('/update-user/{user}', [UserController::class, 'update'])->name('user.update')->middleware('permission:edit-user');
+    Route::get('/edit-user-password/{user}', [UserController::class, 'editPassword'])->name('user.edit-password')->middleware('permission:edit-user-password');
+    Route::put('/update-user-password/{user}', [UserController::class, 'updatePassword'])->name('user.update-password')->middleware('permission:edit-user-password');
+    Route::delete('/destroy-user/{user}', [UserController::class, 'destroy'])->name('user.destroy')->middleware('permission:destroy-user');
 
     // ------------------------------ categorias 
     route::get('/index-categoria', 

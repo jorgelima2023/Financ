@@ -15,9 +15,10 @@
             <div class="card-header hstack gap-2">
                 <span>Cadastrar</span>
                 <span class="ms-auto d-sm-flex flex-row">
-
-                    <a href="{{ route('user.index') }}" class="btn btn-info btn-sm me-1"><i class="fa-solid fa-list"></i>
+                    @can('index-user')
+                        <a href="{{ route('user.index') }}" class="btn btn-info btn-sm me-1"><i class="fa-solid fa-list"></i>
                         Listar</a>
+                    @endcan
 
                 </span>
             </div>
@@ -45,6 +46,23 @@
                         <label for="password" class="form-label">Senha: </label>
                         <input type="password" name="password" id="password" class="form-control"
                             placeholder="Senha com no mínimo 6 caracteres" value="{{ old('password') }}">
+                    </div>
+
+                    <div class="col-12">
+                        <label for="roles" class="form-label">Papel/permissão: </label>
+                        <select name="roles" class="form-select" id="roles">
+                            <option value="">Selecione</option>
+                            @forelse ($roles as $role)
+                                @if ($role != 'Super Admin')
+                                    <option {{ old('roles') == $role ? 'selected' : '' }} value="{{ $role }}">{{ $role }}</option>
+                                @else
+                                    @if (Auth::user()->hasRole('Super Admin'))
+                                        <option {{ old('roles') == $role ? 'selected' : '' }} value="{{ $role }}">{{ $role }}</option>
+                                    @endif
+                                @endif
+                            @empty
+                            @endforelse
+                        </select>
                     </div>
 
                     <div class="col-12">
