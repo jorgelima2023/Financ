@@ -7,6 +7,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MovimentoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -84,11 +85,26 @@ Route::group(['middleware' => 'auth'], function () {
         [MovimentoController::class, 'index'] )->name('movimentos.index');
 
     // Papéis
-    Route::get('/index-role', [RoleController::class, 'index'])->name('role.index')->middleware('permission:index-role'); 
-    Route::get('/create-role', [RoleController::class, 'create'])->name('role.create')->middleware('permission:create-role'); 
-    Route::post('/store-role', [RoleController::class, 'store'])->name('role.store')->middleware('permission:create-role'); 
-    Route::get('/edit-role/{role}', [RoleController::class, 'edit'])->name('role.edit')->middleware('permission:edit-role'); 
-    Route::put('/update-role/{role}', [RoleController::class, 'update'])->name('role.update')->middleware('permission:edit-role'); 
-    Route::delete('/destroy-role/{role}', [RoleController::class, 'destroy'])->name('role.destroy')->middleware('permission:destroy-role'); 
+    Route::get('/index-role', [RoleController::class, 'index'])->name('role.index')
+    ->middleware('permission:index-role'); 
+    
+    Route::get('/create-role', [RoleController::class, 'create'])->name('role.create')
+    ->middleware('permission:create-role'); 
+    
+    Route::post('/store-role', [RoleController::class, 'store'])->name('role.store')
+    ->middleware('permission:create-role'); 
+    
+    Route::get('/edit-role/{role}', [RoleController::class, 'edit'])->name('role.edit')
+    ->middleware('permission:edit-role'); 
+    
+    Route::put('/update-role/{role}', [RoleController::class, 'update'])->name('role.update')
+    ->middleware('permission:edit-role'); 
+    
+    Route::delete('/destroy-role/{role}', [RoleController::class, 'destroy'])->name('role.destroy')
+    ->middleware('permission:destroy-role'); 
 
+    // Permissão do papel
+    Route::get('/index-role-permission/{role}', [RolePermissionController::class, 'index'])
+    ->name('role-permission.index')
+    ->middleware('permission:index-role-permission');
 });

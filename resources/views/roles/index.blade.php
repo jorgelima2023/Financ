@@ -49,7 +49,7 @@
                                 <td class="d-md-flex flex-row justify-content-center">
 
                                     {{-- @can('update') --}}
-                                    <a href="#" class="btn btn-info btn-sm me-1 mb-1 mb-md-0"><i
+                                    <a href="{{ route('role-permission.index', ['role' => $role->id ]) }}" class="btn btn-info btn-sm me-1 mb-1 mb-md-0"><i
                                             class="fa-solid fa-list"></i> Permissões</a>
                                     {{-- @endcan --}}
 
