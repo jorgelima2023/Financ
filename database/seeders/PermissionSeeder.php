@@ -34,6 +34,8 @@ class PermissionSeeder extends Seeder
             ['title'=> 'Apagar papeis', 'name' => 'destroy-role'],
 
             ['title'=> 'Listar permissões papel', 'name' => 'index-role-permission'],
+            ['title'=> 'Editar permissões papel', 'name' => 'update-role-permission'],
+
         ];
 
         // pega a model 'permission'

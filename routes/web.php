@@ -107,4 +107,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/index-role-permission/{role}', [RolePermissionController::class, 'index'])
     ->name('role-permission.index')
     ->middleware('permission:index-role-permission');
+
+    // update
+    Route::get('/update-role-permission/{role}', [RolePermissionController::class, 'update'])
+    ->name('role-permission.update')
+    ->middleware('permission:update-role-permission'); 
 });

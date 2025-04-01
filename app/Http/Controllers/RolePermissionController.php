@@ -44,4 +44,63 @@ class RolePermissionController extends Controller
             'role' => $role,
         ]);
     }
+
+    // Editar no banco de dados a página
+    //public function update(Request $request, Role $role)
+    public function update(Role $role, Request $request)
+    {
+        // dd($request->permission);
+        // http://127.0.0.1:8000/update-role-permission/4/2
+        // '2'
+
+        // "id" => 2
+        // "title" => "Visualizar curso"
+        // "name" => "show-course"
+        // "guard_name" => "web"
+        
+        // dd($role);
+        // role id 4
+        // role nome 'Tutor'
+
+        // obter permissao especifica com base id fornececido
+        //$permission = Permission::find(2);
+        $permission = Permission::find($request->permission);
+
+        //dd($permission);
+
+        if(!$permission){
+
+            Log::info('Permissões nao encontrada.', 
+                [ 'role' => $role->id , 'permission' => $request->permission , 
+                    'action_user_id' => Auth::id()]);
+
+            return redirect()->route('role-permission.update', 
+                ['role' => $role->id , 'permission' => $request->permission ])
+                ->with('error', 'Permissões nao encontrada!');
+
+        }
+
+        //verificar se a permissao esta associada ao papel
+        if($role->permissions->contains($permission)){
+
+            // exemplo laravel permission
+            //$role->revokePermissionTo('edit articles');
+
+            // remover a permissao do papel (bloquear)
+            $role->revokePermissionTo($permission);
+
+            return redirect()->route('role-permission.index', 
+                ['role' => $role->id ])
+                ->with('success', 'Permissao bloqueada com sucesso!');
+
+        }else{
+            // adicionar a permissao ao papel (liberar)
+            $role->givePermissionTo($permission);
+
+            return redirect()->route('role-permission.index', 
+                ['role' => $role->id ])
+                ->with('success', 'Permissao liberada com sucesso!');
+        }
+
+    }
 }
