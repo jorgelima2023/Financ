@@ -53,11 +53,13 @@
                             Dashboard
                         </a>
 
-                        <a @class(['nav-link', 'active' => isset($menu) && $menu == 'users']) href="{{ route('user.index') }}">
-                            <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
-                            Usuários
-                        </a>
-                        
+                        @can('index-user')
+                            <a @class(['nav-link', 'active' => isset($menu) && $menu == 'users']) href="{{ route('user.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
+                                Usuários
+                            </a>
+                        @endcan
+
                         @can('index-categoria')
                             <a class="nav-link" href="{{ route('categorias.index') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
@@ -81,7 +83,8 @@
                 <div class="sb-sidenav-footer">
                     <div class="small">Logado:
                         @if ( auth()->check() )
-                            {{ auth()->user()->name }}         
+                            {{ auth()->user()->name }} 
+                            <br />{{ auth()->user()->roles[0]->name }}        
                         @endif
                     </div>
                 </div>
