@@ -51,6 +51,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/update-user-password/{user}', [UserController::class, 'updatePassword'])->name('user.update-password')->middleware('permission:edit-user-password');
     Route::delete('/destroy-user/{user}', [UserController::class, 'destroy'])->name('user.destroy')->middleware('permission:destroy-user');
 
+    Route::get('/generate-pdf-user', [UserController::class, 'generatePdf'])
+    ->name('user.generate-pdf');
+    
     // ------------------------------ categorias 
     route::get('/index-categoria', 
         [Categoriascontroller::class, 'index'] )->name('categorias.index')
