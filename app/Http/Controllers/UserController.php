@@ -13,13 +13,44 @@ use Spatie\Permission\Models\Role;
 class UserController extends Controller
 {
     //
-    public function index()
+    public function index(Request $request)
     {
         // Recuperar os registros do banco dados
-        $users = User::orderByDesc('created_at')->paginate(10);
+        // $users = User::orderByDesc('created_at')->paginate(10);
+
+        // when pesquisa pelo nome
+        // function user(request) tudo que veio no request
+        // when($request->has('name') vai executar se tiver valor passado get http 
+
+        // withQueryString por causa da paginacao...
+
+        $users = User::when($request->has('name'), function($whenQuery) use($request){
+            $whenQuery->where('name', 'like' , '%' . $request->name . '%' );
+        } )
+        ->when($request->has('email'), function($whenQuery) use($request){
+            $whenQuery->where('email', 'like' , '%' . $request->email . '%' );
+        } )
+        ->when($request->filled('start_date_registration'), function($whenQuery) use($request){
+            $whenQuery->where('created_at', '>=' , \Carbon\Carbon::parse($request->start_date_registration)->format('Y-m-d H:i:s') );
+        } )
+        ->when($request->filled('end_date_registration'), function($whenQuery) use($request){
+            $whenQuery->where('created_at', '<=' , \Carbon\Carbon::parse($request->end_date_registration)->format('Y-m-d H:i:s') );
+        } )
+        ->orderByDesc('created_at')
+        ->paginate(1000)
+        ->withQueryString()
+        ;
 
         // Carregar a VIEW
-        return view('users.index', ['menu' => 'users', 'users' => $users]);
+        // return view('users.index', ['menu' => 'users', 'users' => $users]);
+        return view('users.index',
+         ['menu' => 'users',
+          'users' => $users,
+          'name' => $request->name,
+          'email' => $request->email,
+          'start_date_registration' => $request->start_date_registration,
+          'end_date_registration' => $request->end_date_registration
+         ]);
     }
 
     // Detalhes do usuario

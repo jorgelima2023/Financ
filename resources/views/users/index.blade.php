@@ -12,6 +12,55 @@
             </ol>
         </div>
 
+        <!-- pesquisar  -->
+        <div class="card mb-4 border-light shadow">
+            <div class="card-header">
+                <span class="pesquisar">Pesquisar</span>
+                <div class="card-body">
+                    <!-- usar metodo get, nao precisa colocar metodo 
+                        col-md-4  dispositivos medios ocupar 4 grids
+                        col-sm-12 dispositivos pequenos em uma unica linha
+                    -->
+                    <form action="{{ route('user.index') }}">
+                        <div class="row">
+                        
+                            <div class="col-md-4 col-sm-12">
+                                <label for="name" class="form-label">Nome</label>
+                                <input type="text" name="name" class="form-control" id="name" value="{{ $name }}"
+                                placeholder="Nome do usuario">
+                            </div>
+
+                            <div class="col-md-4 col-sm-12">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="text" name="email" class="form-control" id="email" value="{{ $email }}"
+                                placeholder="email do usuario">
+                            </div>
+                            
+                            <div class="col-md-4 col-sm-12 mt-4 pt-3">
+                                <button type="submit" class="btn btn-info btn-sm"><i class="fa-solid fa-magnifying-glass"></i>Pesquisar</button>
+                                <a href="{{ route('user.index') }}" class="btn btn-warning btn-sm"><i class="fa-solid fa-trash"></i>Limpar</a>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 col-sm-12">
+                                    <label for="start_date_registration" class="form-label">Cadastro de</label>
+                                    <input type="datetime-local" name="start_date_registration" class="form-control" 
+                                    id="start_date_registration" value="{{ $start_date_registration }}">
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                    <label for="end_date_registration" class="form-label">Cadastro ate</label>
+                                    <input type="datetime-local" name="end_date_registration" class="form-control" 
+                                    id="end_date_registration" value="{{ $end_date_registration }}">
+                            </div>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <div class="card mb-4 border-light shadow">
             <div class="card-header hstack gap-2">
                 <span>Listar</span>
