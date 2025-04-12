@@ -70,9 +70,22 @@
                                 class="fa-regular fa-square-plus"></i> Cadastrar</a>
                     @endcan
 
-                    <a href="{{ route('user.generate-pdf') }}" 
-                        class="btn btn-warning btn-sm">
-                        <i class="fa-regular fa-file-pdf"></i>Gerar PDF</a>
+                    @can('generate-pdf-user')
+                        <!-- route envia pelo nome da rota
+                        <a href="{{ route('user.generate-pdf') }}" 
+                            class="btn btn-warning btn-sm">
+                            <i class="fa-regular fa-file-pdf"></i>Gerar PDF</a> -->
+
+                        <!-- enviar pela url com a pesquisa para gerar o pdf  
+                            generate-pdf-user 
+                            a funcao request , recupera o que vier na url -->
+                        <a href="{{ url('generate-pdf-user?' . request()->getQueryString() ) }}" class="btn btn-warning btn-sm"> 
+                            <i class="fa-regular fa-file-pdf"></i>Gerar PDF</a> 
+                    @endcan
+                        
+                    <a href="{{ url('generate-csv-user?' . request()->getQueryString() ) }}" class="btn btn-success btn-sm"> 
+                            <i class="fa-regular fa-file-excel"></i>Gerar Planilha</a>
+                            
                 </span>
             </div>
             <div class="card-body">

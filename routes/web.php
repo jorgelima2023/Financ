@@ -54,6 +54,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/generate-pdf-user', [UserController::class, 'generatePdf'])
     ->name('user.generate-pdf');
     
+    Route::get('/generate-csv-user', [UserController::class, 'generateCsv'])
+    ->name('user.generate-Csv');
+    
     // ------------------------------ categorias 
     route::get('/index-categoria', 
         [Categoriascontroller::class, 'index'] )->name('categorias.index')

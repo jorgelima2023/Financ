@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -247,6 +248,7 @@ class UserController extends Controller
         }
     }
 
+    /*   listar todos os usuarios , chamada pelo rota
     public function generatePdf()
     {
         // recuperar os registros do banco de dados
@@ -259,6 +261,122 @@ class UserController extends Controller
 
         // fazer o download do arquivo
         return $pdf->download('list_users.pdf');
+
+    }
+    */
+    
+    public function generatePdf(Request $request)
+    {
+        // dd($request);
+
+        // recuperar os registros do banco de dados
+        $users = User::when($request->has('name'), function($whenQuery) use($request){
+            $whenQuery->where('name', 'like' , '%' . $request->name . '%' );
+        } )
+        ->when($request->has('email'), function($whenQuery) use($request){
+            $whenQuery->where('email', 'like' , '%' . $request->email . '%' );
+        } )
+        ->when($request->filled('start_date_registration'), function($whenQuery) use($request){
+            $whenQuery->where('created_at', '>=' , \Carbon\Carbon::parse($request->start_date_registration)->format('Y-m-d H:i:s') );
+        } )
+        ->when($request->filled('end_date_registration'), function($whenQuery) use($request){
+            $whenQuery->where('created_at', '<=' , \Carbon\Carbon::parse($request->end_date_registration)->format('Y-m-d H:i:s') );
+        } )
+        ->orderByDesc('created_at')
+        ->get();
+
+        // somar total registros
+        $totalRecords = $users->count('id');
+
+        // verificar se a quantidade de registros ultrapassa o limite para gerar o pdf
+        // qtde registros, voce define.
+        $totalRecordsAllowed = 500;
+
+        if($totalRecords > $totalRecordsAllowed){
+            return  redirect()->route('user.index',
+            ['name' => $request->name,
+            'email' => $request->email,
+            'start_date_registration' => $request->start_date_registration,
+            'end_date_registration' => $request->end_date_registration
+            ])->with('error', "Limite de registros ultrapassado para gerar o pdf. o limtie e de $totalRecordsAllowed registros! ");
+        }
+
+        // carregar a string com o HTML/conteudo e determinar a orientacao e o tamanho do arquivo
+        $pdf = PDF::loadView('users.generatePdf', ['users' => $users ] )->setPaper('a4', 'portrait');
+
+        // fazer o download do arquivo
+        return $pdf->download('list_users.pdf');
+
+    }
+
+    public function generateCsv(Request $request)
+    {
+        // dd($request->name);
+        // recuperar os registros do banco de dados
+        $users = User::when($request->has('name'), function($whenQuery) use($request){
+            $whenQuery->where('name', 'like' , '%' . $request->name . '%' );
+        } )
+        ->when($request->has('email'), function($whenQuery) use($request){
+            $whenQuery->where('email', 'like' , '%' . $request->email . '%' );
+        } )
+        ->when($request->filled('start_date_registration'), function($whenQuery) use($request){
+            $whenQuery->where('created_at', '>=' , \Carbon\Carbon::parse($request->start_date_registration)->format('Y-m-d H:i:s') );
+        } )
+        ->when($request->filled('end_date_registration'), function($whenQuery) use($request){
+            $whenQuery->where('created_at', '<=' , \Carbon\Carbon::parse($request->end_date_registration)->format('Y-m-d H:i:s') );
+        } )
+        ->orderByDesc('created_at')
+        ->get();
+
+        // somar total registros
+        $totalRecords = $users->count('id');
+
+        // verificar se a quantidade de registros ultrapassa o limite para gerar o csv
+        // qtde registros, voce define.
+        $totalRecordsAllowed = 500;
+
+        if($totalRecords > $totalRecordsAllowed){
+            return  redirect()->route('user.index',
+            ['name' => $request->name,
+            'email' => $request->email,
+            'start_date_registration' => $request->start_date_registration,
+            'end_date_registration' => $request->end_date_registration
+            ])->with('error', "Limite de registros ultrapassado para gerar a planilha. o limtie e de $totalRecordsAllowed registros! ");
+        }
+
+        // criar arq temporario
+        $csvFileName = tempnam(sys_get_temp_dir(), 'csv_' . Str::ulid());
+
+        // abrir arq forma scrita
+        $openFile = fopen($csvFileName, 'w');
+
+        // criar o cabecalho do excel
+        // id minusculo caso contratio nao funciona
+        $header = ['id', 'Nome', 'e_mail', 'Cadastro'];
+
+        // escrever o cabecalho no arquivo
+        fputcsv($openFile, $header, ';');
+
+        // ler os registros recuperados do banco de dados
+        foreach($users as $user){
+            // criar o array com os dados da linha do excel
+            $userArray = [
+                'id' => $user->id,
+                'nome' => mb_convert_encoding($user->name, 'ISO-8859-1', 'UTF-8'),
+                'email' => $user->email,
+                'created_at' => \Carbon\Carbon::parse($user->created_at)->format('d/m/Y H:i:s'),
+            ];
+
+            // escrever conteudo arquivo
+            fputcsv($openFile, $userArray, ';');            
+        }
+
+        // fechar o arquivo
+        fclose($openFile);
+
+        // realizar o download do arquivo
+        // funcao ulid gera numero aleatorio
+        return response()->download($csvFileName, 'list_users_' . str::ulid() . '.csv' );
 
     }
 }
