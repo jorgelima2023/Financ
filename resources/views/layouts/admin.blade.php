@@ -67,6 +67,13 @@
                             </a>
                         @endcan
 
+                        @can('form-categoria')
+                            <a class="nav-link" href="{{ route('categorias.form') }}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                                Categorias formulario
+                            </a>
+                        @endcan
+
                         @can('index-role')
                             <a @class(['nav-link', 'active' => isset($menu) && $menu == 'roles']) href="{{ route('role.index') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-network-wired"></i></div>

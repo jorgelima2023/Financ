@@ -8,7 +8,47 @@ use Illuminate\Http\Request;
 
 class Categoriascontroller extends Controller
 {
-    // Listar os cursos
+    // form categoria
+    public function form(){
+        // Recuperar os registros do banco dados
+        // $courses = Course::where('id', 1000)->get();
+        // $courses = Course::paginate(10);
+        $categorias = Categoria::orderBy('nome', 'ASC')
+        // teste alerta nenhum registro encontrado ->where('id', 1000)
+        ->get();
+
+        //$categorias[] = "";
+        //$categorias->new_field = null; 
+        //$categorias->another_field = '';
+
+        // Adicionando campos vazios a cada item
+        // $categorias->each(function ($Categoria) {
+        //     $Categoria->extra_field = null;
+        // });
+
+        $categorias->push(new Categoria(['id' => 0, 
+                                         'nome' => '' , 
+                                         'classif' => '', 
+                                         'soma' => '' ]));
+
+        $categorias->push(new Categoria(['id' => 0, 
+                                         'nome' => '' , 
+                                         'classif' => '', 
+                                         'soma' => '' ]));
+                                
+        $categorias->push(new Categoria(['id' => 0, 
+                                    'nome' => '' , 
+                                    'classif' => '', 
+                                    'soma' => '' ]));
+                                    
+        //$categorias->push(new Categoria(['id' => null, 'nome' => '']));
+        //$categorias->push(new Categoria(['id' => null, 'nome' => '']));
+
+        // Carregar a VIEW
+        return view('categorias.form', ['categorias' => $categorias]);
+    }
+
+    // Listar os categoria
     public function index(){
         // Recuperar os registros do banco dados
         // $courses = Course::where('id', 1000)->get();
@@ -21,7 +61,7 @@ class Categoriascontroller extends Controller
         return view('categorias.index', ['categorias' => $categorias]);
     }
 
-    // Visualizar o curso
+    // Visualizar o categoria
     public function show(Categoria $categoria){
         // Carregar a VIEW
         return view('categorias.show', ['categoria' => $categoria] );
@@ -41,8 +81,8 @@ class Categoriascontroller extends Controller
         // dd($request->name);
         $categoria = Categoria::create([
             'nome' => $request->nome , 
-            'classif' => '01' /*$request->classif*/ , 
-            'soma' => 'N' /*$request->soma*/ , 
+            'classif' =>  $request->classif , 
+            'soma' => $request->soma , 
         ]);
         
         // Redirecionar o usuário, enviar a mensagem de sucesso

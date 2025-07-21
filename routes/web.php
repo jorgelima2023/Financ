@@ -58,6 +58,12 @@ Route::group(['middleware' => 'auth'], function () {
     ->name('user.generate-Csv');
     
     // ------------------------------ categorias 
+    
+    // formulario que faz o index, retorna array ao form edicao/inclusao
+    route::get('/form-categoria', 
+        [Categoriascontroller::class, 'form'] )->name('categorias.form')
+        ->middleware('permission:form-categoria');
+
     route::get('/index-categoria', 
         [Categoriascontroller::class, 'index'] )->name('categorias.index')
         ->middleware('permission:index-categoria');
