@@ -64,6 +64,12 @@ Route::group(['middleware' => 'auth'], function () {
         [Categoriascontroller::class, 'form'] )->name('categorias.form')
         ->middleware('permission:form-categoria');
 
+    Route::put('/update-categoria-form', 
+        [Categoriascontroller::class, 'updateCategorias'])->name('categorias.form.update')
+        ->middleware('permission:edit-categoria'); // receber dados form
+
+    // =======================================================================
+
     route::get('/index-categoria', 
         [Categoriascontroller::class, 'index'] )->name('categorias.index')
         ->middleware('permission:index-categoria');

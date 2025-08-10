@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoriaRequest;
 use App\Models\Categoria;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Nette\Utils\Arrays;
 
 class Categoriascontroller extends Controller
 {
@@ -26,6 +30,7 @@ class Categoriascontroller extends Controller
         //     $Categoria->extra_field = null;
         // });
 
+        // adiciona elemento vazio array - para incluir
         $categorias->push(new Categoria(['id' => 0, 
                                          'nome' => '' , 
                                          'classif' => '', 
@@ -53,8 +58,9 @@ class Categoriascontroller extends Controller
         // Recuperar os registros do banco dados
         // $courses = Course::where('id', 1000)->get();
         // $courses = Course::paginate(10);
-        $categorias = Categoria::orderBy('nome', 'ASC')
+
         // teste alerta nenhum registro encontrado ->where('id', 1000)
+        $categorias = Categoria::orderBy('nome', 'ASC')
         ->get();
 
         // Carregar a VIEW
@@ -117,6 +123,125 @@ class Categoriascontroller extends Controller
         return redirect()->route('categorias.show', ['categoria' => $categoria->id ])
             ->with('success', 'categoria editado com sucesso');
     }
+
+    // Editar no banco de dados o categorias
+    // receber os dados formulario via 'request'
+    // e na model 'Categoria' receber o id do categoria
+    public function updateCategorias(Request $request){
+        //$categorias = $request->categorias; // Isso será um array
+        //dd($categorias);
+        //dd($request->categoria);
+        //$dados = $request->all();
+        //dd($dados);
+
+        
+
+        // laravel 11 receber request array
+        //$itens = $request->input('itens'); // Array de arrays
+        $data = $request;
+        //dd($data);
+
+        $falha = 0;
+
+        foreach ($data['itens'] as $item) {
+           //dd($item['id'] . ' ' . $item['nome'] . ' ' . $item['classif'] . ' ' . $item['soma'] );
+           if( empty( $item['id'] ) ){
+                //echo "id vazio ";
+                
+                if( ( !empty( $item['nome'] ) ) && 
+                    ( !empty( $item['classif'] ) ) &&
+                    ( !empty( $item['soma'] ) ) 
+                ){
+                
+                    DB::beginTransaction();
+
+                    try {
+                        $categoria = Categoria::create([
+                            'nome' => $item['nome'] , 
+                            'classif' =>  $item['classif'] , 
+                            'soma' => $item['soma'] , 
+                            
+                        ]);
+
+                        // Operação é concluída com êxito, conseguiu cadastrar sem erros
+                        DB::commit();
+
+                        Log::info('Categoria incluida: {id}', ['id' => $categoria]);
+
+                    } catch (Exception $e) {
+
+                        $falha = 1;
+                        
+                        // Operação não é concluída com êxito
+                        DB::rollBack();
+                        Log::error('Categoria não incluida.', [ 'error' => $e->getMessage()]);
+                    }
+                }
+
+           }else{
+                //echo "id preenchido ";
+                    
+                $categoria = Categoria::where('id', $item['id'])->first();
+
+                DB::beginTransaction();
+
+                try {
+                    $categoria->update([
+                        'nome' => $item['nome'],
+                        'classif' => $item['classif'],
+                        'soma' => $item['soma']
+                    ]);
+
+                    DB::commit();
+
+                    Log::info('Categoria alterada: {id}', ['id' => $item['id']]);
+
+                } catch (Exception $e) {
+                    
+                    $falha = 1;
+
+                    DB::rollBack();
+                    Log::error('Categoria não alterada.', [ 'error' => $e->getMessage()]);
+                }
+
+           }
+
+            // debug - mostrar valores , omitir return acima.
+            // echo 'id=' . $item['id'] . ' nome=' . $item['nome'] . ' c=' . $item['classif'] . ' soma=' . $item['soma'] . '<br>';
+           
+           if( $falha == 0 ){   
+                //$categorias = Categoria::orderBy('nome', 'ASC')->get();
+
+                // Carregar a VIEW
+                //return view('categorias.index', ['categorias' => $categorias]);
+
+                return redirect()->route('categorias.form')->with('success', 'Categoria cadastrada com sucesso!');
+
+            }else{
+                return back()->withInput()->with('error', 'Categoria não cadastrada!');
+
+            }
+        }
+
+       
+
+
+        // validar o fomulario
+        // $validated = $request->validated();
+
+        // editar as informacoes do banco de dados
+        // $categoria->update([
+        //     'nome' => $request->nome
+        // ]);
+
+        // dd("Editar no banco de dados o categorias");
+
+        // redirecionar para o form show
+        // na sessao 'success' e a msg 'Curso editado com sucesso'
+        // return redirect()->route('categorias.show', ['categoria' => $categoria->id ])
+        //     ->with('success', 'categoria editado com sucesso');
+    }
+
     // Excluir o categorias do banco de dados
     public function destroy(Categoria $categoria){
 

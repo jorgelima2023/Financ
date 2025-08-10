@@ -23,13 +23,13 @@
         <div class="card-body">
             <x-alert />
             
-            <form class="row g-3" action="#" method="POST">
+            <form class="row g-3" action="{{ route('categorias.form.update', ['categorias' => $categorias ] ) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th class="d-none d-md-table-cell">id</th>
+                            <!-- <th class="d-none d-md-table-cell">id</th> -->
                             <th>nome</th>
                             <th class="d-none d-sm-table-cell">Classificação</th>
                             <th class="d-none d-sm-table-cell">Somar</th>
@@ -38,23 +38,29 @@
                     </thead>
 
                     <tbody>
+                        @php
+                            $i = 0
+                        @endphp
+
                         @forelse ($categorias as $categoria)
                         
                         <tr>
-                            <td>
-                                <input type="text" name="id" maxlength="5" size="5" class="form-control" id="id" value="{{$categoria->id}}">
-                            </td>
+                            
+                            <input type="hidden" name="itens[{{ $i }}][id]" maxlength="5" size="5" class="form-control" id="itens[{{ $i }}][id]" value="{{$categoria->id}}">
+                            
                             
                             <td style="width: 570px;" align="left">
-                                <input type="text" name="nome" class="form-control" id="nome" maxlength="60" size="60" value="{{$categoria->nome}}" required>
+                                <input type="text" name="itens[{{ $i }}][nome]" class="form-control" id="itens[{{ $i }}][nome]" maxlength="60" size="60" value="{{$categoria->nome}}" >
                             </td>
                             <td class="d-none d-sm-table-cell">
-                                <input type="text" name="classif" class="form-control" id="classif" maxlength="20" size="20" value="{{$categoria->classif}}" required>
+                                <input type="text" name="itens[{{ $i }}][classif]" class="form-control" id="itens[{{ $i }}][classif]" maxlength="20" size="20" value="{{$categoria->classif}}" >
                             </td>
                             <td class="d-none d-sm-table-cell">
-                                <input type="text" name="soma" class="form-control" id="soma" maxlength="1" size="1" value="{{$categoria->soma}}" required>
+                                <input type="text" name="itens[{{ $i }}][soma]" class="form-control" id="itens[{{ $i }}][soma]" maxlength="1" size="1" value="{{$categoria->soma}}" >
                             </td>
-                            
+                            @php
+                                $i++
+                            @endphp
                             
                         </tr>
                         
@@ -67,6 +73,13 @@
 
                     </tbody>
                 </table>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-warning btn-sm">Editar</button>
+                </div>
+
+
+
             </form>
 
         </div>
