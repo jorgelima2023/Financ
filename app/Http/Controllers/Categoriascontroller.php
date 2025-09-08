@@ -140,6 +140,7 @@ class Categoriascontroller extends Controller
         //$itens = $request->input('itens'); // Array de arrays
         $data = $request;
         //dd($data);
+        
 
         $falha = 0;
 
@@ -149,8 +150,8 @@ class Categoriascontroller extends Controller
                 //echo "id vazio ";
                 
                 if( ( !empty( $item['nome'] ) ) && 
-                    ( !empty( $item['classif'] ) ) &&
-                    ( !empty( $item['soma'] ) ) 
+                    ( !empty( $item['classif'] ) ) 
+                    // ( !empty( $item['soma'] ) ) 
                 ){
                 
                     DB::beginTransaction();
@@ -159,9 +160,16 @@ class Categoriascontroller extends Controller
                         $categoria = Categoria::create([
                             'nome' => $item['nome'] , 
                             'classif' =>  $item['classif'] , 
-                            'soma' => $item['soma'] , 
+                            'soma' => isset($item['soma']) ? 1 : 0
                             
                         ]);
+                        // 'soma' => $item['soma'] 
+                        // Se o checkbox foi marcado, o valor será '1'; senão, não estará presente
+                        // Checkbox não enviado: Se o checkbox não for marcado, 
+                        // ele não aparece no request. 
+                        // Por isso usamos isset() para garantir que não marque como 1 
+                        // se o checkbox não estiver presente.
+
 
                         // Operação é concluída com êxito, conseguiu cadastrar sem erros
                         DB::commit();
@@ -183,18 +191,21 @@ class Categoriascontroller extends Controller
                     
                 $categoria = Categoria::where('id', $item['id'])->first();
 
-                DB::beginTransaction();
-
+                //DB::beginTransaction();
+                   
                 try {
+
+                    //echo "<br>nome=" . $item['nome'] . " classif=" . $item['classif'] . " soma=" . $item['soma'];
+
                     $categoria->update([
                         'nome' => $item['nome'],
                         'classif' => $item['classif'],
-                        'soma' => $item['soma']
+                        'soma' => isset($item['soma']) ? 1 : 0
                     ]);
-
+                    
                     DB::commit();
 
-                    Log::info('Categoria alterada: {id}', ['id' => $item['id']]);
+                //     Log::info('Categoria alterada: {id}', ['id' => $item['id']]);
 
                 } catch (Exception $e) {
                     
@@ -209,22 +220,22 @@ class Categoriascontroller extends Controller
             // debug - mostrar valores , omitir return acima.
             // echo 'id=' . $item['id'] . ' nome=' . $item['nome'] . ' c=' . $item['classif'] . ' soma=' . $item['soma'] . '<br>';
            
-           if( $falha == 0 ){   
-                //$categorias = Categoria::orderBy('nome', 'ASC')->get();
-
-                // Carregar a VIEW
-                //return view('categorias.index', ['categorias' => $categorias]);
-
-                return redirect()->route('categorias.form')->with('success', 'Categoria cadastrada com sucesso!');
-
-            }else{
-                return back()->withInput()->with('error', 'Categoria não cadastrada!');
-
-            }
+           
         }
 
-       
+        
+        if( $falha == 0 ){   
+            //$categorias = Categoria::orderBy('nome', 'ASC')->get();
 
+            // Carregar a VIEW
+            //return view('categorias.index', ['categorias' => $categorias]);
+
+            return redirect()->route('categorias.form')->with('success', 'Categoria cadastrada com sucesso!');
+
+        }else{
+            return back()->withInput()->with('error', 'Categoria não cadastrada!');
+
+        }
 
         // validar o fomulario
         // $validated = $request->validated();

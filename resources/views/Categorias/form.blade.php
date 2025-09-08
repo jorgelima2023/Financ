@@ -55,9 +55,14 @@
                             <td class="d-none d-sm-table-cell">
                                 <input type="text" name="itens[{{ $i }}][classif]" class="form-control" id="itens[{{ $i }}][classif]" maxlength="20" size="20" value="{{$categoria->classif}}" >
                             </td>
-                            <td class="d-none d-sm-table-cell">
-                                <input type="text" name="itens[{{ $i }}][soma]" class="form-control" id="itens[{{ $i }}][soma]" maxlength="1" size="1" value="{{$categoria->soma}}" >
+                           
+                            <td style="width: 10px;" align="right">
+
+                <input type="checkbox" name="itens[{{ $i }}][soma]" value="1"
+                    {{ old("itens.$i.soma", $categoria->soma ) ? 'checked' : '' }}>
                             </td>
+
+
                             @php
                                 $i++
                             @endphp
