@@ -141,35 +141,43 @@ class Categoriascontroller extends Controller
         $data = $request;
         //dd($data);
         
+    // 'soma' => $item['soma']  campo checkbox
+
+        // Se o checkbox foi marcado, o valor será '1'; senão, não estará presente
+        // Checkbox não enviado: Se o checkbox não for marcado, 
+        //     ele não aparece no request. 
+        //     Por isso usamos isset() para garantir que não marque como 1 
+        //     se o checkbox não estiver presente.
+        
+        //         validacao - opcional:
+
+        //         $request->validate([
+        //          'itens.*.id' => 'required|exists:items,id',
+        //          'itens.*.soma' => 'nullable|in:1',
+        //          ]);
 
         $falha = 0;
 
         foreach ($data['itens'] as $item) {
-           //dd($item['id'] . ' ' . $item['nome'] . ' ' . $item['classif'] . ' ' . $item['soma'] );
+           
+            //dd($item['id'] . ' ' . $item['nome'] . ' ' . $item['classif'] . ' ' . $item['soma'] );
+           // id vazio eh incluir o registro
            if( empty( $item['id'] ) ){
                 //echo "id vazio ";
                 
-                if( ( !empty( $item['nome'] ) ) && 
-                    ( !empty( $item['classif'] ) ) 
-                    // ( !empty( $item['soma'] ) ) 
-                ){
+                if( ( !empty( $item['nome'] ) ) && ( !empty( $item['classif'] ) ) )
+                {
                 
                     DB::beginTransaction();
 
                     try {
+
                         $categoria = Categoria::create([
                             'nome' => $item['nome'] , 
                             'classif' =>  $item['classif'] , 
                             'soma' => isset($item['soma']) ? 1 : 0
                             
                         ]);
-                        // 'soma' => $item['soma'] 
-                        // Se o checkbox foi marcado, o valor será '1'; senão, não estará presente
-                        // Checkbox não enviado: Se o checkbox não for marcado, 
-                        // ele não aparece no request. 
-                        // Por isso usamos isset() para garantir que não marque como 1 
-                        // se o checkbox não estiver presente.
-
 
                         // Operação é concluída com êxito, conseguiu cadastrar sem erros
                         DB::commit();
@@ -187,22 +195,29 @@ class Categoriascontroller extends Controller
                 }
 
            }else{
-                //echo "id preenchido ";
-                    
+                
+                // localizar registro no banco de dados.
                 $categoria = Categoria::where('id', $item['id'])->first();
 
-                //DB::beginTransaction();
+                DB::beginTransaction();
                    
                 try {
 
                     //echo "<br>nome=" . $item['nome'] . " classif=" . $item['classif'] . " soma=" . $item['soma'];
 
-                    $categoria->update([
-                        'nome' => $item['nome'],
-                        'classif' => $item['classif'],
-                        'soma' => isset($item['soma']) ? 1 : 0
-                    ]);
-                    
+                    // registro nao foi marcado para excluir
+                    if( isset($item['excluir']) == 0 ){
+
+                        $categoria->update([
+                            'nome' => $item['nome'],
+                            'classif' => $item['classif'],
+                            'soma' => isset($item['soma']) ? 1 : 0
+                        ]);
+                    }else{
+
+                        $categoria->delete();
+                    }
+
                     DB::commit();
 
                 //     Log::info('Categoria alterada: {id}', ['id' => $item['id']]);

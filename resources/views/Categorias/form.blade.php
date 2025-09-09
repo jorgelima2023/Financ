@@ -1,5 +1,22 @@
 @extends('layouts.admin')
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkboxes = document.querySelectorAll('.checkbox-excluir');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const row = this.closest('tr');
+                if (this.checked) {
+                    row.classList.add('linha-excluir');
+                } else {
+                    row.classList.remove('linha-excluir');
+                }
+            });
+        });
+    });
+</script>
+
 @section('content')
 
 <div class="container-fluid px-4">
@@ -30,9 +47,11 @@
                     <thead>
                         <tr>
                             <!-- <th class="d-none d-md-table-cell">id</th> -->
-                            <th>nome</th>
+                            <th></th> 
+                            <th>Nome</th>
                             <th class="d-none d-sm-table-cell">Classificação</th>
                             <th class="d-none d-sm-table-cell">Somar</th>
+                            <th class="d-none d-sm-table-cell">Excluir</th>
                         </tr>
 
                     </thead>
@@ -44,24 +63,40 @@
 
                         @forelse ($categorias as $categoria)
                         
-                        <tr>
-                            
-                            <input type="hidden" name="itens[{{ $i }}][id]" maxlength="5" size="5" class="form-control" id="itens[{{ $i }}][id]" value="{{$categoria->id}}">
-                            
-                            
+                        <tr class="linha-item {{ old("itens.$i.excluir") ? 'linha-excluir' : '' }}">
+
+                            {{-- enviar o campo id para controle se incluir ou editar --}}
+                            <td>
+                                <input type="hidden" name="itens[{{ $i }}][id]" maxlength="5" size="5" 
+                                    class="form-control" id="itens[{{ $i }}][id]" value="{{$categoria->id}}">
+                            </td>
                             <td style="width: 570px;" align="left">
-                                <input type="text" name="itens[{{ $i }}][nome]" class="form-control" id="itens[{{ $i }}][nome]" maxlength="60" size="60" value="{{$categoria->nome}}" >
+                                <input type="text" name="itens[{{ $i }}][nome]" 
+                                    class="form-control" id="itens[{{ $i }}][nome]" maxlength="60" size="60" 
+                                    value="{{ old("itens.$i.nome", $categoria->nome) }}" >
                             </td>
                             <td class="d-none d-sm-table-cell">
-                                <input type="text" name="itens[{{ $i }}][classif]" class="form-control" id="itens[{{ $i }}][classif]" maxlength="20" size="20" value="{{$categoria->classif}}" >
+                                <input type="text" name="itens[{{ $i }}][classif]" 
+                                    class="form-control" id="itens[{{ $i }}][classif]" maxlength="20" size="20" 
+                                    value="{{ old("itens.$i.classif", $categoria->classif) }}" >
                             </td>
                            
                             <td style="width: 10px;" align="right">
-
-                <input type="checkbox" name="itens[{{ $i }}][soma]" value="1"
-                    {{ old("itens.$i.soma", $categoria->soma ) ? 'checked' : '' }}>
+                                <input type="checkbox" name="itens[{{ $i }}][soma]" 
+                                value="1"
+                                title="Se marcado o registro terá somado o seu valor!"
+                                {{ old("itens.$i.soma", $categoria->soma ) ? 'checked' : '' }} >
                             </td>
-
+                            
+                            {{--
+                            o valor de old(...) se o form tiver sido enviado e houver esse valor;
+                            ou então o valor de $categoria->soma do banco (por exemplo, 1 ou 0)
+                            --}}
+                            <td style="width: 10px;" align="right">
+                                <input type="checkbox" name="itens[{{ $i }}][excluir]" value="1"
+                                title="Se marcado o registro será excluído!"
+                                class="checkbox-excluir">
+                            </td>
 
                             @php
                                 $i++

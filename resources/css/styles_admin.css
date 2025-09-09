@@ -41,3 +41,8 @@
   .sb-sidenav-five .sb-sidenav-footer {
     background-color: #eeeded;
   }
+
+  .linha-excluir {
+    background-color: #f8d7da; /* Vermelho claro */
+  }
+  
