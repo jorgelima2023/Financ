@@ -1,22 +1,5 @@
 @extends('layouts.admin')
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const checkboxes = document.querySelectorAll('.checkbox-excluir');
-
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function () {
-                const row = this.closest('tr');
-                if (this.checked) {
-                    row.classList.add('linha-excluir');
-                } else {
-                    row.classList.remove('linha-excluir');
-                }
-            });
-        });
-    });
-</script>
-
 @section('content')
 
 <div class="container-fluid px-4">

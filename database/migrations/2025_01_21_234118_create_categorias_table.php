@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('categorias', function (Blueprint $table) {
             $table->id()->primary();
             $table->string('nome'); 
+            // $table->string('nome', 100); // string com tamanho máximo 100 caracteres
             $table->string('classif');
             $table->string('soma');
             //$table->foreignId('movimento_id')->constrained('movimentos');

@@ -6,11 +6,6 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <!-- <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet"> -->
-    <!-- <link href="{{ asset('css/styles_sbadmin.css') }}" rel="stylesheet"> -->
-    <!-- <link href="{{ asset('css/styles_admin.css') }}" rel="stylesheet"> -->
-    <!-- <link href="{{ asset('css/all.min.css') }}" rel="stylesheet"> -->
-
     <title>Financeiro</title>
 </head>
 
@@ -120,13 +115,7 @@
         </div>
 
     </div>
-
-    
-
-    <!-- <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script> -->
-    <!-- <script src="{{ asset('js/scripts_sbadmin.js') }}"></script> -->
-    <!-- <script src="{{ asset('js/all.min.js') }}"></script> -->
-    
+   
 </body>
 
 </html>
