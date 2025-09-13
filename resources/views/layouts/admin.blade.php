@@ -69,6 +69,13 @@
                             </a>
                         @endcan
 
+                        @can('form-forma_pgto')
+                            <a class="nav-link" href="{{ route('formaPagamentos.form') }}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                                Formas Pagamento formulario
+                            </a>
+                        @endcan
+
                         @can('index-role')
                             <a @class(['nav-link', 'active' => isset($menu) && $menu == 'roles']) href="{{ route('role.index') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-network-wired"></i></div>

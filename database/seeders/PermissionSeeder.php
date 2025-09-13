@@ -28,7 +28,9 @@ class PermissionSeeder extends Seeder
             ['title'=> 'Cadastrar categoria', 'name' => 'create-categoria'],
             ['title'=> 'Editar categoria', 'name' => 'edit-categoria'],
             ['title'=> 'Apagar categoria', 'name' => 'destroy-categoria'],
+
             ['title'=> 'Formulario categoria', 'name' => 'form-categoria'],
+            ['title'=> 'Formulario forma-pgtos', 'name' => 'form-forma_pgto'],
 
             ['title'=> 'Listar papeis', 'name' => 'index-role'],
             ['title'=> 'Cadastrar papeis', 'name' => 'create-role'],

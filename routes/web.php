@@ -3,6 +3,7 @@
 use App\Http\Controllers\Categoriascontroller;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\formaPagamentoscontroller;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MovimentoController;
 use App\Http\Controllers\ProfileController;
@@ -14,6 +15,15 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
+
+/*
+===============================================================================================
+rotas publicas :
+login
+logout
+password
+===============================================================================================
+*/
 
 // Login 
 Route::get('/', [LoginController::class, 'index'])->name('login.index');
@@ -28,10 +38,31 @@ Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showRes
 
 Route::post('/reset-password', [ForgotPasswordController::class, 'submitResetPassword'])->name('reset-password.submit');
 
+/*
+===============================================================================================
+rotas restritas - middleware:
+dashboard
+===============================================================================================
+*/
+
 Route::group(['middleware' => 'auth'], function () {
+
+    /*
+    ===============================================================================================
+    rotas restritas - middleware:
+    dashboard
+    ===============================================================================================
+    */
 
     // Dashboard
     Route::get('/index-dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
+        /*
+    ===============================================================================================
+    rotas restritas - middleware:
+    perfil - profile
+    ===============================================================================================
+    */
 
     // Perfil
     Route::get('/show-profile', [ProfileController::class, 'show'])->name('profile.show');
@@ -40,6 +71,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/edit-profile-password', [ProfileController::class, 'editPassword'])->name('profile.edit-password');
     Route::put('/update-profile-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
     
+        /*
+    ===============================================================================================
+    rotas restritas - middleware:
+    user
+    ===============================================================================================
+    */
+
     // ------------------------------ Usuários
     Route::get('/index-user', [UserController::class, 'index'])->name('user.index')->middleware('permission:index-user');
     Route::get('/show-user/{user}', [UserController::class, 'show'])->name('user.show')->middleware('permission:show-user');
@@ -57,7 +95,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/generate-csv-user', [UserController::class, 'generateCsv'])
     ->name('user.generate-Csv');
     
-    // ------------------------------ categorias 
+        /*
+    ===============================================================================================
+    rotas restritas - middleware:
+    form-categoria
+    ===============================================================================================
+    */
+
+    // ---------- categorias formulario edicao, inclusao, exclusao, visualizar/listar
     
     // formulario que faz o index, retorna array ao form edicao/inclusao
     route::get('/form-categoria', 
@@ -68,7 +113,26 @@ Route::group(['middleware' => 'auth'], function () {
         [Categoriascontroller::class, 'updateCategorias'])->name('categorias.form.update')
         ->middleware('permission:edit-categoria'); // receber dados form
 
-    // =======================================================================
+    /*
+    ===============================================================================================
+    rotas restritas - middleware:
+    form-forma pagamento - formulario edicao, inclusao, exclusao, visualizar/listar
+    ===============================================================================================
+    */
+
+    // formulario que faz o index, retorna array ao form edicao/inclusao
+    route::get('/form-forma_pgto', 
+        [formaPagamentoscontroller::class, 'form'] )->name('formaPagamentos.form')
+        ->middleware('permission:form-forma_pgto');    
+
+
+
+        /*
+    ===============================================================================================
+    rotas restritas - middleware:
+    categoria - padrao crud
+    ===============================================================================================
+    */
 
     route::get('/index-categoria', 
         [Categoriascontroller::class, 'index'] )->name('categorias.index')
@@ -98,9 +162,24 @@ Route::group(['middleware' => 'auth'], function () {
         [Categoriascontroller::class, 'destroy'])->name('categorias.destroy')
         ->middleware('permission:destroy-categoria');
 
+
+        /*
+    ===============================================================================================
+    rotas restritas - middleware:
+    movimento - padrao crud - listar (index)
+    ===============================================================================================
+    */
+
     // ------------------------------ movimentos
     route::get('/index-movimento/{categoria}', 
         [MovimentoController::class, 'index'] )->name('movimentos.index');
+
+        /*
+    ===============================================================================================
+    rotas restritas - middleware:
+    Papéis / role - padrao crud
+    ===============================================================================================
+    */
 
     // Papéis
     Route::get('/index-role', [RoleController::class, 'index'])->name('role.index')
@@ -120,6 +199,13 @@ Route::group(['middleware' => 'auth'], function () {
     
     Route::delete('/destroy-role/{role}', [RoleController::class, 'destroy'])->name('role.destroy')
     ->middleware('permission:destroy-role'); 
+
+        /*
+    ===============================================================================================
+    rotas restritas - middleware:
+    Papéis permissao - padrao crud
+    ===============================================================================================
+    */
 
     // Permissão do papel
     Route::get('/index-role-permission/{role}', [RolePermissionController::class, 'index'])
