@@ -125,6 +125,9 @@ Route::group(['middleware' => 'auth'], function () {
         [formaPagamentoscontroller::class, 'form'] )->name('formaPagamentos.form')
         ->middleware('permission:form-forma_pgto');    
 
+    Route::put('/update-forma_pgto-form', 
+        [formaPagamentoscontroller::class, 'updateFormaPgto'])->name('forma_pgto.form.update')
+        ->middleware('permission:form-forma_pgto'); // receber dados form
 
 
         /*

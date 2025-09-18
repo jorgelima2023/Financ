@@ -23,7 +23,7 @@
         <div class="card-body">
             <x-alert />
             
-            <form class="row g-3" action="#" method="POST">
+            <form class="row g-3" action="{{ route('forma_pgto.form.update', ['formaPagamentos' => $formaPagamentos ] ) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <table class="table table-striped table-hover">
@@ -47,11 +47,11 @@
                         <tr class="linha-item {{ old("itens.$i.excluir") ? 'linha-excluir' : '' }}">
 
                             {{-- enviar o campo id para controle se incluir ou editar --}}
-                            <td style="width: 100px;" align="left">
+                            <td style="width: 1px;" align="left">
                                 <input type="hidden" name="itens[{{ $i }}][id]" maxlength="5" size="5" 
                                     class="form-control" id="itens[{{ $i }}][id]" value="{{$formaPagamento->id}}">
                             </td>
-                            <td style="width: 470px;" align="left">
+                            <td style="width: 345px;" align="left">
                                 <input type="text" name="itens[{{ $i }}][nome]" 
                                     class="form-control" id="itens[{{ $i }}][nome]" maxlength="60" size="60" 
                                     value="{{ old("itens.$i.nome", $formaPagamento->nome) }}" >
@@ -61,7 +61,7 @@
                             o valor de old(...) se o form tiver sido enviado e houver esse valor;
                             ou então o valor de $categoria->soma do banco (por exemplo, 1 ou 0)
                             --}}
-                            <td style="width: 10px;" align="right">
+                            <td style="width: 120px;" align="left">
                                 <input type="checkbox" name="itens[{{ $i }}][excluir]" value="1"
                                 title="Se marcado o registro será excluído!"
                                 class="checkbox-excluir">
