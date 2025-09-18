@@ -174,7 +174,7 @@ Route::group(['middleware' => 'auth'], function () {
     */
 
     // ------------------------------ movimentos
-    route::get('/index-movimento/{categoria}', 
+    route::get('/index-movimento', 
         [MovimentoController::class, 'index'] )->name('movimentos.index');
 
         /*

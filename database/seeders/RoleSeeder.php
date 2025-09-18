@@ -26,7 +26,7 @@ class RoleSeeder extends Seeder
         $admin->givePermissionTo([
             'index-user', 'show-user', 'create-user', 'edit-user', 'edit-user-password', 'destroy-user', 'generate-pdf-user',
             'index-categoria', 'show-categoria', 'create-categoria', 'edit-categoria', 'destroy-categoria', 
-            'form-categoria', 'form-forma_pgto',
+            'form-categoria', 'form-forma_pgto', 'index-movimento',
             'index-role'  , 'create-role', 'edit-role', 'destroy-role',
             'index-role-permission' , 'update-role-permission'
         ]);

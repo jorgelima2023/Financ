@@ -14,7 +14,8 @@ use Illuminate\Http\Request;
 class MovimentoController extends Controller
 {
     // index
-    public function index(categoria $categoria )
+    //public function index(categoria $categoria )
+    public function index()
     {
         $movimentos = Movimento::with('categoria', 'forma_pgto')
             //->where('categoria_id', $categoria->id)

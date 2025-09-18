@@ -83,6 +83,12 @@
                             </a>
                         @endcan
 
+                            <a @class(['nav-link', 'active' => isset($menu) && $menu == 'movimentos']) href="{{ route('movimentos.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
+                                Movimentos
+                            </a>
+                        
+
                         <a class="nav-link" href="{{ route('login.destroy') }}">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
                             Sair

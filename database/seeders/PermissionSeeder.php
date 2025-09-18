@@ -32,6 +32,8 @@ class PermissionSeeder extends Seeder
             ['title'=> 'Formulario categoria', 'name' => 'form-categoria'],
             ['title'=> 'Formulario forma-pgtos', 'name' => 'form-forma_pgto'],
 
+            ['title'=> 'Listar movimento', 'name' => 'index-movimento'],
+
             ['title'=> 'Listar papeis', 'name' => 'index-role'],
             ['title'=> 'Cadastrar papeis', 'name' => 'create-role'],
             ['title'=> 'Editar papeis', 'name' => 'edit-role'],
