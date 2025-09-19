@@ -47,34 +47,46 @@
                         col-md-4  dispositivos medios ocupar 4 grids
                         col-sm-12 dispositivos pequenos em uma unica linha
                     -->
-                    <form action="{{ route('user.index') }}">
+                    <form action="{{ route('movimentos.index') }}">
                         <div class="row">
                         
                             <div class="col-md-4 col-sm-12">
                                 <label for="descricao" class="form-label">Descrição</label>
-                                <input type="text" name="descricao" class="form-control" id="descricao" value=""
+                                <input type="text" name="descricao" class="form-control" id="descricao" 
+                                value="{{ $descricao }}"
                                 placeholder="Descricao do movimento">
                             </div>
                             
+                            <div class="col-md-4 col-sm-12">
+                                    <label for="data_de" class="form-label">Cadastro de</label>
+                                    <input type="date" name="data_de" class="form-control" 
+                                    id="data_de" value="{{ $data_de }}"> 
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                    <label for="data_ate" class="form-label">Cadastro ate</label>
+                                    <input type="date" name="data_ate" class="form-control" 
+                                    id="data_ate" value="{{ $data_ate }}">
+                            </div>
+
                             <div class="col-md-4 col-sm-12 mt-4 pt-3">
                                 <button type="submit" class="btn btn-info btn-sm"><i class="fa-solid fa-magnifying-glass"></i>Pesquisar</button>
-                                <a href="{{ route('user.index') }}" class="btn btn-warning btn-sm"><i class="fa-solid fa-trash"></i>Limpar</a>
+                                <a href="{{ route('movimentos.index') }}" class="btn btn-warning btn-sm"><i class="fa-solid fa-trash"></i>Limpar</a>
                             </div>
 
                         </div>
 
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-md-4 col-sm-12">
-                                    <label for="start_date_registration" class="form-label">Cadastro de</label>
-                                    <input type="datetime-local" name="start_date_registration" class="form-control" 
-                                    id="start_date_registration" value="">
+                                    <label for="data_de" class="form-label">Cadastro de</label>
+                                    <input type="date" name="data_de" class="form-control" 
+                                    id="data_de" value="">
                             </div>
                             <div class="col-md-4 col-sm-12">
-                                    <label for="end_date_registration" class="form-label">Cadastro ate</label>
-                                    <input type="datetime-local" name="end_date_registration" class="form-control" 
-                                    id="end_date_registration" value="">
+                                    <label for="data_ate" class="form-label">Cadastro ate</label>
+                                    <input type="date" name="data_ate" class="form-control" 
+                                    id="data_ate" value="">
                             </div>
-                        </div>
+                        </div> -->
                         
                     </form>
                 </div>
@@ -93,21 +105,25 @@
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th class="text-left">ID</th>
                             <th>Descrição</th>
-                            <th class="d-none d-md-table-cell">Data</th>
-                            <th class="d-none d-md-table-cell">Categoria</th>
-                            <th class="text-center">Forma Pgto</th>
-                            <th class="text-center">Valor</th>
+                            <th>Data</th>
+                            <th>Categoria</th>
+                            <th>Forma Pgto</th>
+                            <th>Valor</th>
                         </tr>
                     </thead>
                     <tbody>
 
+                        {{-- format('d/m/Y H:i:s') 
+                            @money($valor, 'BRL')
+                        --}}
+                        
                         @forelse ($movimentos as $movimento)
                             <tr>
                                 <th>{{ $movimento->id }}</th>
                                 <td>{{ $movimento->descricao }}</td>
-                                <td>{{ $movimento->dt }}</td>
+                                <td>{{ \Carbon\Carbon::parse($movimento->dt)->tz('America/Sao_Paulo')->format('d/m/Y') }}</td>
                                 <td>{{ $movimento->categoria_id }} 
                                     {{ $movimento->categoria->nome }}
                                     {{ $movimento->categoria->classif }}
@@ -115,7 +131,7 @@
                                 <td>{{ $movimento->forma_pgto_id }}
                                     {{ $movimento->forma_pgto->nome }}
                                 </td>
-                                <td>{{ $movimento->valor }}</td>
+                                <td>{{ number_format($movimento->valor, 2, ',', '.') }}</td>
                             </tr>
                         @empty
                             <div class="alert alert-danger" role="alert">Nenhum movimento encontrado!</div>
