@@ -46,15 +46,24 @@ class MovimentoController extends Controller
         //->withQueryString()
         ;
 
+        $categorias = Categoria::orderBy('nome', 'ASC')
+        // teste alerta nenhum registro encontrado ->where('id', 1000)
+        ->get();
+
         //return view('Movimentos.index', ['movimentos' => $movimentos ] );
 
         return view('Movimentos.index',
          ['menu' => 'movimentos',
           'movimentos' => $movimentos,
+          'categorias' => $categorias,
           'descricao' => $request->descricao,
           'data_de' => $request->data_de,
           'data_ate' => $request->data_ate
          ]);
+
+    }
+
+    public function store(){
 
     }
 }
