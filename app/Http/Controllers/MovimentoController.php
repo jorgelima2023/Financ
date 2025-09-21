@@ -46,7 +46,7 @@ class MovimentoController extends Controller
         //->withQueryString()
         ;
 
-        $categorias = Categoria::orderBy('nome', 'ASC')
+        $categorias = Categoria::orderBy('classif', 'ASC')
         // teste alerta nenhum registro encontrado ->where('id', 1000)
         ->get();
 

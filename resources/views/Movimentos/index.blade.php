@@ -1,29 +1,3 @@
-{{-- 
-    https://pt.stackoverflow.com/questions/344575/como-retornar-registros-relecionados-entre-tabelas-em-laravel
-  
-    https://groups.google.com/g/laravel-brasil/c/Wt6Q-eq2tIY
-  
-    --}}
-
-{{-- dd($movimentos) --}}
-
-{{--
-@forelse ( $movimentos as $movimento )
-    id movimento: {{ $movimento->id }} <br>
-    descricao: {{ $movimento->descricao }} <br>
-    Data: {{ $movimento->dt }} <br>
-    categoria_id: {{ $movimento->categoria_id }} <br>
-    categoria_nome: {{ $movimento->categoria->nome }} <br>
-    categoria_classif: {{ $movimento->categoria->classif }} <br> 
-    forma_pgto_id:  {{ $movimento->forma_pgto_id }} <br>
-    forma_pgto_nome: {{ $movimento->forma_pgto->nome }} <br> <br>
-    
-@empty
-    <p style="color: #f00">Nenhum movimento encontrado!</p>
-@endforelse
-
---}}
-
 @extends('layouts.admin')
 
 @section('content')
@@ -41,7 +15,7 @@
         <!-- pesquisar  -->
         <div class="card mb-4 border-light shadow">
             <div class="card-header">
-                <span class="pesquisar">Pesquisar</span>
+                <span class="pesquisar">Pesquisar - Filtros:</span>
                 <div class="card-body">
                     <!-- usar metodo get, nao precisa colocar metodo 
                         col-md-4  dispositivos medios ocupar 4 grids
@@ -209,8 +183,9 @@
                     <thead>
                         <tr>
                             <th class="text-left">ID</th>
-                            <th>Descrição</th>
+                            <th>Classif.</th>
                             <th>Data</th>
+                            <th>Descrição</th>
                             <th>Categoria</th>
                             <th>Forma Pgto</th>
                             <th>Valor</th>
@@ -225,12 +200,10 @@
                         @forelse ($movimentos as $movimento)
                             <tr>
                                 <th>{{ $movimento->id }}</th>
-                                <td>{{ $movimento->descricao }}</td>
+                                <th>{{ $movimento->categoria->classif }}</th>
                                 <td>{{ \Carbon\Carbon::parse($movimento->dt)->tz('America/Sao_Paulo')->format('d/m/Y') }}</td>
-                                <td>{{ $movimento->categoria_id }} 
-                                    {{ $movimento->categoria->nome }}
-                                    {{ $movimento->categoria->classif }}
-                                </td>
+                                <td>{{ $movimento->descricao }}</td>
+                                <th>{{ $movimento->categoria->nome }}</th>
                                 <td>{{ $movimento->forma_pgto_id }}
                                     {{ $movimento->forma_pgto->nome }}
                                 </td>
