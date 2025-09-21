@@ -177,6 +177,10 @@ Route::group(['middleware' => 'auth'], function () {
     route::get('/index-movimento', 
         [MovimentoController::class, 'index'] )->name('movimentos.index');
 
+    Route::post('/store-movimento', 
+        [MovimentoController::class, 'store'])->name('movimentos.store')
+        ;
+
         /*
     ===============================================================================================
     rotas restritas - middleware:

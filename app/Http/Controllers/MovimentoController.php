@@ -63,7 +63,56 @@ class MovimentoController extends Controller
 
     }
 
-    public function store(){
+    public function store(Request $request){
+        
+        // dd('data:' . $request->data . 
+        //    ' tipo:' . $request->tipo_lcto . 
+        //    ' tipo_lc:' . $request->tipo . 
+        //    ' categoria_id:' . $request->categoria_id . 
+        //    ' descricao:' . $request->descricao  . 
+        //    ' dcto:' . $request->dcto . 
+        //    ' valor:' . $request->valor ) ;
+
+           // "data:2025-09-21 tipo:0 tipo_lc:O categoria_id:1 descricao:jacomar dcto:01 valor:150"
+
+        // validar formulario campos:
+
+        // $request->validate([
+        //         'data' => 'required|date',
+        //         'tipo_lcto' => 'required|boolean',
+        //         'tipo' => 'required|in:O,P',
+        //         'categoria_id' => 'required|exists:categorias,id',
+        //         'descricao' => 'required|string|max:255',
+        //         'dcto' => 'required|string|max:50',
+        //         'valor' => 'required|numeric',
+        //     ]);
+
+        // tipo_lcto: 1-receita / 0-despesa
+        // tipo_lc:   'O'-obrigacao / 'P'-previsao
+        // $Movimento = Movimento::create([
+        //     'dt' => $request->data , 
+        //     'tipo' => $request->tipo_lcto ,
+        //     'tipo_lc' => $request->tipo , 
+        //     'categoria_id' => $request->categoria_id , 
+        //     'descricao' => $request->descricao ,
+        //     'dcto' => $request->dcto ,
+        //     'valor' => $request->valor ,
+        // ]);
+
+        Movimento::create([
+            'dt' => $request->input('data'),
+            'tipo_lc' => $request->input('tipo_lcto') ,
+            'tipo' => 0 /*$request->input('tipo')*/,
+            'categoria_id' => $request->input('categoria_id'),
+            'descricao' => $request->input('descricao'),
+            'dcto' => $request->input('dcto'),
+            'valor' => $request->input('valor'),
+            // Adicione `forma_pgto_id` se estiver usando
+            'forma_pgto_id' => 1 // ou pegue do formulário
+        ]);
+
+        // Redirecionar o usuário, enviar a mensagem de sucesso
+        return redirect()->route('movimentos.index' )->with('success', 'Movimento cadastrado com sucesso!');
 
     }
 }

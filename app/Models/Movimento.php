@@ -15,12 +15,14 @@ class Movimento extends Model implements Auditable
     // nome da tabela sempre no plural
     protected $table = 'movimentos';
     // indicar quais colunas devem receber dados, sempre que alterar tabela, deve descrever aqui
-    protected $fillable = [ 'tipo,', 'dia', 'mes', 'ano', 
+    // 'forma_pgto_id', 'vlr', 'dia', 'mes', 'ano',
+    protected $fillable = [ 'tipo', 'forma_pgto_id', 
+                            'tipo_lc',
                             'categoria_id', 
-                            'forma_pgto_id',
                             'descricao', 
-                            'vlr', 'valor', 
-                            'dt', 'dcto'];
+                            'valor', 
+                            'dt', 
+                            'dcto'];
 
     /**
      * Get the phone associated with the user.
