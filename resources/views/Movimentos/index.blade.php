@@ -12,15 +12,11 @@
             </ol>
         </div>
 
-        <!-- pesquisar  -->
         <div class="card mb-4 border-light shadow">
             <div class="card-header">
                 <span class="pesquisar">Pesquisar - Filtros:</span>
                 <div class="card-body">
-                    <!-- usar metodo get, nao precisa colocar metodo 
-                        col-md-4  dispositivos medios ocupar 4 grids
-                        col-sm-12 dispositivos pequenos em uma unica linha
-                    -->
+                    
                     <form action="{{ route('movimentos.index') }}">
                         <div class="row">
                         
@@ -48,14 +44,12 @@
                                 </button>
                                 <a href="{{ route('movimentos.index') }}" 
                                 class="btn btn-warning btn-sm"><i class="fa-solid fa-trash"></i>Limpar</a>
-                                <!-- data-bs-toggle receber info como modal
-                                     data-bs-target apontar para ID do modal -->
+                                
                                 <button type="button" class="btn btn-success btn-sm" 
                                         data-bs-toggle="modal" data-bs-target="#cadModal">
                                     <i class="fa-solid fa-magnifying-glass"></i>Cadastrar
                                 </button>    
                                
-                            
                             </div>
 
                         </div>
@@ -64,7 +58,6 @@
             </div>
         </div>
 
-        <!-- Modal -->
         <div class="modal fade" id="cadModal" tabindex="-1" aria-labelledby="cadModalLabel" aria-hidden="true">
             <div class="modal-dialog">
 
@@ -80,19 +73,12 @@
                         </div>
 
                         <div class="modal-body">
-                            <!-- Conteúdo do modal vai aqui.
-                            deixar label e input na mesma linha. 
-                            d-flex: Coloca o conteúdo interno (label + input) em linha.
-                            align-items-center: Alinha verticalmente o label e input no centro.
-                            me-2: Dá uma margem à direita do label para separar do input.
-                            mb-0: Remove a margem inferior padrão do label (evita desalinhamento com o input).
-                            form-control: O input ainda mantém o estilo Bootstrap.
-                            -->
+                            <!-- conteudo -->
                             <div class="col-5 d-flex align-items-center">
                                 <label for="data" class="form-label me-2 mb-0">Data</label>
                                 <input type="date" name="data" class="form-control" id="data" value="{{ old('data') }}" required>
                             </div>
-
+                            
                             <div class="col-6 mb-4 d-flex align-items-center" >
                                 <label class="form-label me-2 mb-0">Tipo Lcto</label>
                                 <div>
@@ -170,6 +156,114 @@
             </div>
         </div>
 
+        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+
+                <x-alert />
+
+                <form method="POST" action="{{ route('movimentos.store') }}">
+                    @csrf
+                    @method('POST')
+                    
+                    <!-- <input type="hidden" name="movimento_id" id="movimento_id" value="movimento_id">
+                    <input type="hidden" name="movimento_id" id="movimento_id" value="movimento_id"> -->
+                    
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editModalLabel">Alterar Movimento</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <span>
+                        <p><strong>ID:</strong> <span id="modal-id"></span></p>
+                        <p><strong>Descrição:</strong> <span id="modal-descricao"></span></p>
+                        <p><strong>Valor:</strong> <span id="modal-valor"></span></p>
+                    </span>
+                            <!-- conteudo -->
+                            <div class="col-5 d-flex align-items-center">
+                                <label for="data" class="form-label me-2 mb-0">Data</label>
+                                <input type="date" name="data" class="form-control" id="data" value="{{ old('data') }}" required>
+                            </div>
+                            
+                            <div class="col-6 mb-4 d-flex align-items-center" >
+                                <label class="form-label me-2 mb-0">Tipo Lcto</label>
+                                <div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="tipo_lcto" id="tipo_lcto" value="1"
+                                            {{ old('tipo') == '1' ? 'checked' : '' }} required>
+                                        <label class="form-check-label" for="tipo_lcto">Receita</label>
+                                    </div>
+
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="tipo_lcto" id="tipo_lcto" value="0"
+                                            {{ old('tipo') == '0' ? 'checked' : '' }} required>
+                                        <label class="form-check-label" for="tipo_lcto">Despesa</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-5 mb-4 d-flex align-items-center" >
+                                <label class="form-label me-2 mb-0">Tipo</label>
+                                <div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="tipo" id="tipo" value="O"
+                                            {{ old('tipo') == 'O' ? 'checked' : '' }} required>
+                                        <label class="form-check-label" for="tipo">Obrigação</label>
+                                    </div>
+
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="tipo" id="tipo" value="P"
+                                            {{ old('tipo') == 'P' ? 'checked' : '' }} required>
+                                        <label class="form-check-label" for="tipo">Previsão</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-5 mb-3 d-flex align-items-center" >
+                                <label for="categoria" class="form-label me-2 mb-0">Categoria</label>
+                                <select name="categoria_id" id="categoria" class="form-select" required>
+                                    <option value="">Selecione uma categoria</option>
+
+                                    @foreach ($categorias as $categoria)
+                                        <option value="{{ $categoria->id }}"
+                                            {{ old('categoria_id') == $categoria->id ? 'selected' : '' }}>
+                                            {{ $categoria->nome }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                    
+                            <div class="col-8 mb-3 d-flex align-items-center" >
+                                <label for="descricao" class="form-label me-2 mb-0">Descrição</label>
+                                <input type="text" name="descricao" class="form-control" id="descricao" 
+                                    value="{{ old('descricao') }}" required>
+                            </div>
+
+                            <div class="col-8 mb-3 d-flex align-items-center" >
+                                <label for="dcto" class="form-label me-2 mb-0">Dcto</label>
+                                <input type="text" name="dcto" class="form-control" id="dcto" 
+                                    value="{{ old('dcto') }}" required>
+                            </div>
+ 
+                            <div class="col-4 mb-3 d-flex align-items-center" >
+                                <label for="valor" class="form-label me-2 mb-0">Valor</label>
+                                <input type="text" name="valor" class="form-control" id="valor" 
+                                    value="{{ old('valor') }}" required>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+        
+
         <div class="card mb-4 border-light shadow">
             <div class="card-header hstack gap-2">
                 <span>Listar</span>
@@ -182,8 +276,8 @@
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th class="text-left">ID</th>
-                            <th>Classif.</th>
+                            <th>Edit.</th>
+                            <th class="text-left">Classif.</th>
                             <th>Data</th>
                             <th>Descrição</th>
                             <th>Categoria</th>
@@ -193,13 +287,22 @@
                     </thead>
                     <tbody>
 
-                        {{-- format('d/m/Y H:i:s') 
-                            @money($valor, 'BRL')
-                        --}}
-                        
                         @forelse ($movimentos as $movimento)
                             <tr>
-                                <th>{{ $movimento->id }}</th>
+                                
+                                <th>
+                                    <button type="button"
+                                        class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#editModal"
+                                            data-id="{{ $movimento->id }}"
+                                            data-descricao="{{ $movimento->descricao }}"
+                                            data-valor="{{ $movimento->valor }}">
+                                            
+                                        <i class="fa-regular fa-pen-to-square"></i>{{ $mov = $movimento->id }}
+                                    </button>
+                                </th>
+
                                 <th>{{ $movimento->categoria->classif }}</th>
                                 <td>{{ \Carbon\Carbon::parse($movimento->dt)->tz('America/Sao_Paulo')->format('d/m/Y') }}</td>
                                 <td>{{ $movimento->descricao }}</td>
@@ -221,4 +324,21 @@
             </div>
         </div>
     </div>
+
+    <script>
+  const confirmarModal = document.getElementById('editModal');
+
+  confirmarModal.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget; // Botão que abriu o modal
+    const id = button.getAttribute('data-id');
+    const descricao = button.getAttribute('data-descricao');
+    const valor = button.getAttribute('data-valor');
+
+    editModal.querySelector('#modal-id').textContent = id;
+    editModal.querySelector('#modal-descricao').textContent = descricao;
+    editModal.querySelector('#modal-valor').textContent = valor;
+    
+  });
+</script>
+
 @endsection
