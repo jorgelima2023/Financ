@@ -177,13 +177,18 @@
                         <div class="modal-body">
                             <span>
                         <p><strong>ID:</strong> <span id="modal-id"></span></p>
+                        <p><strong>DT:</strong> <span id="modal-dt"></span></p>
                         <p><strong>Descrição:</strong> <span id="modal-descricao"></span></p>
+                        <p><strong>Dcto:</strong> <span id="modal-dcto"></span></p>
+                        <p><strong>Tipo_Lcto:</strong> <span id="modal-tipo_lcto"></span></p>
+                        <p><strong>Tipo:</strong> <span id="modal-tipo"></span></p>
+                        <p><strong>categoria_id:</strong> <span id="modal-categoria_id"></span></p>
                         <p><strong>Valor:</strong> <span id="modal-valor"></span></p>
                     </span>
                             <!-- conteudo -->
                             <div class="col-5 d-flex align-items-center">
                                 <label for="data" class="form-label me-2 mb-0">Data</label>
-                                <input type="date" name="data" class="form-control" id="data" value="{{ old('data') }}" required>
+                                <input type="date" name="data" class="form-control" id="data" value="{{ old('modal-dt') }}" required>
                             </div>
                             
                             <div class="col-6 mb-4 d-flex align-items-center" >
@@ -237,7 +242,7 @@
                             <div class="col-8 mb-3 d-flex align-items-center" >
                                 <label for="descricao" class="form-label me-2 mb-0">Descrição</label>
                                 <input type="text" name="descricao" class="form-control" id="descricao" 
-                                    value="{{ old('descricao') }}" required>
+                                    value="{{ old('modal-descricao') }}" required>
                             </div>
 
                             <div class="col-8 mb-3 d-flex align-items-center" >
@@ -296,7 +301,12 @@
                                             data-bs-toggle="modal" 
                                             data-bs-target="#editModal"
                                             data-id="{{ $movimento->id }}"
+                                            data-dt="{{ $movimento->dt }}"
+                                            data-tipo_lcto="{{ $movimento->tipo_lc }}"
+                                            data-tipo="{{ $movimento->tipo }}"
                                             data-descricao="{{ $movimento->descricao }}"
+                                            data-dcto="{{ $movimento->dcto }}"
+                                            data-categoria_id="{{ $movimento->categoria_id }}"
                                             data-valor="{{ $movimento->valor }}">
                                             
                                         <i class="fa-regular fa-pen-to-square"></i>{{ $mov = $movimento->id }}
@@ -306,7 +316,7 @@
                                 <th>{{ $movimento->categoria->classif }}</th>
                                 <td>{{ \Carbon\Carbon::parse($movimento->dt)->tz('America/Sao_Paulo')->format('d/m/Y') }}</td>
                                 <td>{{ $movimento->descricao }}</td>
-                                <th>{{ $movimento->categoria->nome }}</th>
+                                <th>{{ $movimento->categoria_id }} - {{ $movimento->categoria->nome }}</th>
                                 <td>{{ $movimento->forma_pgto_id }}
                                     {{ $movimento->forma_pgto->nome }}
                                 </td>
@@ -330,13 +340,23 @@
 
   confirmarModal.addEventListener('show.bs.modal', function (event) {
     const button = event.relatedTarget; // Botão que abriu o modal
-    const id = button.getAttribute('data-id');
+    const id        = button.getAttribute('data-id');
+    const dt        = button.getAttribute('data-dt');
     const descricao = button.getAttribute('data-descricao');
-    const valor = button.getAttribute('data-valor');
+    const tipo_lcto = button.getAttribute('data-tipo_lcto');
+    const tipo      = button.getAttribute('data-tipo');
+    const dcto      = button.getAttribute('data-dcto');
+    const categoria_id = button.getAttribute('data-categoria_id');
+    const valor     = button.getAttribute('data-valor');
 
-    editModal.querySelector('#modal-id').textContent = id;
+    editModal.querySelector('#modal-id').textContent        = id;
+    editModal.querySelector('#modal-dt').textContent        = dt;
     editModal.querySelector('#modal-descricao').textContent = descricao;
-    editModal.querySelector('#modal-valor').textContent = valor;
+    editModal.querySelector('#modal-dcto').textContent      = dcto;
+    editModal.querySelector('#modal-tipo_lcto').textContent = tipo_lcto;
+    editModal.querySelector('#modal-tipo').textContent      = tipo;
+    editModal.querySelector('#modal-categoria_id').textContent = categoria_id;
+    editModal.querySelector('#modal-valor').textContent     = valor;
     
   });
 </script>
