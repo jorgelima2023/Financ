@@ -155,7 +155,7 @@
 
             </div>
         </div>
-
+        <!-- Modal de Edição -->
         <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
             <div class="modal-dialog">
 
@@ -164,7 +164,6 @@
                 <form method="POST" action="{{ route('movimentos.store') }}">
                     @csrf
                     @method('POST')
-                    
                     
                     <div class="modal-content">
                         <div class="modal-header">
@@ -175,26 +174,29 @@
                         <div class="modal-body">
                             
                             <!-- conteudo -->
-                            <input type="text" name="id" id="editMovimentoId">
+                            <!-- id<input type="text" name="editMovimentoId" id="editMovimentoId">
+                            cat<input type="text" name="editcategoria_id" id="editcategoria_id">
+                            tipo<input type="text" name="edittipo" id="edittipo">
+                            tipo_lc<input type="text" name="edittipo_lc" id="edittipo_lc"> -->
 
                             <div class="col-5 d-flex align-items-center">
                                 <label for="data" class="form-label me-2 mb-0">Data</label>
-                                <input type="date" name="data" class="form-control" id="data" value="{{ old('modal-dt') }}" required>
+                                <input type="date" name="editdt" class="form-control" id="editdt" required>
                             </div>
                             
                             <div class="col-6 mb-4 d-flex align-items-center" >
                                 <label class="form-label me-2 mb-0">Tipo Lcto</label>
                                 <div>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="tipo_lcto" id="tipo_lcto" value="1"
-                                            {{ old('tipo') == '1' ? 'checked' : '' }} required>
-                                        <label class="form-check-label" for="tipo_lcto">Receita</label>
+                                        <input class="form-check-input" type="radio" name="edittipo_lc" id="edittipo_lc"
+                                             required>
+                                        <label class="form-check-label" for="edittipo_lc">Receita</label>
                                     </div>
 
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="tipo_lcto" id="tipo_lcto" value="0"
-                                            {{ old('tipo') == '0' ? 'checked' : '' }} required>
-                                        <label class="form-check-label" for="tipo_lcto">Despesa</label>
+                                        <input class="form-check-input" type="radio" name="edittipo_lc" id="edittipo_lc"
+                                             required>
+                                        <label class="form-check-label" for="edittipo_lc">Despesa</label>
                                     </div>
                                 </div>
                             </div>
@@ -203,27 +205,27 @@
                                 <label class="form-label me-2 mb-0">Tipo</label>
                                 <div>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="tipo" id="tipo" value="O"
-                                            {{ old('tipo') == 'O' ? 'checked' : '' }} required>
-                                        <label class="form-check-label" for="tipo">Obrigação</label>
+                                        <input class="form-check-input" type="radio" name="edittipo" id="edittipo">
+                                            {{ old('edittipo') == 'O' ? 'checked' : '' }} required>
+                                        <label class="form-check-label" for="edittipo">Obrigação</label>
                                     </div>
 
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="tipo" id="tipo" value="P"
-                                            {{ old('tipo') == 'P' ? 'checked' : '' }} required>
-                                        <label class="form-check-label" for="tipo">Previsão</label>
+                                        <input class="form-check-input" type="radio" name="edittipo" id="edittipo">
+                                            {{ old('edittipo') == 'P' ? 'checked' : '' }} required>
+                                        <label class="form-check-label" for="edittipo">Previsão</label>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-5 mb-3 d-flex align-items-center" >
-                                <label for="categoria" class="form-label me-2 mb-0">Categoria</label>
-                                <select name="categoria_id" id="categoria" class="form-select" required>
+                                <label for="editcategoria_id" class="form-label me-2 mb-0">Categoria</label>
+                                <select name="editcategoria_id" id="editcategoria_id" class="form-select" required>
                                     <option value="">Selecione uma categoria</option>
 
                                     @foreach ($categorias as $categoria)
                                         <option value="{{ $categoria->id }}"
-                                            {{ old('categoria_id') == $categoria->id ? 'selected' : '' }}>
+                                            {{ old('editcategoria_id') == $categoria->id ? 'selected' : '' }}>
                                             {{ $categoria->nome }}
                                         </option>
                                     @endforeach
@@ -231,19 +233,19 @@
                             </div>
                     
                             <div class="col-8 mb-3 d-flex align-items-center" >
-                                <label for="descricao" class="form-label me-2 mb-0">Descrição</label>
-                                <input type="text" name="descricao" class="form-control" id="editDescricao" required>
+                                <label for="editDescricao" class="form-label me-2 mb-0">Descrição</label>
+                                <input type="text" name="editDescricao" class="form-control" id="editDescricao" required>
                             </div>
 
                             <div class="col-8 mb-3 d-flex align-items-center" >
-                                <label for="dcto" class="form-label me-2 mb-0">Dcto</label>
-                                <input type="text" name="dcto" class="form-control" id="dcto" 
-                                    value="{{ old('dcto') }}" required>
+                                <label for="editdcto" class="form-label me-2 mb-0">Dcto</label>
+                                <input type="text" name="editdcto" class="form-control" id="editdcto" 
+                                     required>
                             </div>
  
                             <div class="col-4 mb-3 d-flex align-items-center" >
-                                <label for="valor" class="form-label me-2 mb-0">Valor</label>
-                                <input type="text" name="valor" class="form-control" id="editValor" required>
+                                <label for="editValor" class="form-label me-2 mb-0">Valor</label>
+                                <input type="text" name="editValor" class="form-control" id="editValor" required>
                             </div>
 
                         </div>
@@ -291,7 +293,12 @@
                                             data-bs-target="#editModal"
                                             data-id="{{ $movimento->id }}"
                                             data-descricao="{{ $movimento->descricao }}"
-                                            data-valor="{{ $movimento->valor }}">
+                                            data-valor="{{ $movimento->valor }}"
+                                            data-categoria_id="{{ $movimento->categoria_id }}"
+                                            data-dcto="{{ $movimento->dcto }}"
+                                            data-dt="{{ $movimento->dt }}"
+                                            data-tipo="{{ $movimento->tipo }}"
+                                            data-tipo_lc="{{ $movimento->tipo_lc }}>
                                             
                                         <i class="fa-regular fa-pen-to-square"></i>{{ $mov = $movimento->id }}
                                     </button>
@@ -330,11 +337,22 @@
             var id = button.getAttribute('data-id');
             var descricao = button.getAttribute('data-descricao');
             var valor = button.getAttribute('data-valor');
+            var categoria_id = button.getAttribute('data-categoria_id');
+            var dcto = button.getAttribute('data-dcto');
+            var dt = button.getAttribute('data-dt');
+            var tipo = button.getAttribute('data-tipo');
+            var tipo_lc = button.getAttribute('data-tipo_lc');
 
             // Preenche os campos do modal
             document.getElementById('editMovimentoId').value = id;
             document.getElementById('editDescricao').value = descricao;
             document.getElementById('editValor').value = valor;
+            document.getElementById('editcategoria_id').value = categoria_id;
+            document.getElementById('editdcto').value = dcto;
+            document.getElementById('editdt').value = dt;
+            document.getElementById('edittipo').value = tipo;
+            document.getElementById('edittipo_lc').value = tipo_lc;
+
             });
         });
     </script>
