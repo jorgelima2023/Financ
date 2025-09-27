@@ -12,6 +12,7 @@
             </ol>
         </div>
 
+        <!-- pesquisar -->
         <div class="card mb-4 border-light shadow">
             <div class="card-header">
                 <span class="pesquisar">Pesquisar - Filtros:</span>
@@ -58,6 +59,7 @@
             </div>
         </div>
 
+        <!-- Modal de cadastro -->
         <div class="modal fade" id="cadModal" tabindex="-1" aria-labelledby="cadModalLabel" aria-hidden="true">
             <div class="modal-dialog">
 
@@ -155,15 +157,16 @@
 
             </div>
         </div>
+
         <!-- Modal de Edição -->
         <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
             <div class="modal-dialog">
 
                 <x-alert />
-
-                <form method="POST" action="{{ route('movimentos.store') }}">
+                    <!-- action js -->
+                    <form method="POST" action="" id="formEditMovimento">
                     @csrf
-                    @method('POST')
+                    @method('PUT')
                     
                     <div class="modal-content">
                         <div class="modal-header">
@@ -173,52 +176,44 @@
 
                         <div class="modal-body">
                             
-                            <!-- conteudo -->
-                            <!-- id<input type="text" name="editMovimentoId" id="editMovimentoId">
-                            cat<input type="text" name="editcategoria_id" id="editcategoria_id">
-                            tipo<input type="text" name="edittipo" id="edittipo">
-                            tipo_lc<input type="text" name="edittipo_lc" id="edittipo_lc"> -->
+                            
 
+                            <input type="hidden" name="editMovimentoId" id="editMovimentoId">
+                            
                             <div class="col-5 d-flex align-items-center">
                                 <label for="data" class="form-label me-2 mb-0">Data</label>
                                 <input type="date" name="editdt" class="form-control" id="editdt" required>
                             </div>
                             
-                            <div class="col-6 mb-4 d-flex align-items-center" >
+                            <div class="col-12 mb-4 d-flex align-items-center" >
                                 <label class="form-label me-2 mb-0">Tipo Lcto</label>
                                 <div>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="edittipo_lc" id="edittipo_lc"
-                                             required>
-                                        <label class="form-check-label" for="edittipo_lc">Receita</label>
+                                        <input class="form-check-input" type="radio" name="edittipo" id="edittipo_lc_1" value="1" required>
+                                        <label class="form-check-label" for="edittipo_lc_1">Receita</label>
                                     </div>
-
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="edittipo_lc" id="edittipo_lc"
-                                             required>
-                                        <label class="form-check-label" for="edittipo_lc">Despesa</label>
+                                        <input class="form-check-input" type="radio" name="edittipo" id="edittipo_lc_0" value="0" required>
+                                        <label class="form-check-label" for="edittipo_lc_0">Despesa</label>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-5 mb-4 d-flex align-items-center" >
+                            <div class="col-12 mb-4 d-flex align-items-center" >
                                 <label class="form-label me-2 mb-0">Tipo</label>
                                 <div>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="edittipo" id="edittipo">
-                                            {{ old('edittipo') == 'O' ? 'checked' : '' }} required>
-                                        <label class="form-check-label" for="edittipo">Obrigação</label>
+                                        <input class="form-check-input" type="radio" name="edittipo_lc" id="edittipo_o" value="O" required>
+                                        <label class="form-check-label" for="edittipo_o">Obrigação</label>
                                     </div>
-
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="edittipo" id="edittipo">
-                                            {{ old('edittipo') == 'P' ? 'checked' : '' }} required>
-                                        <label class="form-check-label" for="edittipo">Previsão</label>
+                                        <input class="form-check-input" type="radio" name="edittipo_lc" id="edittipo_p" value="P" required>
+                                        <label class="form-check-label" for="edittipo_p">Previsão</label>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-5 mb-3 d-flex align-items-center" >
+                            <div class="col-10 mb-3 d-flex align-items-center" >
                                 <label for="editcategoria_id" class="form-label me-2 mb-0">Categoria</label>
                                 <select name="editcategoria_id" id="editcategoria_id" class="form-select" required>
                                     <option value="">Selecione uma categoria</option>
@@ -279,6 +274,9 @@
                             <th>Categoria</th>
                             <th>Forma Pgto</th>
                             <th>Valor</th>
+                            <th>tipo_lcto</th>
+                            <th>tipo:0-Receita/1-Despesa</th>
+                            <th>Dcto</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -298,7 +296,7 @@
                                             data-dcto="{{ $movimento->dcto }}"
                                             data-dt="{{ $movimento->dt }}"
                                             data-tipo="{{ $movimento->tipo }}"
-                                            data-tipo_lc="{{ $movimento->tipo_lc }}>
+                                            data-tipo_lc="{{ $movimento->tipo_lc }}">
                                             
                                         <i class="fa-regular fa-pen-to-square"></i>{{ $mov = $movimento->id }}
                                     </button>
@@ -312,6 +310,9 @@
                                     {{ $movimento->forma_pgto->nome }}
                                 </td>
                                 <td>{{ number_format($movimento->valor, 2, ',', '.') }}</td>
+                                <td>{{ $movimento->tipo_lc }}</td>
+                                <td>{{ $movimento->tipo }}</td>
+                                <td>{{ $movimento->dcto }}</td>
                             </tr>
                         @empty
                             <div class="alert alert-danger" role="alert">Nenhum movimento encontrado!</div>
@@ -327,13 +328,12 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var modal = document.getElementById('editModal');
+    document.addEventListener('DOMContentLoaded', function () {
+        var modal = document.getElementById('editModal');
 
-            modal.addEventListener('show.bs.modal', function (event) {
+        modal.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;
 
-            // Pega os dados do botão
             var id = button.getAttribute('data-id');
             var descricao = button.getAttribute('data-descricao');
             var valor = button.getAttribute('data-valor');
@@ -343,18 +343,33 @@
             var tipo = button.getAttribute('data-tipo');
             var tipo_lc = button.getAttribute('data-tipo_lc');
 
-            // Preenche os campos do modal
             document.getElementById('editMovimentoId').value = id;
             document.getElementById('editDescricao').value = descricao;
             document.getElementById('editValor').value = valor;
             document.getElementById('editcategoria_id').value = categoria_id;
             document.getElementById('editdcto').value = dcto;
             document.getElementById('editdt').value = dt;
-            document.getElementById('edittipo').value = tipo;
-            document.getElementById('edittipo_lc').value = tipo_lc;
 
+            let ix = document.getElementById('editMovimentoId').value;
+
+            // Radios - selecionar correto
+            document.querySelectorAll('input[name="edittipo"]').forEach((el) => {
+                el.checked = el.value === tipo;
             });
+
+            document.querySelectorAll('input[name="edittipo_lc"]').forEach((el) => {
+                el.checked = el.value === tipo_lc;
+            });
+
+            // Define o action do form dinamicamente (opcional)
+            let form = document.getElementById('formEditMovimento');
+            if (form) {  
+                console.log('id=' + id);
+                form.action = '/update-movimento/' + ix; // Ajuste conforme sua rota de update
+            }
         });
+    });
     </script>
+
 
 @endsection

@@ -115,4 +115,35 @@ class MovimentoController extends Controller
         return redirect()->route('movimentos.index' )->with('success', 'Movimento cadastrado com sucesso!');
 
     }
+
+    //public function update(Request $request){
+    public function update(Request $request, Movimento $movimento){
+        //dd($request);
+
+        // tipo: 1-receita , 0-despesa label => 'tipo_lcto' 
+        // tipo_lc: O-Obrigacao , P-Previsao
+        $validated = $request->validate([
+            'editdt' => 'required|date',
+            'edittipo' => 'required|in:0,1',
+            'edittipo_lc' => 'required|in:O,P',
+            'editcategoria_id' => 'required|exists:categorias,id',
+            'editDescricao' => 'required|string|max:150',
+            'editdcto' => 'required|string|max:50',
+            'editValor' => 'required|numeric',
+        ]);
+
+        $movimento->update([
+            'dt' => $validated['editdt'],
+            'tipo_lc' => $validated['edittipo_lc'],
+            'tipo' => $validated['edittipo'],
+            'categoria_id' => $validated['editcategoria_id'],
+            'descricao' => $validated['editDescricao'],
+            'dcto' => $validated['editdcto'],
+            'valor' => $validated['editValor'],
+        ]);
+
+        return redirect()->route('movimentos.index')->with('success', 'Movimento atualizado com sucesso!');
+
+    }
+
 }
