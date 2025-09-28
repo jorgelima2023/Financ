@@ -2,6 +2,7 @@
 
 @section('content')
     <div class="container-fluid px-4">
+
         <div class="mb-1 hstack gap-2">
             <h2 class="mt-3">Movimento</h2>
             <ol class="breadcrumb mb-3 mt-3 ms-auto">
@@ -63,7 +64,7 @@
         <div class="modal fade" id="cadModal" tabindex="-1" aria-labelledby="cadModalLabel" aria-hidden="true">
             <div class="modal-dialog">
 
-                <x-alert />
+                <!-- <x-alert /> -->
 
                 <form method="POST" action="{{ route('movimentos.store') }}">
                     @csrf
@@ -162,7 +163,8 @@
         <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
             <div class="modal-dialog">
 
-                <x-alert />
+                <!-- <x-alert /> -->
+
                     <!-- action js -->
                     <form method="POST" action="" id="formEditMovimento">
                     @csrf
@@ -254,7 +256,73 @@
             </div>
         </div>
         
+        <!-- Modal de Exclusão -->
+        <div class="modal fade" id="excluiModal" tabindex="-1" aria-labelledby="excluiModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
 
+                <x-alert />
+                    <!-- action js -->
+                    <form method="POST" action="" id="formExcluiMovimento">
+                    @csrf
+                    @method('delete')
+                    
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editModalLabel">Excluir Movimento</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            
+                            <input type="hidden" name="excluiMovimentoId" id="excluiMovimentoId">
+                            
+                            <div class="col-5 d-flex align-items-center">
+                                <label for="data" class="form-label me-2 mb-0">Data</label>
+                                <input type="date" name="excluidt" class="form-control" id="excluidt" readonly>
+                            </div>
+                            
+                            <div class="col-12 mb-4 d-flex align-items-center" >
+                                <label class="form-label me-2 mb-0">Tipo Lcto</label>
+                                <input type="text" name="excluitipo" class="form-control" id="excluitipo" readonly>
+                            </div>
+
+                            <div class="col-12 mb-4 d-flex align-items-center" >
+                                <label class="form-label me-2 mb-0">Tipo</label>
+                                <input type="text" name="excluitipo_lc" class="form-control" id="excluitipo_lc" readonly>
+                            </div>
+
+                            <div class="col-10 mb-3 d-flex align-items-center" >
+                                <label for="editcategoria_id" class="form-label me-2 mb-0">Categoria</label>
+                                <input type="text" name="excluicategoria" class="form-control" id="excluicategoria" readonly>
+                            </div>
+                    
+                            <div class="col-8 mb-3 d-flex align-items-center" >
+                                <label for="excluiDescricao" class="form-label me-2 mb-0">Descrição</label>
+                                <input type="text" name="excluiDescricao" class="form-control" id="excluiDescricao" readonly>
+                            </div>
+
+                            <div class="col-8 mb-3 d-flex align-items-center" >
+                                <label for="excluidcto" class="form-label me-2 mb-0">Dcto</label>
+                                <input type="text" name="excluidcto" class="form-control" id="excluidcto" readonly>
+                            </div>
+ 
+                            <div class="col-4 mb-3 d-flex align-items-center" >
+                                <label for="excluiValor" class="form-label me-2 mb-0">Valor</label>
+                                <input type="text" name="excluiValor" class="form-control" id="excluiValor" readonly>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                            <button type="submit" class="btn btn-primary">Excluir</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- Listar -->
         <div class="card mb-4 border-light shadow">
             <div class="card-header hstack gap-2">
                 <span>Listar</span>
@@ -267,31 +335,50 @@
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
+                            <th>Excl.</th>
                             <th>Edit.</th>
                             <th class="text-left">Classif.</th>
-                            <th>Data</th>
-                            <th>Descrição</th>
-                            <th>Categoria</th>
-                            <th>Forma Pgto</th>
-                            <th>Valor</th>
-                            <th>tipo_lcto</th>
-                            <th>tipo:0-Receita/1-Despesa</th>
-                            <th>Dcto</th>
+                            <th class="text-left">Data</th>
+                            <th class="text-left">Descrição</th>
+                            <th class="text-left">Categoria</th>
+                            <th class="text-left">Forma Pgto</th>
+                            <th class="text-right">Valor</th>
+                            <th class="text-left">tipo_lcto</th>
+                            <th class="text-left">tipo:0-Receita/1-Despesa</th>
+                            <th class="text-left">Dcto</th>
                         </tr>
                     </thead>
-                    <tbody>
 
-                        @forelse ($movimentos as $movimento)
+                    <tbody>
+                            @forelse ($movimentos as $movimento)
                             <tr>
-                                
+                                <!-- botao exclui -->
                                 <th>
-                                    <button type="button"
+                                    <button type="button" title="Clique aqui para excluir esse lançamento!"
+                                        class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#excluiModal"
+                                            data-id="{{ $movimento->id }}"
+                                            data-descricao="{{ $movimento->descricao }}"
+                                            data-valor="{{ number_format($movimento->valor, 2, ',', '.') }}"
+                                            data-categoria_nome="{{ $movimento->categoria->nome }}"
+                                            data-dcto="{{ $movimento->dcto }}"
+                                            data-dt="{{ $movimento->dt }}"
+                                            data-tipo="{{ $movimento->tipo == 'O' ? 'Obrigação' : 'Provisão' }}"
+                                            data-tipo_lc="{{ $movimento->tipo_lc == 0 ? 'Receita' : 'Despesa' }}">
+                                            
+                                        <i class="fa-regular fa-pen-to-square"></i>{{ $mov = $movimento->id }}
+                                    </button>
+                                </th>
+                                <!-- botao edita -->
+                                <th>
+                                    <button type="button" title="Clique aqui para editar esse lançamento!"
                                         class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#editModal"
                                             data-id="{{ $movimento->id }}"
                                             data-descricao="{{ $movimento->descricao }}"
-                                            data-valor="{{ $movimento->valor }}"
+                                            data-valor="{{ number_format($movimento->valor, 2, ',', '.') }}"
                                             data-categoria_id="{{ $movimento->categoria_id }}"
                                             data-dcto="{{ $movimento->dcto }}"
                                             data-dt="{{ $movimento->dt }}"
@@ -329,6 +416,7 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
+
         var modal = document.getElementById('editModal');
 
         modal.addEventListener('show.bs.modal', function (event) {
@@ -364,10 +452,41 @@
             // Define o action do form dinamicamente (opcional)
             let form = document.getElementById('formEditMovimento');
             if (form) {  
-                console.log('id=' + id);
                 form.action = '/update-movimento/' + ix; // Ajuste conforme sua rota de update
             }
         });
+
+        var modalExclui = document.getElementById('excluiModal');
+            modalExclui.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+
+            var id = button.getAttribute('data-id');
+            var descricao = button.getAttribute('data-descricao');
+            var valor = button.getAttribute('data-valor');
+            var categoria_nome = button.getAttribute('data-categoria_nome');
+            var dcto = button.getAttribute('data-dcto');
+            var dt = button.getAttribute('data-dt');
+            var tipo = button.getAttribute('data-tipo');
+            var tipo_lc = button.getAttribute('data-tipo_lc');
+
+            document.getElementById('excluiMovimentoId').value = id;
+            document.getElementById('excluiDescricao').value = descricao;
+            document.getElementById('excluiValor').value = valor;
+            document.getElementById('excluicategoria').value = categoria_nome;
+            document.getElementById('excluidcto').value = dcto;
+            document.getElementById('excluidt').value = dt;
+            document.getElementById('excluitipo').value = tipo;
+            document.getElementById('excluitipo_lc').value = tipo_lc;
+
+            let ix = document.getElementById('excluiMovimentoId').value;
+
+            // Define o action do form dinamicamente (opcional)
+            let form = document.getElementById('formExcluiMovimento');
+            if (form) {  
+                form.action = '/destroy-movimento/' + ix; // Ajuste conforme sua rota de update
+            }
+        });
+
     });
     </script>
 

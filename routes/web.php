@@ -181,15 +181,12 @@ Route::group(['middleware' => 'auth'], function () {
         [MovimentoController::class, 'store'])->name('movimentos.store')
         ;
 
-    // Route::put('/update-movimento/{movimento}', 
-    //     [MovimentoController::class, 'update'])->name('movimentos.update')
-    // ;
-
     Route::put('update-movimento/{movimento}', 
         [MovimentoController::class, 'update'])->name('movimentos.update');
 
-    //Route::put('/movimentos/{movimento}', [MovimentoController::class, 'update'])->name('movimentos.update');
-
+    Route::delete('/destroy-movimento/{movimento}', 
+        [MovimentoController::class, 'destroy'])->name('movimentos.destroy')
+        ;
 
         /*
     ===============================================================================================

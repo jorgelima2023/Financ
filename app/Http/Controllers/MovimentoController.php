@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MovimentoEditRequest;
+use App\Http\Requests\MovimentoRequest;
 use App\Models\Categoria;
 use App\Models\Forma_pgto;
 use App\Models\Movimento;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 // Um relacionamento um-para-muitos 
 // é usado para definir relacionamentos 
@@ -63,8 +68,8 @@ class MovimentoController extends Controller
 
     }
 
-    public function store(Request $request){
-        
+    public function store(MovimentoRequest $request){
+        //dd($request);
         // dd('data:' . $request->data . 
         //    ' tipo:' . $request->tipo_lcto . 
         //    ' tipo_lc:' . $request->tipo . 
@@ -99,51 +104,137 @@ class MovimentoController extends Controller
         //     'valor' => $request->valor ,
         // ]);
 
-        Movimento::create([
-            'dt' => $request->input('data'),
-            'tipo_lc' => $request->input('tipo_lcto') ,
-            'tipo' => 0 /*$request->input('tipo')*/,
-            'categoria_id' => $request->input('categoria_id'),
-            'descricao' => $request->input('descricao'),
-            'dcto' => $request->input('dcto'),
-            'valor' => $request->input('valor'),
-            // Adicione `forma_pgto_id` se estiver usando
-            'forma_pgto_id' => 1 // ou pegue do formulário
-        ]);
+        // validar o fomulario
+        $validated = $request->validated();
+
+        DB::beginTransaction();
+
+        // form => name="tipo_lcto" 1-Receita , 0-Despesa
+
+        //         name="tipo"      "O" Obrigacao , "P" Provisao
+        
+        try {
+            Movimento::create([
+                'dt' => $request->input('data'),
+                'tipo_lc' => $request->input('tipo') ,     
+                'tipo' => $request->input('tipo_lcto'),   
+                'categoria_id' => $request->input('categoria_id'),
+                'descricao' => $request->input('descricao'),
+                'dcto' => $request->input('dcto'),
+                //'valor' => $request->input('valor'),
+                'valor' => str_replace(',', '.', str_replace('.', '', $request->input('valor'))),
+                // Adicione `forma_pgto_id` se estiver usando
+                'forma_pgto_id' => 1 // ou pegue do formulário
+            ]);
+
+            DB::commit();
+
+            // Redirecionar o usuário, enviar a mensagem de sucesso
+            return redirect()->route('movimentos.index' )->with('success', 'Movimento cadastrado com sucesso!');
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Movimento não incluido.', [ 'error' => $e->getMessage()]);
+
+            return back()->withInput()->with('error', 'Movimento não cadastrado!');
+        }
 
         // Redirecionar o usuário, enviar a mensagem de sucesso
-        return redirect()->route('movimentos.index' )->with('success', 'Movimento cadastrado com sucesso!');
+        //return redirect()->route('movimentos.index' )->with('success', 'Movimento cadastrado com sucesso!');
 
     }
 
     //public function update(Request $request){
-    public function update(Request $request, Movimento $movimento){
-        //dd($request);
+    //public function update(MovimentoEditRequest $request, Movimento $movimento){
+    public function update(MovimentoEditRequest $request, Movimento $movimento){
+       //dd($request);
+
+        $validated = $request->validated();
 
         // tipo: 1-receita , 0-despesa label => 'tipo_lcto' 
         // tipo_lc: O-Obrigacao , P-Previsao
-        $validated = $request->validate([
-            'editdt' => 'required|date',
-            'edittipo' => 'required|in:0,1',
-            'edittipo_lc' => 'required|in:O,P',
-            'editcategoria_id' => 'required|exists:categorias,id',
-            'editDescricao' => 'required|string|max:150',
-            'editdcto' => 'required|string|max:50',
-            'editValor' => 'required|numeric',
-        ]);
+        // $validated = $request->validate([
+        //     'editdt' => 'required|date',
+        //     'edittipo' => 'required|in:0,1',
+        //     'edittipo_lc' => 'required|in:O,P',
+        //     'editcategoria_id' => 'required|exists:categorias,id',
+        //     'editDescricao' => 'required|string|max:150',
+        //     'editdcto' => 'required|string|max:50',
+        //     'editValor' => 'required|numeric',
+        // ]);
 
-        $movimento->update([
-            'dt' => $validated['editdt'],
-            'tipo_lc' => $validated['edittipo_lc'],
-            'tipo' => $validated['edittipo'],
-            'categoria_id' => $validated['editcategoria_id'],
-            'descricao' => $validated['editDescricao'],
-            'dcto' => $validated['editdcto'],
-            'valor' => $validated['editValor'],
-        ]);
+        // "editMovimentoId" => "8"
+        // "editdt" => "2025-09-28"
+        // "edittipo" => "1"
+        // "edittipo_lc" => "O"
+        // "editcategoria_id" => "3"
+        // "editDescricao" => "dinheiro A"
+        // "editdcto" => "d-AA"
+        // "editValor" => "18.23"
 
-        return redirect()->route('movimentos.index')->with('success', 'Movimento atualizado com sucesso!');
+        DB::beginTransaction();
+        
+        try {
+            $movimento->update([
+                // 'dt' => $validated['editdt'],
+                // 'tipo_lc' => $validated['edittipo_lc'],
+                // 'tipo' => $validated['edittipo'],
+                // 'categoria_id' => $validated['editcategoria_id'],
+                // 'descricao' => $validated['editDescricao'],
+                // 'dcto' => $validated['editdcto'],
+                // 'valor' => str_replace(',', '.', str_replace('.', '', $request->editValor))
 
+                'dt' => $request->input('editdt'),
+                'tipo_lc' => $request->input('edittipo_lc') ,     
+                'tipo' => $request->input('edittipo'),   
+                'categoria_id' => $request->input('editcategoria_id'),
+                'descricao' => $request->input('editDescricao'),
+                'dcto' => $request->input('editdcto'),
+                //'valor' => $request->input('valor'),
+                'valor' => str_replace(',', '.', str_replace('.', '', $request->input('editValor'))),
+                // Adicione `forma_pgto_id` se estiver usando
+                //'forma_pgto_id' => 1 // ou pegue do formulário
+            ]);
+            
+            DB::commit();
+
+            return redirect()->route('movimentos.index')->with('success', 'Movimento atualizado com sucesso!');
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('movimento não alterado.', [ 'error' => $e->getMessage()]);
+
+            return back()->withInput()->with('error', 'Movimento não atualizado!');
+        }
+
+        //return redirect()->route('movimentos.index')->with('success', 'Movimento atualizado com sucesso!');
+
+    }
+
+    // Excluir o Movimento do banco de dados
+    public function destroy(Movimento $movimento){
+        // dd($movimento);
+
+        // dd("Excluir o categorias do banco de dados");
+
+        // excluir o registro do banco de dados, no metodo 'delete' pode adiconar condicao
+
+        DB::beginTransaction();
+
+        try {
+            $movimento->delete();
+            DB::commit();
+            return redirect()->route('movimentos.index')->with('success', 'Movimento apagado com sucesso');
+
+        } catch (Exception $e) {
+             DB::rollBack();
+            Log::error('movimento não alterado.', [ 'error' => $e->getMessage()]);
+
+            return back()->withInput()->with('error', 'Movimento não atualizado!');
+        }
+
+        // redirecionar o usuario, enviar msg de sucesso
+        //return redirect()->route('movimentos.index')->with('success', 'Movimento apagado com sucesso');
     }
 
 }
