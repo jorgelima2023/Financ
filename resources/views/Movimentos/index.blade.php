@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
+    
     <div class="container-fluid px-4">
 
         <div class="mb-1 hstack gap-2">
@@ -396,7 +397,9 @@
                                 <td>{{ $movimento->forma_pgto_id }}
                                     {{ $movimento->forma_pgto->nome }}
                                 </td>
+                                
                                 <td>{{ number_format($movimento->valor, 2, ',', '.') }}</td>
+
                                 <td>{{ $movimento->tipo_lc }}</td>
                                 <td>{{ $movimento->tipo }}</td>
                                 <td>{{ $movimento->dcto }}</td>
@@ -416,6 +419,22 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
+
+        const linhas = document.querySelectorAll("table tbody tr");
+
+        linhas.forEach(tr => {
+            const tipoCell = tr.children[9];  // Coluna tipo: 0 (receita), 1 (despesa)
+            const valorCell = tr.children[7]; // Coluna valor
+
+            if (tipoCell && valorCell) {
+                const tipo = tipoCell.textContent.trim();
+                if (tipo === "1") {
+                    valorCell.classList.add("valor-despesa");
+                } else if (tipo === "0") {
+                    valorCell.classList.add("valor-receita");
+                }
+            }
+        });
 
         var modal = document.getElementById('editModal');
 
