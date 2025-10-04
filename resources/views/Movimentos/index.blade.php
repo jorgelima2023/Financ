@@ -400,18 +400,28 @@
                                 </td>
 
                                 @php if(  $movimento->tipo == 0 ){ @endphp
-                                    <td title="Despesa" style="color:#C00;"><strong>{{ number_format($movimento->valor, 2, ',', '.') }}</strong></td>
+                                    <td title="Despesa" style="color:#C00;"><strong>-{{ number_format($movimento->valor, 2, ',', '.') }}</strong></td>
                                 @php }else{ @endphp
-                                    <td title="Receita" style="color:#050;"><strong>{{ number_format($movimento->valor, 2, ',', '.') }}</strong></td>
+                                    <td title="Receita" style="color:#050;"><strong>+{{ number_format($movimento->valor, 2, ',', '.') }}</strong></td>
                                 @php } @endphp
 
                                 <!-- <td>{{-- $movimento->tipo_lc --}}</td>
                                 <td>{{-- $movimento->tipo --}}</td>
                                 <td>{{-- $movimento->dcto --}}</td> -->
                             </tr>
+                            
                         @empty
                             <div class="alert alert-danger" role="alert">Nenhum movimento encontrado!</div>
                         @endforelse
+                            <tr>
+                                <td colspan="3"><strong>Total Lctos: {{ $qtde_registros }}</strong></td>
+                                <td colspan="4"></td>
+                                @php if(  $totalMovimento > 0 ){ @endphp
+                                    <td style="color:#050;"><strong>+{{ number_format($totalMovimento, 2, ',', '.') }}</strong></td>
+                                @php }else{ @endphp
+                                    <td style="color:#C00;"><strong>-{{ number_format($totalMovimento, 2, ',', '.') }}</strong></td>
+                                @php } @endphp
+                            </tr>
 
                     </tbody>
                 </table>
