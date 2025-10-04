@@ -36,6 +36,7 @@ class MovimentoController extends Controller
         // ->orderBy('dt')
         // ;
 
+        if( 1 == 2 ){
         $movimentos = Movimento::when($request->has('descricao'), function($whenQuery) use($request){
             $whenQuery->where('descricao', 'like' , '%' . $request->descricao . '%' );
         } )
@@ -50,6 +51,28 @@ class MovimentoController extends Controller
         //->paginate(1000)
         //->withQueryString()
         ;
+        }
+
+        // ===================================================================================
+        // opcao order by coluna tabela relacionada
+        if( 1 == 1 ){
+        $movimentos = Movimento::select('movimentos.*')
+            ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
+            ->with(['categoria', 'forma_pgto'])
+            ->when($request->has('descricao'), function($whenQuery) use($request){
+                $whenQuery->where('descricao', 'like' , '%' . $request->descricao . '%' );
+                } )
+            ->when($request->filled('data_de'), function($whenQuery) use($request){
+                $whenQuery->where('dt', '>=' , \Carbon\Carbon::parse($request->data_de)->format('Y-m-d H:i:s') );
+                } )
+            ->when($request->filled('data_ate'), function($whenQuery) use($request){
+                $whenQuery->where('dt', '<=' , \Carbon\Carbon::parse($request->data_ate)->format('Y-m-d H:i:s') );
+                } )
+            ->orderBy('movimentos.dt', 'asc')
+            ->orderBy('categorias.classif', 'asc')
+            ->get();
+        }
+        // ===================================================================================
 
         $categorias = Categoria::orderBy('classif', 'ASC')
         // teste alerta nenhum registro encontrado ->where('id', 1000)
@@ -109,7 +132,7 @@ class MovimentoController extends Controller
 
         DB::beginTransaction();
 
-        // form => name="tipo_lcto" 1-Receita , 0-Despesa
+        // form => name="tipo_lcto" => campo "tipo" : 1-Receita , 0-Despesa
 
         //         name="tipo"      "O" Obrigacao , "P" Provisao
         

@@ -87,13 +87,13 @@
                                 <label class="form-label me-2 mb-0">Tipo Lcto</label>
                                 <div>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="tipo_lcto" id="tipo_lcto" value="1"
+                                        <input class="form-check-input" type="radio" name="tipo_lcto" id="tipo_lcto_receita" value="1"
                                             {{ old('tipo') == '1' ? 'checked' : '' }} required>
                                         <label class="form-check-label" for="tipo_lcto">Receita</label>
                                     </div>
 
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="tipo_lcto" id="tipo_lcto" value="0"
+                                        <input class="form-check-input" type="radio" name="tipo_lcto" id="tipo_lcto_despesa" value="0"
                                             {{ old('tipo') == '0' ? 'checked' : '' }} required>
                                         <label class="form-check-label" for="tipo_lcto">Despesa</label>
                                     </div>
@@ -104,13 +104,13 @@
                                 <label class="form-label me-2 mb-0">Tipo</label>
                                 <div>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="tipo" id="tipo" value="O"
+                                        <input class="form-check-input" type="radio" name="tipo" id="tipo_obrigacao" value="O"
                                             {{ old('tipo') == 'O' ? 'checked' : '' }} required>
                                         <label class="form-check-label" for="tipo">Obrigação</label>
                                     </div>
 
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="tipo" id="tipo" value="P"
+                                        <input class="form-check-input" type="radio" name="tipo" id="tipo_previsao" value="P"
                                             {{ old('tipo') == 'P' ? 'checked' : '' }} required>
                                         <label class="form-check-label" for="tipo">Previsão</label>
                                     </div>
@@ -344,9 +344,9 @@
                             <th class="text-left">Categoria</th>
                             <th class="text-left">Forma Pgto</th>
                             <th class="text-right">Valor</th>
-                            <th class="text-left">tipo_lcto</th>
+                            <!-- <th class="text-left">tipo_lcto</th>
                             <th class="text-left">tipo:0-Receita/1-Despesa</th>
-                            <th class="text-left">Dcto</th>
+                            <th class="text-left">Dcto</th> -->
                         </tr>
                     </thead>
 
@@ -354,8 +354,9 @@
                             @forelse ($movimentos as $movimento)
                             <tr>
                                 <!-- botao exclui -->
+                                 <!-- class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7"  -->
                                 <th>
-                                    <button type="button" title="Clique aqui para excluir esse lançamento!"
+                                    <button type="button" title="Clique aqui para excluir esse lançamento: {{ $mov = $movimento->id }}"
                                         class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#excluiModal"
@@ -368,12 +369,12 @@
                                             data-tipo="{{ $movimento->tipo == 'O' ? 'Obrigação' : 'Provisão' }}"
                                             data-tipo_lc="{{ $movimento->tipo_lc == 0 ? 'Receita' : 'Despesa' }}">
                                             
-                                        <i class="fa-regular fa-pen-to-square"></i>{{ $mov = $movimento->id }}
+                                        <i class="fa-regular fa-pen-to-square"></i>
                                     </button>
                                 </th>
                                 <!-- botao edita -->
                                 <th>
-                                    <button type="button" title="Clique aqui para editar esse lançamento!"
+                                    <button type="button" title="Clique aqui para editar esse lançamento: {{ $mov = $movimento->id }}"
                                         class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#editModal"
@@ -386,7 +387,7 @@
                                             data-tipo="{{ $movimento->tipo }}"
                                             data-tipo_lc="{{ $movimento->tipo_lc }}">
                                             
-                                        <i class="fa-regular fa-pen-to-square"></i>{{ $mov = $movimento->id }}
+                                        <i class="fa-regular fa-pen-to-square"></i>
                                     </button>
                                 </th>
 
@@ -397,12 +398,16 @@
                                 <td>{{ $movimento->forma_pgto_id }}
                                     {{ $movimento->forma_pgto->nome }}
                                 </td>
-                                
-                                <td>{{ number_format($movimento->valor, 2, ',', '.') }}</td>
 
-                                <td>{{ $movimento->tipo_lc }}</td>
-                                <td>{{ $movimento->tipo }}</td>
-                                <td>{{ $movimento->dcto }}</td>
+                                @php if(  $movimento->tipo == 0 ){ @endphp
+                                    <td title="Despesa" style="color:#C00;"><strong>{{ number_format($movimento->valor, 2, ',', '.') }}</strong></td>
+                                @php }else{ @endphp
+                                    <td title="Receita" style="color:#050;"><strong>{{ number_format($movimento->valor, 2, ',', '.') }}</strong></td>
+                                @php } @endphp
+
+                                <!-- <td>{{-- $movimento->tipo_lc --}}</td>
+                                <td>{{-- $movimento->tipo --}}</td>
+                                <td>{{-- $movimento->dcto --}}</td> -->
                             </tr>
                         @empty
                             <div class="alert alert-danger" role="alert">Nenhum movimento encontrado!</div>
@@ -419,7 +424,7 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-
+        /*
         const linhas = document.querySelectorAll("table tbody tr");
 
         linhas.forEach(tr => {
@@ -435,6 +440,7 @@
                 }
             }
         });
+        */
 
         var modal = document.getElementById('editModal');
 
