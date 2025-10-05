@@ -16,32 +16,57 @@
 
         <!-- pesquisar -->
         <div class="card mb-4 border-light shadow">
-            <div class="card-header">
-                <span class="pesquisar">Pesquisar - Filtros:</span>
+            <div class="card-header border border-light-subtle">
+                <span class="pesquisar" style="font-weight: 350; background-color: #D3D3D3;">Pesquisar - Filtros:</span>
+                <!-- <span class="pesquisar">Pesquisar - Filtros:</span> -->
+
                 <div class="card-body">
                     
                     <form action="{{ route('movimentos.index') }}">
+
                         <div class="row">
-                        
-                            <div class="col-md-4 col-sm-12">
-                                <label for="descricao" class="form-label">Descrição</label>
+                            <div class="col-8 mb-1 d-flex align-items-center">
+                                <label for="descricao" class="form-label me-2 mb-0">Descrição</label>
                                 <input type="text" name="descricao" class="form-control" id="descricao" 
                                 value="{{ $descricao }}"
                                 placeholder="Descricao do movimento">
                             </div>
-                            
-                            <div class="col-md-4 col-sm-12">
+                        </div>    
+
+                        <div class="row">    
+                            <div class="col-3 mb-1 d-flex align-items-center">
                                     <label for="data_de" class="form-label">Cadastro de</label>
                                     <input type="date" name="data_de" class="form-control" 
                                     id="data_de" value="{{ $data_de }}"> 
                             </div>
-                            <div class="col-md-4 col-sm-12">
-                                    <label for="data_ate" class="form-label">Cadastro ate</label>
+                            <div class="col-3 mb-1 d-flex align-items-center"> 
+                                    <label for="data_ate" class="form-label">ate</label>
                                     <input type="date" name="data_ate" class="form-control" 
                                     id="data_ate" value="{{ $data_ate }}">
                             </div>
+                        </div>
 
-                            <div class="col-md-4 col-sm-12 mt-4 pt-3">
+                        <div class="row">
+
+                            <div class="col-8 mb-1 d-flex align-items-center">
+                                <label class="form-label me-2 mb-0">Tipo</label>
+                                <div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="tipo_filtro" id="tipo_filtroO" value="O">
+                                        <label class="form-check-label" for="tipo_filtro">Obrigação</label>
+                                    </div>
+
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="tipo_filtro" id="tipo_filtroP" value="P">
+                                        <label class="form-check-label" for="tipo_filtro">Previsão</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-4 col-sm-12 mt-2 pt-0">
                                 <button type="submit" class="btn btn-info btn-sm">
                                     <i class="fa-solid fa-magnifying-glass"></i>Pesquisar
                                 </button>

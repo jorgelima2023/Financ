@@ -22,6 +22,9 @@ class MovimentoController extends Controller
     //public function index(categoria $categoria )
     public function index(Request $request)
     {
+
+        DB::enableQueryLog();
+
         //$movimentos = Movimento::with('categoria', 'forma_pgto')
             //->where('categoria_id', $categoria->id)
             //->where('forma_pgto_id', $forma_pgto->id)
@@ -60,12 +63,16 @@ class MovimentoController extends Controller
         // ===================================================================================
         // opcao order by coluna tabela relacionada
         if( 1 == 1 ){
-        $movimentos = Movimento::select('movimentos.*')
+            
+            $movimentos = Movimento::select('movimentos.*')
             ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
             ->with(['categoria', 'forma_pgto'])
             ->when($request->has('descricao'), function($whenQuery) use($request){
                 $whenQuery->where('descricao', 'like' , '%' . $request->descricao . '%' );
                 } )
+            ->when($request->has('tipo_filtro'), function($whenQuery) use($request){
+                $whenQuery->where('tipo_lc', '=' , $request->tipo_filtro );
+                } )    
             ->when($request->filled('data_de'), function($whenQuery) use($request){
                 $whenQuery->where('dt', '>=' , \Carbon\Carbon::parse($request->data_de)->format('Y-m-d H:i:s') );
                 } )
@@ -98,7 +105,7 @@ class MovimentoController extends Controller
 
         // =================================
         // opcao 2 somar valores 
-        
+
         $totalDespesa = $movimentos->filter(function ($movimento) {
             return $movimento->tipo == 0;
         })->sum('valor');
@@ -109,6 +116,14 @@ class MovimentoController extends Controller
 
         $total = $totalReceita - $totalDespesa; 
 
+
+        // nao funciona Log::info('sql' , ['' => $movimentos->toRawSql()]);
+        // nao funciona dd($movimentos->toSql());
+
+        //dd(DB::getQueryLog());   esse funciona ok!
+
+        
+
         return view('Movimentos.index',
          ['menu' => 'movimentos',
           'movimentos' => $movimentos,
@@ -116,6 +131,7 @@ class MovimentoController extends Controller
           'descricao' => $request->descricao,
           'data_de' => $request->data_de,
           'data_ate' => $request->data_ate,
+          'tipo_filtro' => $request->tipo_filtro,
           'qtde_registros' => count($movimentos),
           'totalMovimento' => $total
          ]);
