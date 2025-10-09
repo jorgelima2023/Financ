@@ -17,8 +17,8 @@
         <!-- pesquisar -->
         <div class="card mb-4 border-light shadow">
             <div class="card-header border border-light-subtle">
-                <span class="pesquisar" style="font-weight: 350; background-color: #D3D3D3;">Pesquisar - Filtros:</span>
-                <!-- <span class="pesquisar">Pesquisar - Filtros:</span> -->
+                <!-- <span class="pesquisar" style="font-weight: 350; background-color: #D3D3D3;">Pesquisar - Filtros:</span> -->
+                <span class="pesquisar">Pesquisar - Filtros:</span>
 
                 <div class="card-body">
                     
@@ -80,6 +80,9 @@
                                
                             </div>
 
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 mt-2 pt-0"><b>Seleção</b> = {{ $sel }}</div>
                         </div>
                     </form>
                 </div>
@@ -351,7 +354,8 @@
         <!-- Listar -->
         <div class="card mb-4 border-light shadow">
             <div class="card-header hstack gap-2">
-                <span>Listar</span>
+                <span class="pesquisar">Listar</span>
+                <!-- <span class="pesquisar" style="font-weight: 350; background-color: #D3D3D3;">Listar</span> -->
                 
             </div>
             <div class="card-body">
@@ -416,10 +420,10 @@
                                     </button>
                                 </th>
 
-                                <th>{{ $movimento->categoria->classif }}</th>
+                                <td>{{ $movimento->categoria->classif }}</td>
                                 <td>{{ \Carbon\Carbon::parse($movimento->dt)->tz('America/Sao_Paulo')->format('d/m/Y') }}</td>
                                 <td>{{ $movimento->descricao }}</td>
-                                <th>{{ $movimento->categoria_id }} - {{ $movimento->categoria->nome }}</th>
+                                <td>{{ $movimento->categoria_id }} - {{ $movimento->categoria->nome }}</td>
                                 <td>{{ $movimento->forma_pgto_id }}
                                     {{ $movimento->forma_pgto->nome }}
                                 </td>

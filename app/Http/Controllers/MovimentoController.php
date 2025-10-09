@@ -22,6 +22,7 @@ class MovimentoController extends Controller
     //public function index(categoria $categoria )
     public function index(Request $request)
     {
+        //dd($request);
 
         DB::enableQueryLog();
 
@@ -84,6 +85,24 @@ class MovimentoController extends Controller
             ->get();
         }
         // ===================================================================================
+        
+        $sel = "";
+        if( $request->has('descricao') && $request->descricao ){
+            $sel .= $sel ? ', ' : '' ;
+            $sel .= " Descrição:{$request->descricao}";
+        }
+        if( $request->has('tipo_filtro') && $request->tipo_filtro ){
+            $sel .= $sel ? ', ' : '' ;
+            $sel .= " Tipo:" . ($request->tipo_filtro == 'O') ? 'Obrigação' : 'Previsão'; 
+        }
+        if ( $request->filled('data_de') && $request->data_de ){
+            $sel .= $sel ? ', ' : '' ;
+            $sel .= " Data de:" . \Carbon\Carbon::parse($request->data_de)->format('d-m-Y');
+        }
+        if ( $request->filled('data_ate') && $request->data_ate ){
+            $sel .= $sel ? ', ' : '' ;
+            $sel .= " Data ate:" . \Carbon\Carbon::parse($request->data_ate)->format('d-m-Y');
+        }
 
         $categorias = Categoria::orderBy('classif', 'ASC')
         // teste alerta nenhum registro encontrado ->where('id', 1000)
@@ -133,7 +152,8 @@ class MovimentoController extends Controller
           'data_ate' => $request->data_ate,
           'tipo_filtro' => $request->tipo_filtro,
           'qtde_registros' => count($movimentos),
-          'totalMovimento' => $total
+          'totalMovimento' => $total,
+          'sel' => $sel
          ]);
 
     }
