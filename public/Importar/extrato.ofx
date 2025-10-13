@@ -1,0 +1,175 @@
+OFXHEADER:100
+DATA:OFXSGML
+VERSION:102
+SECURITY:NONE
+ENCODING:USASCII
+CHARSET:1252
+COMPRESSION:NONE
+OLDFILEUID:NONE
+NEWFILEUID:NONE
+
+<OFX>
+	<SIGNONMSGSRSV1>
+		<SONRS>
+			<STATUS>
+				<CODE>0
+				<SEVERITY>INFO
+			</STATUS>
+			<DTSERVER>00000000000000
+			<LANGUAGE>POR
+		</SONRS>
+	</SIGNONMSGSRSV1>
+	<BANKMSGSRSV1>
+		<STMTTRNRS>
+			<TRNUID>1001
+			<STATUS>
+				<CODE>0
+				<SEVERITY>INFO
+			</STATUS>
+			<STMTRS>
+				<CURDEF>BRL
+				<BANKACCTFROM>
+					<BANKID>0237
+					<ACCTID>5718/183704
+					<ACCTTYPE>CHECKING
+				</BANKACCTFROM>
+				<BANKTRANLIST>
+					<DTSTART>20250801000000
+					<DTEND>20250831000000
+					<STMTTRN>
+						<TRNTYPE>CREDIT
+						<DTPOSTED>20250801000000[-03:EST]
+						<TRNAMT>0.53
+						<FITID>N20131:01/08/25:0.53:0106767: Rendimentos: Poup Facil-depos a Partir 4/5/12
+						<CHECKNUM>0106767
+						<MEMO>Rendimentos Poup Facil-depos a Partir 4/5/12
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>CREDIT
+						<DTPOSTED>20250804000000[-03:EST]
+						<TRNAMT>5832.17
+						<FITID>N2014E:04/08/25:5832.17:1527204: Ted-t Elet Disp: Remet.mninfo Participacoes
+						<CHECKNUM>1527204
+						<MEMO>Ted-t Elet Disp Remet.mninfo Participacoes
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>DEBIT
+						<DTPOSTED>20250804000000[-03:EST]
+						<TRNAMT>-31.68
+						<FITID>N2016B:04/08/25:-31.68:0033328: Visa Electron: Condor Derosso lj
+						<CHECKNUM>0033328
+						<MEMO>Visa Electron Condor Derosso lj
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>DEBIT
+						<DTPOSTED>20250804000000[-03:EST]
+						<TRNAMT>-24.15
+						<FITID>N20189:04/08/25:-24.15:0119262: Visa Electron: Restaurante Azeite d
+						<CHECKNUM>0119262
+						<MEMO>Visa Electron Restaurante Azeite d
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>DEBIT
+						<DTPOSTED>20250804000000[-03:EST]
+						<TRNAMT>-18.90
+						<FITID>N201A7:04/08/25:-18.9:0302102: Visa Electron: Drogaria Jessifarma
+						<CHECKNUM>0302102
+						<MEMO>Visa Electron Drogaria Jessifarma
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>DEBIT
+						<DTPOSTED>20250804000000[-03:EST]
+						<TRNAMT>-35.00
+						<FITID>N201C5:04/08/25:-35.0:0550804: Visa Electron: Chaveiro Gazu
+						<CHECKNUM>0550804
+						<MEMO>Visa Electron Chaveiro Gazu
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>DEBIT
+						<DTPOSTED>20250804000000[-03:EST]
+						<TRNAMT>-300.00
+						<FITID>N201E3:04/08/25:-300.0:1303198: Transfe Pix: Des: Cristiane Schon Faria 02/08
+						<CHECKNUM>1303198
+						<MEMO>Transfe Pix Des: Cristiane Schon Faria 02/08
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>DEBIT
+						<DTPOSTED>20250805000000[-03:EST]
+						<TRNAMT>-23.56
+						<FITID>N20201:05/08/25:-23.56:0392729: Visa Electron: Restaurante Azeite d
+						<CHECKNUM>0392729
+						<MEMO>Visa Electron Restaurante Azeite d
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>CREDIT
+						<DTPOSTED>20250806000000[-03:EST]
+						<TRNAMT>6276.58
+						<FITID>N20022:06/08/25:6276.58:0408542: Transferencia Pix: Rem: Mninfo Participacoes  06/08
+						<CHECKNUM>0408542
+						<MEMO>Transferencia Pix Rem: Mninfo Participacoes 06/08
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>DEBIT
+						<DTPOSTED>20250806000000[-03:EST]
+						<TRNAMT>-886.48
+						<FITID>N2003F:06/08/25:-886.48:0000404: Pagto Eletron  Cobranca: Itau Unibanco Holding S.a.
+						<CHECKNUM>0000404
+						<MEMO>Pagto Eletron Cobranca Itau Unibanco Holding S.a.
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>DEBIT
+						<DTPOSTED>20250806000000[-03:EST]
+						<TRNAMT>-2872.36
+						<FITID>N2005D:06/08/25:-2872.36:0000405: Pagto Eletron  Cobranca: Banco Bradesco S.a.
+						<CHECKNUM>0000405
+						<MEMO>Pagto Eletron Cobranca Banco Bradesco S.a.
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>DEBIT
+						<DTPOSTED>20250806000000[-03:EST]
+						<TRNAMT>-20.62
+						<FITID>N2007B:06/08/25:-20.62:0106628: Cartao Visa Electron: Restaurante Azeite d
+						<CHECKNUM>0106628
+						<MEMO>Cartao Visa Electron Restaurante Azeite d
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>DEBIT
+						<DTPOSTED>20250806000000[-03:EST]
+						<TRNAMT>-520.00
+						<FITID>N20099:06/08/25:-520.0:2148231: Transferencia Pix: Des: Lucinei Jeferson Deto 06/08
+						<CHECKNUM>2148231
+						<MEMO>Transferencia Pix Des: Lucinei Jeferson Deto 06/08
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>DEBIT
+						<DTPOSTED>20250807000000[-03:EST]
+						<TRNAMT>-24.15
+						<FITID>N200B7:07/08/25:-24.15:0017054: Cartao Visa Electron:
+						<CHECKNUM>0017054
+						<MEMO>Cartao Visa Electron 
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>DEBIT
+						<DTPOSTED>20250807000000[-03:EST]
+						<TRNAMT>-35.95
+						<FITID>N200D4:07/08/25:-35.95:0500133: Cartao Visa Electron:
+						<CHECKNUM>0500133
+						<MEMO>Cartao Visa Electron 
+					</STMTTRN>
+					<STMTTRN>
+						<TRNTYPE>DEBIT
+						<DTPOSTED>20250807000000[-03:EST]
+						<TRNAMT>-324.07
+						<FITID>N200F1:07/08/25:-324.07:0500805: Cartao Visa Electron:
+						<CHECKNUM>0500805
+						<MEMO>Cartao Visa Electron 
+					</STMTTRN>
+				</BANKTRANLIST>
+				<LEDGERBAL>
+					<BALAMT>6071.09
+					<DTASOF>20250805000000[-03:EST]
+				</LEDGERBAL>
+			</STMTRS>
+		</STMTTRNRS>
+	</BANKMSGSRSV1>
+</OFX>

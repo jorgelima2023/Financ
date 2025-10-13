@@ -188,6 +188,11 @@ Route::group(['middleware' => 'auth'], function () {
         [MovimentoController::class, 'destroy'])->name('movimentos.destroy')
         ;
 
+    Route::post('/import-movimento', 
+        [MovimentoController::class, 'import'])->name('movimentos.import')
+        ;
+
+
         /*
     ===============================================================================================
     rotas restritas - middleware:

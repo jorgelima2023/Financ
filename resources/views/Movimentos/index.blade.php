@@ -77,7 +77,6 @@
                                         data-bs-toggle="modal" data-bs-target="#cadModal">
                                     <i class="fa-solid fa-magnifying-glass"></i>Cadastrar
                                 </button>    
-                               
                             </div>
 
                         </div>
@@ -85,6 +84,15 @@
                             <div class="col-md-12 col-sm-12 mt-2 pt-0"><b>Seleção</b> = {{ $sel }}</div>
                         </div>
                     </form>
+
+                    <div class="row">
+                        <form action=" {{ route('movimentos.import') }}" method="POST" enctype="multipart/form-data">
+                            @Csrf
+                            <input type="file" name="file" id="file">
+                            <button type="submit" id="fileBtn">Importar</button>
+                        </form>
+                    </div>
+
                 </div>
             </div>
         </div>

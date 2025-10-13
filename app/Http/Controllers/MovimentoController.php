@@ -328,5 +328,22 @@ class MovimentoController extends Controller
         // redirecionar o usuario, enviar msg de sucesso
         //return redirect()->route('movimentos.index')->with('success', 'Movimento apagado com sucesso');
     }
+    // verificar se no import trouxe o http request
+    public function import(Request $request){
+        dd($request->file);
+
+        $request->validate(
+            ['file' => 'required|mimes:ofx!max:2048',
+            ],
+            ['file.required' => 'arq requerido']
+        );
+
+        // $ofxParser = new \OfxParser\Parser();
+        //$ofx = $ofxParser->loadFromFile('/path/to/your/bankstatement.ofx');
+
+        //$ofxParser = new \OfxParser\Parser();
+
+        
+    }
 
 }
