@@ -330,19 +330,46 @@ class MovimentoController extends Controller
     }
     // verificar se no import trouxe o http request
     public function import(Request $request){
-        dd($request->file);
+        //dd($request);
+        //dd( file($request->file('file')) );
+
+        // $request->validate(
+        //     ['file' => 'required|mimes:ofx!max:2048',
+        //     ],
+        //     ['file.required' => 'arq requerido',
+        //      'file.mimes' => 'arq deve ser do tipo ofx',
+        //      'file.max' => 'tamanho arq excedido :max Mb'
+        //     ]
+        // );
 
         $request->validate(
-            ['file' => 'required|mimes:ofx!max:2048',
+            ['file' => 'required|max:2048',
             ],
-            ['file.required' => 'arq requerido']
+            ['file.required' => 'arq requerido',
+             'file.max' => 'tamanho arq excedido :max Mb'
+            ]
         );
 
-        // $ofxParser = new \OfxParser\Parser();
-        //$ofx = $ofxParser->loadFromFile('/path/to/your/bankstatement.ofx');
+        
 
-        //$ofxParser = new \OfxParser\Parser();
+    
 
+        $ofxParser = new \OfxParser\Parser();
+        $request->file();
+        $ofx = $ofxParser->loadFromFile( 'C:\xampp\htdocs\financeiro\public\Importar\extrato.ofx' );
+
+        // Acesse a primeira conta bancária (a variável $ofx contém um array de contas)
+        $contaBancaria = reset($ofx->bankAccounts);
+        $dataInicio = $contaBancaria->statement->startDate;
+        $dataFim = $contaBancaria->statement->endDate;
+        $di = \Carbon\Carbon::parse($dataInicio)->tz('America/Sao_Paulo')->format('d/m/Y');
+        $df = \Carbon\Carbon::parse($dataFim)->tz('America/Sao_Paulo')->format('d/m/Y');
+        
+        // Obtenha as transações da conta
+        $transacoes = $contaBancaria->statement->transactions;
+
+        //dd($di . ' ' . $df);
+        dd($transacoes);
         
     }
 
