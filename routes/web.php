@@ -188,9 +188,11 @@ Route::group(['middleware' => 'auth'], function () {
         [MovimentoController::class, 'destroy'])->name('movimentos.destroy')
         ;
 
-    Route::post('/import-movimento', 
-        [MovimentoController::class, 'import'])->name('movimentos.import')
-        ;
+    // Route::post('/import-movimento', 
+    //     [MovimentoController::class, 'import'])->name('movimentos.import')
+    //     ;
+
+    Route::get('/movimentos/form', [MovimentoController::class, 'form'])->name('movimentos.form');
 
 
         /*

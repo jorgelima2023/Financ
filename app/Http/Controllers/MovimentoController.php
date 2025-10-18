@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpKernel\Event\ViewEvent;
 
 // Um relacionamento um-para-muitos 
 // é usado para definir relacionamentos 
@@ -328,8 +329,21 @@ class MovimentoController extends Controller
         // redirecionar o usuario, enviar msg de sucesso
         //return redirect()->route('movimentos.index')->with('success', 'Movimento apagado com sucesso');
     }
+
+    // ===========================================================================
+    
+    
+    // ===========================================================================
+
+    
+
     // verificar se no import trouxe o http request
-    public function import(Request $request){
+    // importar arquivo ofx , recebe o path + name arquivo
+    // botao importar form index
+
+    //public function import(Request $request){
+    
+    public function form(){
         //dd($request);
         //dd( file($request->file('file')) );
 
@@ -342,35 +356,85 @@ class MovimentoController extends Controller
         //     ]
         // );
 
-        $request->validate(
-            ['file' => 'required|max:2048',
-            ],
-            ['file.required' => 'arq requerido',
-             'file.max' => 'tamanho arq excedido :max Mb'
-            ]
-        );
-
-        
-
-    
+        // $request->validate(
+        //     ['file' => 'required|max:2048',
+        //     ],
+        //     ['file.required' => 'O arquivo não foi informado!',
+        //      'file.max' => 'Tamanho arquivo excedido, tamanho :max Mb'
+        //     ]
+        // );
 
         $ofxParser = new \OfxParser\Parser();
-        $request->file();
+
         $ofx = $ofxParser->loadFromFile( 'C:\xampp\htdocs\financeiro\public\Importar\extrato.ofx' );
 
         // Acesse a primeira conta bancária (a variável $ofx contém um array de contas)
         $contaBancaria = reset($ofx->bankAccounts);
         $dataInicio = $contaBancaria->statement->startDate;
         $dataFim = $contaBancaria->statement->endDate;
+
         $di = \Carbon\Carbon::parse($dataInicio)->tz('America/Sao_Paulo')->format('d/m/Y');
         $df = \Carbon\Carbon::parse($dataFim)->tz('America/Sao_Paulo')->format('d/m/Y');
         
         // Obtenha as transações da conta
         $transacoes = $contaBancaria->statement->transactions;
 
-        //dd($di . ' ' . $df);
-        dd($transacoes);
-        
+        // Exemplo de como acessar uma transação específica
+        if (!empty($transacoes)) {
+
+            // buscar um id nulo, zero para carregar a model
+            $movimentos = Movimento::orderBy('descricao', 'ASC')
+            ->where('id', 0)
+            ->get();
+            
+            //$primeiraTransacao = reset($transacoes);
+
+            $i = 0;
+            foreach ($contaBancaria->statement->transactions as $ofxEntity) {
+                $i++;
+                $primeiraTransacao = $ofxEntity;
+
+                /*  debug mostrar valores...
+
+                $dit = \Carbon\Carbon::parse($primeiraTransacao->date)->tz('America/Sao_Paulo')->format('d/m/Y');
+                
+                echo "linha:" . $i . "<br>";
+                echo "Data da primeira transação: " . $dit . "<br>";
+                echo "Valor da primeira transação: " . $primeiraTransacao->amount . "<br>";
+                echo "tipo da primeira transação: " . $primeiraTransacao->type . "<br>";
+                echo "memo da primeira transação: " . $primeiraTransacao->memo . "<br>";
+                echo "checkNumber da primeira transação: " . $primeiraTransacao->checkNumber . "<br>";
+                echo "<br>";  
+                */
+                
+                // 'tipo_lc': "O" - obrigacao
+                // tipo: $primeiraTransacao->type  'CREDIT' ou 'DEBIT'
+
+                $dit = \Carbon\Carbon::parse($primeiraTransacao->date)->tz('America/Sao_Paulo')->format('d/m/Y');
+
+                $movimentos->push(new Movimento(['id' => 0, 
+                                            'dt' => $dit,
+                                            'descricao' => $primeiraTransacao->memo , 
+                                            'categoria_id' => 0,
+                                            'forma_pgto_id' => 1,
+                                            'tipo_lc' => 'O',
+                                            'tipo' => $primeiraTransacao->type,   
+                                            'valor' => $primeiraTransacao->amount,
+                                            'dcto' => $primeiraTransacao->checkNumber ]));
+                }
+
+                //dd($movimentos);
+
+            return view('movimentos.form', ['movimentos' => $movimentos]);
+            //return view('movimentos.abrirOfx');
+
+            //target="_blank"
+            //<a href="/sua-rota" target="_blank">Abrir em nova aba</a>
+
+           
+        }else{
+            return back()->withInput()->with('error', 'Nenhuma transação encontrada!');
+        }
     }
 
 }

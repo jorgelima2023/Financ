@@ -86,11 +86,10 @@
                     </form>
 
                     <div class="row">
-                        <form action=" {{ route('movimentos.import') }}" method="POST" enctype="multipart/form-data">
-                            @Csrf
-                            <input type="file" name="file" id="file">
-                            <button type="submit" id="fileBtn">Importar</button>
-                        </form>
+                        
+
+                        <a href="{{ route('movimentos.form') }}" target="_blank">Importar</a>
+
                     </div>
 
                 </div>
