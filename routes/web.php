@@ -193,7 +193,11 @@ Route::group(['middleware' => 'auth'], function () {
     //     ;
 
     Route::get('/movimentos/form', [MovimentoController::class, 'form'])->name('movimentos.form');
-
+    
+    // receber dados form
+    Route::put('/update-movimento-form', 
+            [MovimentoController::class, 'updateMovimentos'])->name('Movimentos.form.update');
+            
 
         /*
     ===============================================================================================

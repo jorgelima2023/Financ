@@ -382,6 +382,8 @@ class MovimentoController extends Controller
         // Exemplo de como acessar uma transação específica
         if (!empty($transacoes)) {
 
+            $categorias = Categoria::orderBy('classif', 'ASC')->get();
+
             // buscar um id nulo, zero para carregar a model
             $movimentos = Movimento::orderBy('descricao', 'ASC')
             ->where('id', 0)
@@ -409,23 +411,46 @@ class MovimentoController extends Controller
                 
                 // 'tipo_lc': "O" - obrigacao
                 // tipo: $primeiraTransacao->type  'CREDIT' ou 'DEBIT'
-
+                $tipo = $primeiraTransacao->type == 'CREDIT' ? 'CR' : 'DB';
                 $dit = \Carbon\Carbon::parse($primeiraTransacao->date)->tz('America/Sao_Paulo')->format('d/m/Y');
-
+//dd($dit);
                 $movimentos->push(new Movimento(['id' => 0, 
                                             'dt' => $dit,
                                             'descricao' => $primeiraTransacao->memo , 
                                             'categoria_id' => 0,
                                             'forma_pgto_id' => 1,
                                             'tipo_lc' => 'O',
-                                            'tipo' => $primeiraTransacao->type,   
+                                            'tipo' => $tipo,   
                                             'valor' => $primeiraTransacao->amount,
                                             'dcto' => $primeiraTransacao->checkNumber ]));
                 }
 
                 //dd($movimentos);
+                /*
+                    #attributes: array:8 [
+                        "dt" => "01/08/2025"
+                        "descricao" => "Rendimentos Poup Facil-depos a Partir 4/5/12"
+                        "categoria_id" => 0
+                        "forma_pgto_id" => 1
+                        "tipo_lc" => "O"
+                        "tipo" => "CREDIT"
+                        "valor" => 0.53
+                        "dcto" => SimpleXMLElement 
+                    ]
 
-            return view('movimentos.form', ['movimentos' => $movimentos]);
+                    #fillable: array:8 [▼
+                        0 => "tipo"
+                        1 => "forma_pgto_id"
+                        2 => "tipo_lc"
+                        3 => "categoria_id"
+                        4 => "descricao"
+                        5 => "valor"
+                        6 => "dt"
+                        7 => "dcto"
+                    ]
+                */
+
+            return view('movimentos.form', ['movimentos' => $movimentos , 'categorias' => $categorias ]  );
             //return view('movimentos.abrirOfx');
 
             //target="_blank"
@@ -435,6 +460,120 @@ class MovimentoController extends Controller
         }else{
             return back()->withInput()->with('error', 'Nenhuma transação encontrada!');
         }
+    }
+
+    // form update movimentos - vindo do form - ler ofx
+    public function updateMovimentos(Request $request){
+        $data = $request;
+        //dd($data);
+        //dd($request);
+
+        // $request->validate(
+        //     ['itens.categoria_id' => 'required',
+        //     ],
+        //     ['itens.categoria_id' => 'Categoria não informada!'
+        //     ]
+        // );
+
+        /* 
+            "itens" => array:16 [▼
+            0 => array:7 [▼
+            "id" => null
+            "dt" => "01/08/2025"
+            "descricao" => "Rendimentos Poup Facil-depos a Partir 4/5/12"
+            "tipo" => "CR"
+            "dcto" => "0106767"
+            "valor" => "0.53"
+            "categoria_id" => "3"
+            ]
+
+            2 => array:7 [▼
+            "id" => null
+            "dt" => "04/08/2025"
+            "descricao" => "Visa Electron Condor Derosso lj"
+            "tipo" => "DB"
+            "dcto" => "0033328"
+            "valor" => "-31.68"
+            "categoria_id" => "2"
+            ]
+        */
+
+        $falha = 0;
+        
+        foreach ($data['itens'] as $item) {
+
+            if( empty( $item['id'] ) ){
+                
+                // localizar movimento pelo campo "dcto" chave registro, 
+                //    se nao existir inclui, caso contrario ja foi inderido.
+
+                $movimento_Dcto = Movimento::where('dcto', $item['dcto'])->first();
+
+                if( empty($movimento_Dcto) ){
+
+                    DB::beginTransaction();
+
+                    // ofx campo type => 'CREDIT' ou 'DEBIT'
+                    // no form abreviado CR-CREDIT DB-DEBIT
+
+                    //  gravar tabela movimentos
+                    // form => name="tipo" => campo "tipo_lcto" : 1-Receita , 0-Despesa
+
+                    
+                    $tp = $item['tipo'] == 'CR' ? 1 : 0;
+                    $movDt = \Carbon\Carbon::parse($item['dt'])->tz('America/Sao_Paulo')->format('Y/d/m');
+
+                    // validar campo valor do ofx , retirar sinal negativo
+                    if ( $item['tipo'] == 'DB'){
+                        $vlr = str_replace(',', '.', str_replace('.', '', $item['valor'] )) * -1;
+                    }else{
+                        $vlr = str_replace(',', '.', str_replace('.', '', $item['valor'] ));
+                    }
+//dd($item['dt']);
+//dd($movDt);
+                    try {
+
+                        $Movimento = Movimento::create([
+                            'dt' => $movDt ,
+                            'descricao' => $item['descricao'] , 
+                            'tipo' =>  $tp ,
+                            'tipo_lc' => 'O',
+                            'dcto' =>  $item['dcto'] ,
+                            'valor' => $vlr, 
+                            'categoria_id' => $item['categoria_id'],
+                            'forma_pgto_id' => 1
+                        ]);
+
+                        // Operação é concluída com êxito, conseguiu cadastrar sem erros
+                        DB::commit();
+
+                        Log::info('Movimento incluido: {id}', ['id' => $Movimento]);
+
+                    } catch (Exception $e) {
+
+                        $falha = 1;
+                        
+                        // Operação não é concluída com êxito
+                        DB::rollBack();
+                        Log::error('Movimento não incluido.', [ 'error' => $e->getMessage()]);
+                    }
+                }
+            }
+        }
+
+        if( $falha == 0 ){   
+            //$categorias = Categoria::orderBy('nome', 'ASC')->get();
+
+            // Carregar a VIEW
+            //return view('categorias.index', ['categorias' => $categorias]);
+
+            return redirect()->route('movimentos.index')->with('success', 'Movimentos cadastrads com sucesso!');
+
+        }else{
+            return back()->withInput()->with('error', 'Movimentos não cadastrados!');
+
+        }
+
     }
 
 }
