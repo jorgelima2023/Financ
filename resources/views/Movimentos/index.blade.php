@@ -15,7 +15,7 @@
         </div>
 
         <!-- pesquisar -->
-        <div class="card mb-4 border-light shadow">
+        <div class="card mb-1 border-light shadow">
             <div class="card-header border border-light-subtle">
                 <!-- <span class="pesquisar" style="font-weight: 350; background-color: #D3D3D3;">Pesquisar - Filtros:</span> -->
                 <span class="pesquisar">Pesquisar - Filtros:</span>
@@ -84,16 +84,16 @@
                             <div class="col-md-12 col-sm-12 mt-2 pt-0"><b>Seleção</b> = {{ $sel }}</div>
                         </div>
                     </form>
-
-                    <div class="row">
-                        
-
-                        <a href="{{ route('movimentos.form') }}" target="_blank">Importar</a>
-
-                    </div>
-
                 </div>
             </div>
+        </div>
+
+        <div class="card mb-2 mt-2 pt-1 border-light shadow">
+            <!-- <div class="card-body"> -->
+                <div class="row" title="Clique aqui para importar o arquivo .ofx">
+                    <a href="{{ route('movimentos.form') }}" target="_blank"><i class="fa-solid fa-download"></i>Importar</a>
+                </div>
+            <!-- </div> -->
         </div>
 
         <!-- Modal de cadastro -->
@@ -363,11 +363,11 @@
             <div class="card-header hstack gap-2">
                 <span class="pesquisar">Listar</span>
                 <!-- <span class="pesquisar" style="font-weight: 350; background-color: #D3D3D3;">Listar</span> -->
-                
+                <x-alert />
             </div>
             <div class="card-body">
 
-                <x-alert />
+                <!-- <x-alert /> -->
 
                 <table class="table table-striped table-hover">
                     <thead>
@@ -377,6 +377,7 @@
                             <th class="text-left">Classif.</th>
                             <th class="text-left">Data</th>
                             <th class="text-left">Descrição</th>
+                            <th class="text-left">Dcto</th>
                             <th class="text-left">Categoria</th>
                             <th class="text-left">Forma Pgto</th>
                             <th class="text-right">Valor</th>
@@ -427,11 +428,12 @@
                                     </button>
                                 </th>
 
-                                <td>{{ $movimento->categoria->classif }}</td>
-                                <td>{{ \Carbon\Carbon::parse($movimento->dt)->tz('America/Sao_Paulo')->format('d/m/Y') }}</td>
-                                <td>{{ $movimento->descricao }}</td>
-                                <td>{{ $movimento->categoria_id }} - {{ $movimento->categoria->nome }}</td>
-                                <td>{{ $movimento->forma_pgto_id }}
+                                <td title="Categoria">{{ $movimento->categoria->classif }}</td>
+                                <td title="Data">{{ \Carbon\Carbon::parse($movimento->dt)->tz('America/Sao_Paulo')->format('d/m/Y') }}</td>
+                                <td title="Descrição">{{ $movimento->descricao }}</td>
+                                <td title="Documento">{{ $movimento->dcto }}</td>
+                                <td title="Categoria">{{ $movimento->categoria_id }} - {{ $movimento->categoria->nome }}</td>
+                                <td title="Forma Pgto">{{ $movimento->forma_pgto_id }}
                                     {{ $movimento->forma_pgto->nome }}
                                 </td>
 
@@ -451,7 +453,7 @@
                         @endforelse
                             <tr>
                                 <td colspan="3"><strong>Total Lctos: {{ $qtde_registros }}</strong></td>
-                                <td colspan="4"></td>
+                                <td colspan="5"></td>
                                 @php if(  $totalMovimento > 0 ){ @endphp
                                     <td style="color:#050;"><strong>+{{ number_format($totalMovimento, 2, ',', '.') }}</strong></td>
                                 @php }else{ @endphp

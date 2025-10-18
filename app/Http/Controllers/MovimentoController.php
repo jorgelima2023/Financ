@@ -363,10 +363,17 @@ class MovimentoController extends Controller
         //      'file.max' => 'Tamanho arquivo excedido, tamanho :max Mb'
         //     ]
         // );
-
+        
+        $caminho_do_arquivo = 'c:\\temp\\extrato.ofx';
+        
+        //função nativa do PHP 
+        if (!file_exists($caminho_do_arquivo)) {
+            return back()->withInput()->with('error', '(C:\temp\extrato.ofx) não encontrado!');
+        }
+        
         $ofxParser = new \OfxParser\Parser();
 
-        $ofx = $ofxParser->loadFromFile( 'C:\xampp\htdocs\financeiro\public\Importar\extrato.ofx' );
+        $ofx = $ofxParser->loadFromFile( 'C:\temp\extrato.ofx' );
 
         // Acesse a primeira conta bancária (a variável $ofx contém um array de contas)
         $contaBancaria = reset($ofx->bankAccounts);
@@ -499,7 +506,8 @@ class MovimentoController extends Controller
         */
 
         $falha = 0;
-        
+        $movIncluido = 0;
+
         foreach ($data['itens'] as $item) {
 
             if( empty( $item['id'] ) ){
@@ -529,9 +537,11 @@ class MovimentoController extends Controller
                     }else{
                         $vlr = str_replace(',', '.', str_replace('.', '', $item['valor'] ));
                     }
-//dd($item['dt']);
-//dd($movDt);
+                    //dd($item['dt']);
+                    //dd($movDt);
                     try {
+                        
+                        $movIncluido++;
 
                         $Movimento = Movimento::create([
                             'dt' => $movDt ,
@@ -567,7 +577,7 @@ class MovimentoController extends Controller
             // Carregar a VIEW
             //return view('categorias.index', ['categorias' => $categorias]);
 
-            return redirect()->route('movimentos.index')->with('success', 'Movimentos cadastrads com sucesso!');
+            return redirect()->route('movimentos.index')->with('success', 'Movimentos cadastrados com sucesso: (' . $movIncluido . ') movimentos!' );
 
         }else{
             return back()->withInput()->with('error', 'Movimentos não cadastrados!');
