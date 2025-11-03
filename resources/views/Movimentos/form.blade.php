@@ -38,6 +38,8 @@
                             @endphp
 
                             @forelse ($movimentos as $movimento)
+
+                           
                                 <tr>
                                     <td>
                                         <input type="hidden" name="itens[{{ $i }}][id]" maxlength="5" size="5" 
@@ -79,8 +81,10 @@
                                             <option value="">Selecione a categoria</option>
 
                                             @foreach ($categorias as $categoria)
-                                                <option value="{{ $categoria->id }}"
-                                                    {{ old('categoria_id') == $categoria->id ? 'selected' : '' }}>
+
+                                            <!-- value="{{ $categoria->id }}" -->
+                                                <option value="{{ $movimento->categoria_id == $categoria->id ? $movimento->categoria_id : $categoria->id }}"
+                                                    {{ $movimento->categoria_id == $categoria->id ? 'selected' : '' }}>
                                                     {{ $categoria->nome }}
                                                 </option>
                                             @endforeach

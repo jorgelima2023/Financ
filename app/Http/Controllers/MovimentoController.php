@@ -421,10 +421,32 @@ class MovimentoController extends Controller
                 $tipo = $primeiraTransacao->type == 'CREDIT' ? 'CR' : 'DB';
                 $dit = \Carbon\Carbon::parse($primeiraTransacao->date)->tz('America/Sao_Paulo')->format('d/m/Y');
 //dd($dit);
+                $cat = 0;
+
+                $string = $primeiraTransacao->memo;
+                
+                
+                //if (Str::contains($string, $texto)) {
+                if (strpos( strtoupper($string), "RENDIMENTOS") !== false) {
+                    $cat = 39;
+                }
+                if ( (strpos(strtoupper($string), "CONDOR") !== false) || (strpos(strtoupper($string), "JACOMAR") !== false) ) {
+                    $cat = 45;
+                }
+                if ( (strpos(strtoupper($string), "RESTAURANTE") !== false) || (strpos(strtoupper($string), "BUFFET SKINA") !== false) ) {
+                    $cat = 25;
+                }
+                if ( (strpos(strtoupper($string), "DROGARIA") !== false) || (strpos(strtoupper($string), "FARMACIA") !== false) ) {
+                    $cat = 18;
+                }
+                if ( (strpos(strtoupper($string), "PIX") !== false) || ($tipo == "DB") ) {
+                    $cat = 32;
+                }
+
                 $movimentos->push(new Movimento(['id' => 0, 
                                             'dt' => $dit,
                                             'descricao' => $primeiraTransacao->memo , 
-                                            'categoria_id' => 0,
+                                            'categoria_id' => $cat,
                                             'forma_pgto_id' => 1,
                                             'tipo_lc' => 'O',
                                             'tipo' => $tipo,   
@@ -529,7 +551,15 @@ class MovimentoController extends Controller
 
                     
                     $tp = $item['tipo'] == 'CR' ? 1 : 0;
-                    $movDt = \Carbon\Carbon::parse($item['dt'])->tz('America/Sao_Paulo')->format('Y/d/m');
+                    
+                    //$movDt = \Carbon\Carbon::parse($item['dt'])->tz('America/Sao_Paulo')->format('Y/d/m');
+
+                    $dataBr = $item['dt'];
+                    // Converter para formato MySQL
+                    $dataMysql = \Carbon\Carbon::createFromFormat('d/m/Y', $dataBr)
+                            ->format('Y-m-d');
+                    
+                    $movDt = $dataMysql;
 
                     // validar campo valor do ofx , retirar sinal negativo
                     if ( $item['tipo'] == 'DB'){
