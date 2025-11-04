@@ -39,7 +39,6 @@
 
                             @forelse ($movimentos as $movimento)
 
-                           
                                 <tr>
                                     <td>
                                         <input type="hidden" name="itens[{{ $i }}][id]" maxlength="5" size="5" 
@@ -54,7 +53,7 @@
                                             value="{{ $movimento->dt }}" >
                                     </td>
                                     <td style="width: 370px;" align="left">
-                                        <input readonly type="text" name="itens[{{ $i }}][descricao]" 
+                                        <input  type="text" name="itens[{{ $i }}][descricao]" 
                                             class="form-control" id="itens[{{ $i }}][descricao]" maxlength="60" size="60" 
                                             value="{{ $movimento->descricao }}" >
                                     </td>
@@ -82,6 +81,8 @@
 
                                             @foreach ($categorias as $categoria)
 
+                                            
+                                            
                                             <!-- value="{{ $categoria->id }}" -->
                                                 <option value="{{ $movimento->categoria_id == $categoria->id ? $movimento->categoria_id : $categoria->id }}"
                                                     {{ $movimento->categoria_id == $categoria->id ? 'selected' : '' }}>

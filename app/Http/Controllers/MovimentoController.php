@@ -421,27 +421,79 @@ class MovimentoController extends Controller
                 $tipo = $primeiraTransacao->type == 'CREDIT' ? 'CR' : 'DB';
                 $dit = \Carbon\Carbon::parse($primeiraTransacao->date)->tz('America/Sao_Paulo')->format('d/m/Y');
 //dd($dit);
-                $cat = 0;
+                $cat = 32;  // debito cartao
 
                 $string = $primeiraTransacao->memo;
                 
                 
                 //if (Str::contains($string, $texto)) {
+                
+                if (strpos( strtoupper($string), "CLINIPAM") !== false) {
+                    $cat = 11;
+                }
+                if (strpos( strtoupper($string), "SAQ DIN") !== false) {
+                    $cat = 41;
+                }
+                if (strpos( strtoupper($string), "AGUA") !== false) {
+                    $cat = 14;
+                }
+                if (strpos( strtoupper($string), "TELEFONICA BRAS") !== false) {
+                    $cat = 40;
+                }
+                if (strpos( strtoupper($string), "COPEL") !== false) {
+                    $cat = 15;
+                }
+                if (strpos( strtoupper($string), "COPEL") !== false) {
+                    $cat = 15;
+                }
+                if (strpos( strtoupper($string), "POSTO") !== false) {
+                    $cat = 27;
+                }
+                if (strpos( strtoupper($string), "TV P/ASSINATURA") !== false) {
+                    $cat = 17;
+                }
+                if (strpos( strtoupper($string), "PAGTO COBRANCA BANCO BRADESCO") !== false) {
+                    $cat = 42;
+                }
+                if (strpos( strtoupper($string), "PAGTO COBRANCA ITAU UNIBANCO HOLDING") !== false) {
+                    $cat = 43;
+                }
+                if (strpos( strtoupper($string), "MNINFO") !== false) {
+                    $cat = 7;
+                }
+                if (strpos( strtoupper($string), "CLASSIC") !== false) {
+                    $cat = 36;
+                }
                 if (strpos( strtoupper($string), "RENDIMENTOS") !== false) {
                     $cat = 39;
                 }
-                if ( (strpos(strtoupper($string), "CONDOR") !== false) || (strpos(strtoupper($string), "JACOMAR") !== false) ) {
+                if ( (strpos(strtoupper($string), "CONDOR") !== false)  ) {
                     $cat = 45;
                 }
-                if ( (strpos(strtoupper($string), "RESTAURANTE") !== false) || (strpos(strtoupper($string), "BUFFET SKINA") !== false) ) {
+                if (  (strpos(strtoupper($string), "JACOMAR") !== false) ) {
+                    $cat = 45;
+                }
+                if ( (strpos(strtoupper($string), "RESTAURANTE") !== false) ) {
                     $cat = 25;
                 }
-                if ( (strpos(strtoupper($string), "DROGARIA") !== false) || (strpos(strtoupper($string), "FARMACIA") !== false) ) {
+                if ( (strpos(strtoupper($string), "BUFFET SKINA") !== false) ) {
+                    $cat = 25;
+                }
+                if ( (strpos(strtoupper($string), "FARMACIA") !== false) ) {
                     $cat = 18;
                 }
-                if ( (strpos(strtoupper($string), "PIX") !== false) || ($tipo == "DB") ) {
-                    $cat = 32;
+                if ( (strpos(strtoupper($string), "DROGARIA") !== false) ) {
+                    $cat = 18;
                 }
+                if ( (strpos(strtoupper($string), "PIX") !== false) ) {
+                    if ($tipo == "DB") {
+                        $cat = 33;
+                    }
+                    if ($tipo == "CR") {
+                        $cat = 9;
+                    }
+                }
+                
 
                 $movimentos->push(new Movimento(['id' => 0, 
                                             'dt' => $dit,
@@ -536,10 +588,41 @@ class MovimentoController extends Controller
                 
                 // localizar movimento pelo campo "dcto" chave registro, 
                 //    se nao existir inclui, caso contrario ja foi inderido.
+                
+                $dataBr = $item['dt'];
+                // Converter para formato MySQL
+                $dataMysql = \Carbon\Carbon::createFromFormat('d/m/Y', $dataBr)
+                        ->format('Y-m-d');
+                
+                $movDt = $dataMysql;
+                
+                // debug
+                //DB::enableQueryLog();
+                
+                /*
+                Buscar um registro e testar se existe
+                $user = User::where('email', 'joao@email.com')->first();
+                if ($user) {
+                    echo "Usuário encontrado: " . $user->name;
+                } else {
+                    echo "Usuário não encontrado.";
+                }
+                */
 
-                $movimento_Dcto = Movimento::where('dcto', $item['dcto'])->first();
+                //$movimento_Dcto = Movimento::where('dcto', $item['dcto'])->first();
+                
+                $movimento_Dcto = Movimento::where('dcto', $item['dcto'])
+                ->where('dt', '=', $movDt)
+                ->get();
 
-                if( empty($movimento_Dcto) ){
+                // debug
+                //dd(DB::getQueryLog());
+
+                //dd($Movimento->dcto);
+
+                //if( empty($movimento_Dcto) ){
+                //if( !$movimento_Dcto ){
+                if ($movimento_Dcto->isEmpty()) {
 
                     DB::beginTransaction();
 
@@ -552,14 +635,15 @@ class MovimentoController extends Controller
                     
                     $tp = $item['tipo'] == 'CR' ? 1 : 0;
                     
-                    //$movDt = \Carbon\Carbon::parse($item['dt'])->tz('America/Sao_Paulo')->format('Y/d/m');
 
-                    $dataBr = $item['dt'];
+                    //$dataBr = $item['dt'];
                     // Converter para formato MySQL
-                    $dataMysql = \Carbon\Carbon::createFromFormat('d/m/Y', $dataBr)
-                            ->format('Y-m-d');
+                    //$dataMysql = \Carbon\Carbon::createFromFormat('d/m/Y', $dataBr)
+                    //        ->format('Y-m-d');
                     
-                    $movDt = $dataMysql;
+                    //$movDt = $dataMysql;
+
+                    //dd($movDt);
 
                     // validar campo valor do ofx , retirar sinal negativo
                     if ( $item['tipo'] == 'DB'){
@@ -587,7 +671,7 @@ class MovimentoController extends Controller
                         // Operação é concluída com êxito, conseguiu cadastrar sem erros
                         DB::commit();
 
-                        Log::info('Movimento incluido: {id}', ['id' => $Movimento]);
+                        Log::info('Movimento incluido: {id}', ['id' => $Movimento ] );
 
                     } catch (Exception $e) {
 
@@ -597,6 +681,8 @@ class MovimentoController extends Controller
                         DB::rollBack();
                         Log::error('Movimento não incluido.', [ 'error' => $e->getMessage()]);
                     }
+                }else{
+                    Log::info('Movimento nao incluido: {id}', ['id' => $item ] );
                 }
             }
         }
