@@ -546,6 +546,7 @@ class MovimentoController extends Controller
     // form update movimentos - vindo do form - ler ofx
     public function updateMovimentos(Request $request){
         $data = $request;
+        
         //dd($data);
         //dd($request);
 
@@ -596,6 +597,8 @@ class MovimentoController extends Controller
                 
                 $movDt = $dataMysql;
                 
+                //dd($movDt);
+
                 // debug
                 //DB::enableQueryLog();
                 
@@ -614,6 +617,8 @@ class MovimentoController extends Controller
                 $movimento_Dcto = Movimento::where('dcto', $item['dcto'])
                 ->where('dt', '=', $movDt)
                 ->get();
+
+                //dd($movimento_Dcto);
 
                 // debug
                 //dd(DB::getQueryLog());
@@ -682,7 +687,8 @@ class MovimentoController extends Controller
                         Log::error('Movimento não incluido.', [ 'error' => $e->getMessage()]);
                     }
                 }else{
-                    Log::info('Movimento nao incluido: {id}', ['id' => $item ] );
+                    $falha = 1;
+                    Log::info('Movimento já existe: {$movimento_Dcto->id}', ['id' => $movimento_Dcto ] );
                 }
             }
         }
