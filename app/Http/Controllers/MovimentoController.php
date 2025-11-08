@@ -545,6 +545,7 @@ class MovimentoController extends Controller
 
     // form update movimentos - vindo do form - ler ofx
     public function updateMovimentos(Request $request){
+
         $data = $request;
         
         //dd($data);
@@ -582,6 +583,7 @@ class MovimentoController extends Controller
 
         $falha = 0;
         $movIncluido = 0;
+        $movjaexiste = 0;
 
         foreach ($data['itens'] as $item) {
 
@@ -617,6 +619,14 @@ class MovimentoController extends Controller
                 $movimento_Dcto = Movimento::where('dcto', $item['dcto'])
                 ->where('dt', '=', $movDt)
                 ->get();
+                
+                // dd($item['dcto']);  0000726  0000099
+
+                // if( $item['dcto'] == '0000726'){ 
+                //     dd(ini_get('max_input_vars'));
+                //     dd('dt=' . $item['dt'] . ' descr=' . $item['descricao'] . ' tipo=' . $item['tipo'] . 
+                //     ' dcto=' . $item['dcto'] . ' valor=' . $item['valor'] . ' cat=' . $item['categoria_id'] );
+                // }
 
                 //dd($movimento_Dcto);
 
@@ -687,8 +697,9 @@ class MovimentoController extends Controller
                         Log::error('Movimento não incluido.', [ 'error' => $e->getMessage()]);
                     }
                 }else{
-                    $falha = 1;
-                    Log::info('Movimento já existe: {$movimento_Dcto->id}', ['id' => $movimento_Dcto ] );
+                    $movjaexiste++;
+                    
+                    //Log::info('Movimento já existe: {$movimento_Dcto->id}', ['id' => $movimento_Dcto ] );
                 }
             }
         }
@@ -698,11 +709,19 @@ class MovimentoController extends Controller
 
             // Carregar a VIEW
             //return view('categorias.index', ['categorias' => $categorias]);
-
-            return redirect()->route('movimentos.index')->with('success', 'Movimentos cadastrados com sucesso: (' . $movIncluido . ') movimentos!' );
+            $msgmov = 'Movimentos cadastrados com sucesso: (' . $movIncluido . ') movimentos!'; 
+            if( $movjaexiste ){
+                $msgmov .= ' ( ' . $movjaexiste . ' ) Movimento já existe!';
+            }
+            return redirect()->route('movimentos.index')->with('success', $msgmov );
 
         }else{
-            return back()->withInput()->with('error', 'Movimentos não cadastrados!');
+            $msgmov = 'Movimentos não cadastrados!';
+            if( $movjaexiste ){
+                $msgmov .= ' ( ' . $movjaexiste . ' ) Movimento já existe!';
+            }
+
+            return back()->withInput()->with('error', $msgmov );
 
         }
 
