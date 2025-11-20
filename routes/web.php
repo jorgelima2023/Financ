@@ -198,6 +198,18 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/update-movimento-form', 
             [MovimentoController::class, 'updateMovimentos'])->name('Movimentos.form.update');
             
+    // -----------------------------------------------------------------------
+    // 1. Criar rota da API no Laravel
+    Route::get('/pie-data', [\App\Http\Controllers\ChartController::class, 'pieData']);
+
+    // Route::get('/pie-data', function () {
+    //     return response()->json([
+    //         'labels' => ['Produto A', 'Produto B', 'Produto C'],
+    //         'values' => [40, 35, 25],
+    //         'colors' => ['#4e73df', '#1cc88a', '#36b9cc']
+    //     ]);
+    // });
+
 
         /*
     ===============================================================================================
