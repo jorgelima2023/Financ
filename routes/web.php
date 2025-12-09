@@ -202,6 +202,13 @@ Route::group(['middleware' => 'auth'], function () {
     // 1. Criar rota da API no Laravel
     Route::get('/pie-data', [\App\Http\Controllers\ChartController::class, 'pieData']);
 
+    // Route::get('/pie-data', 
+    //         [MovimentoController::class, 'pieData'])->name('Movimentos.pie');
+    
+    Route::get('/pie', 
+            [MovimentoController::class, 'pie'])->name('Movimentos.pie');
+    
+    
     // Route::get('/pie-data', function () {
     //     return response()->json([
     //         'labels' => ['Produto A', 'Produto B', 'Produto C'],

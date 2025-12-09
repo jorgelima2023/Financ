@@ -90,6 +90,14 @@
 
         <div class="card mb-2 mt-2 pt-1 border-light shadow">
             <!-- <div class="card-body"> -->
+                <div class="row" title="Clique aqui para gerar - Pie chart">
+                    <a href="{{ route('Movimentos.pie') }}" target="_blank"><i class="fa-solid fa-pie"></i>Pie-Chart</a>
+                </div>
+            <!-- </div> -->
+        </div>
+
+        <div class="card mb-2 mt-2 pt-1 border-light shadow">
+            <!-- <div class="card-body"> -->
                 <div class="row" title="Clique aqui para importar o arquivo .ofx">
                     <a href="{{ route('movimentos.form') }}" target="_blank"><i class="fa-solid fa-download"></i>Importar</a>
                 </div>

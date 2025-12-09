@@ -65,6 +65,9 @@ class UserController extends Controller
     // Carregar o formulário cadastrar novo usuário
     public function create()
     {
+        // Recuperar todos os papéis
+        $roles = Role::pluck('name')->all();
+
         // Carregar a VIEW
         return view('users.create', ['menu' => 'users', 'roles' => $roles ]);
         // Carregar a VIEW

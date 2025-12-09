@@ -10,9 +10,9 @@ class ChartController extends Controller
     {
         // Exemplos (depois pode alimentar via DB)
         $labels = ["Produto A", "Produto B", "Produto C"];
-        $values = [45, 30, 25];
+        $values = [25, 20, 50];
         $colors = ["#4e73df", "#1cc88a", "#36b9cc"];
-
+//dd('aqui...');
         return response()->json([
             "labels" => $labels,
             "values" => $values,
