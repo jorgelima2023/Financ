@@ -81,27 +81,54 @@
 
                         </div>
                         <div class="row">
-                            <div class="col-md-12 col-sm-12 mt-2 pt-0"><b>Seleção</b> = {{ $sel }}</div>
+                            <div class="col-md-12 col-sm-12 mt-2 pt-0">{{ $sel }}</div>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
 
-        <div class="card mb-2 mt-2 pt-1 border-light shadow">
-            <!-- <div class="card-body"> -->
+        <!-- <div class="card mb-2 mt-2 pt-1 border-light shadow">
+            <div class="card-body">
                 <div class="row" title="Clique aqui para gerar - Pie chart">
-                    <a href="{{ route('Movimentos.pie') }}" target="_blank"><i class="fa-solid fa-pie"></i>Pie-Chart</a>
+                    <a href="{{ route('Movimentos.pie') }}" target="_blank">
+                        <i class="fa-solid fa-pie"></i>Pie-Chart</a>
                 </div>
-            <!-- </div> -->
-        </div>
+            </div>
+        </div> -->
 
         <div class="card mb-2 mt-2 pt-1 border-light shadow">
             <!-- <div class="card-body"> -->
-                <div class="row" title="Clique aqui para importar o arquivo .ofx">
-                    <a href="{{ route('movimentos.form') }}" target="_blank"><i class="fa-solid fa-download"></i>Importar</a>
-                </div>
-            <!-- </div> -->
+                <!-- <div class="row-4 col-6"> -->
+                <div class="mb-1 hstack gap-2">
+                    
+                    <!-- <a href="{{ route('movimentos.form') }}" target="_blank">
+                        <i class="fa-solid fa-download"></i>
+                        Importar</a> -->
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" 
+                        title="Clique aqui para importar o arquivo .ofx"> 
+                        <a href="{{ route('movimentos.form') }}" target="_blank">
+                            <i class="fa-solid fa-download"></i>
+                            Importar</a>
+                    </button>   
+
+                    <!--  pie chart movimentos 
+                    enviar para rota:
+                    um item - enviar ID
+                    variso itens - form + post
+                    filtro - query string , util relatorios, e dados completos buscar na controller
+
+                    o que nao fazer: enviar objeto inteiro na url, objeto inteiro / gigante / seguranca
+                       <a href=  route('rota', $movimento) >
+                        -->
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" 
+                        title="Clique aqui para gerar - Pie chart"> 
+                        <a href="{{ route('Movimentos.pie' , [ 'filtro' => $sel ] ) }}" target="_blank">
+                            <i class="fa-solid fa-pie"></i>Pie-Chart</a>
+                    </button>
+                <!-- </div> -->
+                
+            </div>
         </div>
 
         <!-- Modal de cadastro -->
@@ -414,7 +441,8 @@
                                             data-tipo="{{ $movimento->tipo == 'O' ? 'Obrigação' : 'Provisão' }}"
                                             data-tipo_lc="{{ $movimento->tipo_lc == 0 ? 'Receita' : 'Despesa' }}">
                                             
-                                        <i class="fa-regular fa-pen-to-square"></i>
+                                        <!-- <i class="fa-regular fa-trash"></i> -->
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
                                     </button>
                                 </th>
                                 <!-- botao edita -->

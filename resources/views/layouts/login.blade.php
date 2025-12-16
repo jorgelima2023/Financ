@@ -9,7 +9,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <title>Celke - Login</title>
+    <title>Login</title>
 </head>
 
 <body class="bg-primary">  

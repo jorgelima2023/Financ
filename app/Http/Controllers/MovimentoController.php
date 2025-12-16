@@ -154,7 +154,7 @@ class MovimentoController extends Controller
           'tipo_filtro' => $request->tipo_filtro,
           'qtde_registros' => count($movimentos),
           'totalMovimento' => $total,
-          'sel' => $sel
+          'sel' => $sel ? 'Filtros - Seleção: ' . $sel : ''
          ]);
 
     }
@@ -727,8 +727,8 @@ class MovimentoController extends Controller
 
     }
     
-    public function pie()
-    {
+    public function pie(Request $request)
+    {   dd($request->all());
         return view('Movimentos.pie');
     }
 

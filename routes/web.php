@@ -205,7 +205,7 @@ Route::group(['middleware' => 'auth'], function () {
     // Route::get('/pie-data', 
     //         [MovimentoController::class, 'pieData'])->name('Movimentos.pie');
     
-    Route::get('/pie', 
+    Route::get('/pie/filtro', 
             [MovimentoController::class, 'pie'])->name('Movimentos.pie');
     
     
