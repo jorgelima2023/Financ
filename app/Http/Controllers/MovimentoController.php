@@ -23,9 +23,20 @@ class MovimentoController extends Controller
     //public function index(categoria $categoria )
     public function index(Request $request)
     {
-        //dd($request);
 
-        DB::enableQueryLog();
+        if( !$request->data_de ){
+           $data = \Carbon\Carbon::now()->addDays(365);
+           //$request->data_de = \Carbon\Carbon::now()->addDays(365);
+           //$request->data_de = $data; 
+        }
+
+            // $data = Carbon::now()->addDays(100);
+
+        //dd($request);
+        //dd('req data de:' . $request->data_de . ' data ' . $data);
+
+
+        //DB::enableQueryLog();
 
         //$movimentos = Movimento::with('categoria', 'forma_pgto')
             //->where('categoria_id', $categoria->id)
@@ -64,7 +75,7 @@ class MovimentoController extends Controller
 
         // ===================================================================================
         // opcao order by coluna tabela relacionada
-        if( 1 == 1 ){
+        if( 1 == 2 ){
             
             $movimentos = Movimento::select('movimentos.*')
             ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
@@ -87,6 +98,45 @@ class MovimentoController extends Controller
         }
         // ===================================================================================
         
+        // tratamento se a data vier vazia.
+        /*
+        Se data_de estiver vazia → usa hoje 00:00:00
+        Se data_ate estiver vazia → usa hoje 23:59:59
+        Evita duplicação de when
+        Usa Carbon diretamente (sem format, mais seguro)
+        Código mais fácil de manter
+          Prefira filled() em vez de has() para evitar valores vazios
+          whereBetween() é ideal para filtros de período
+          startOfDay() / endOfDay() evitam problemas com horário
+        */ 
+
+        if( 1 == 1 ){
+            //use Carbon\Carbon;
+
+            $dataDe  = $request->filled('data_de')
+                ? \Carbon\Carbon::parse($request->data_de)->startOfDay()
+                : \Carbon\Carbon::now()->startOfDay();
+
+            $dataAte = $request->filled('data_ate')
+                ? \Carbon\Carbon::parse($request->data_ate)->endOfDay()
+                : \Carbon\Carbon::now()->endOfDay();
+
+            $movimentos = Movimento::select('movimentos.*')
+                ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
+                ->with(['categoria', 'forma_pgto'])
+                ->when($request->filled('descricao'), function ($q) use ($request) {
+                    $q->where('descricao', 'like', '%' . $request->descricao . '%');
+                })
+                ->when($request->filled('tipo_filtro'), function ($q) use ($request) {
+                    $q->where('tipo_lc', $request->tipo_filtro);
+                })
+                ->whereBetween('dt', [$dataDe, $dataAte])
+                ->orderBy('movimentos.dt', 'asc')
+                ->orderBy('categorias.classif', 'asc')
+                ->get();
+
+        }
+
         $sel = "";
         if( $request->has('descricao') && $request->descricao ){
             $sel .= $sel ? ', ' : '' ;
@@ -140,7 +190,9 @@ class MovimentoController extends Controller
         // nao funciona Log::info('sql' , ['' => $movimentos->toRawSql()]);
         // nao funciona dd($movimentos->toSql());
 
-        //dd(DB::getQueryLog());   esse funciona ok!
+        
+
+        // dd(DB::getQueryLog());   //esse funciona ok!
 
         
 
