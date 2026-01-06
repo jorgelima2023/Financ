@@ -6,18 +6,25 @@ use Illuminate\Http\Request;
 
 class ChartController extends Controller
 {
-    public function pieData()
+    public function pieData(Request $request)
     {
+        //$descricao  = $request->descricao;
+        $tipo       = $request->tipo_filtro;
+        $dataDe     = $request->data_de;
+        $dataAte    = $request->data_ate;
+        
+        dd('req=' . $request->all());
+
         // Exemplos (depois pode alimentar via DB)
-        $labels = ["Produto A", "Produto B", "Produto C"];
-        $values = [25, 20, 50];
-        $colors = ["#4e73df", "#1cc88a", "#36b9cc"];
+        // $labels = ["Produto A", "Produto B", "Produto C"];
+        // $values = [25, 20, 50];
+        // $colors = ["#4e73df", "#1cc88a", "#36b9cc"];
 //dd('aqui...');
-        return response()->json([
-            "labels" => $labels,
-            "values" => $values,
-            "colors" => $colors
-        ]);
+        // return response()->json([
+        //     "labels" => $labels,
+        //     "values" => $values,
+        //     "colors" => $colors
+        // ]);
 
         // ===================================================================================
         // $produtos = \DB::table('produtos')

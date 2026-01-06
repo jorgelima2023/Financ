@@ -123,7 +123,12 @@
                         -->
                     <button type="button" class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" 
                         title="Clique aqui para gerar - Pie chart"> 
-                        <a href="{{ route('Movimentos.pie' , [ 'filtro' => $sel ] ) }}" target="_blank">
+                        <a href="{{ route('Movimentos.pie' , 
+                                    [ 'tipo_filtro' => $tipo_filtro ,
+                                      'data_de' => $data_de ,
+                                      'data_ate' => $data_ate 
+                                    ] ) }}" 
+                                target="_blank">
                             <i class="fa-solid fa-pie"></i>Pie-Chart</a>
                     </button>
                 <!-- </div> -->

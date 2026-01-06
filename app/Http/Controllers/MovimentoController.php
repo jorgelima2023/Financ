@@ -24,18 +24,6 @@ class MovimentoController extends Controller
     public function index(Request $request)
     {
 
-        if( !$request->data_de ){
-           $data = \Carbon\Carbon::now()->addDays(365);
-           //$request->data_de = \Carbon\Carbon::now()->addDays(365);
-           //$request->data_de = $data; 
-        }
-
-            // $data = Carbon::now()->addDays(100);
-
-        //dd($request);
-        //dd('req data de:' . $request->data_de . ' data ' . $data);
-
-
         //DB::enableQueryLog();
 
         //$movimentos = Movimento::with('categoria', 'forma_pgto')
@@ -111,8 +99,6 @@ class MovimentoController extends Controller
         */ 
 
         if( 1 == 1 ){
-            //use Carbon\Carbon;
-
             $dataDe  = $request->filled('data_de')
                 ? \Carbon\Carbon::parse($request->data_de)->startOfDay()
                 : \Carbon\Carbon::now()->startOfDay();
@@ -137,22 +123,27 @@ class MovimentoController extends Controller
 
         }
 
+        $filtro = "";
         $sel = "";
         if( $request->has('descricao') && $request->descricao ){
             $sel .= $sel ? ', ' : '' ;
             $sel .= " Descrição:{$request->descricao}";
+            //$filtro[] = " Descricao={$request->descricao}";
         }
         if( $request->has('tipo_filtro') && $request->tipo_filtro ){
             $sel .= $sel ? ', ' : '' ;
-            $sel .= " Tipo:" . ($request->tipo_filtro == 'O') ? 'Obrigação' : 'Previsão'; 
+            $sel .= " Tipo:" . ($request->tipo_filtro == 'O') ? 'Obrigação' : 'Previsão';
+            //$filtro[] = " Tipo={$request->tipo_filtro}";
         }
         if ( $request->filled('data_de') && $request->data_de ){
             $sel .= $sel ? ', ' : '' ;
             $sel .= " Data de:" . \Carbon\Carbon::parse($request->data_de)->format('d-m-Y');
+            //$filtro[] = " data_de={$request->data_de}";
         }
         if ( $request->filled('data_ate') && $request->data_ate ){
             $sel .= $sel ? ', ' : '' ;
             $sel .= " Data ate:" . \Carbon\Carbon::parse($request->data_ate)->format('d-m-Y');
+            //$filtro[] = " data_ate={$request->data_ate}";
         }
 
         $categorias = Categoria::orderBy('classif', 'ASC')
@@ -780,8 +771,111 @@ class MovimentoController extends Controller
     }
     
     public function pie(Request $request)
-    {   dd($request->all());
-        return view('Movimentos.pie');
+    {   
+        // "filtro" => "Tipo=O data_de=2025-12-01 data_ate=2025-12-31"
+        //  "tipo_filtro" => "O"
+        //  "data_de" => "2025-12-01"
+        //  "data_ate" => "2025-12-31"
+
+         //dd($request->all());
+        // recebe os filtros para montar a consulta
+
+        DB::enableQueryLog();
+        
+        /*
+        $query = DB::table('movimentos');
+
+        if ($request->filled('descricao')) {
+            $query->where('descricao', 'like', "%{$request->descricao}%");
+        }
+
+        if ($request->filled('tipo_filtro')) {
+            $query->where('tipo_lc', $request->tipo_filtro);
+        }
+
+        if ($request->filled('data_de')) {
+            $query->whereDate('dt', '>=', $request->data_de);
+        }
+    
+        if ($request->filled('data_ate')) {
+            $query->whereDate('dt', '<=', $request->data_ate);
+        }
+        
+         // Exemplo: total por tipo
+        $dados = $query
+            ->select('tipo', DB::raw('SUM(valor) as total'))
+            ->groupBy('tipo')
+            ->get();
+            
+        */
+
+
+               /*
+        $query = DB::table('movimentos');
+
+        if ($request->filled('descricao')) {
+            $query->where('descricao', 'like', "%{$request->descricao}%");
+        }
+
+        if ($request->filled('tipo_filtro')) {
+            $query->where('tipo_lc', $request->tipo_filtro);
+        }
+
+        if ($request->filled('data_de')) {
+            $query->whereDate('dt', '>=', $request->data_de);
+        }
+    
+        if ($request->filled('data_ate')) {
+            $query->whereDate('dt', '<=', $request->data_ate);
+        }
+        
+         // Exemplo: total por tipo
+        $dados = $query
+            ->select('categorias.nome', DB::raw('SUM(movimentos.valor) as total'))
+            ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
+            ->where('categorias.soma', '=', 'S' )
+            ->groupBy('categorias.nome')
+            ->get();
+            */
+
+
+        $query = DB::table('movimentos')
+            ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
+            ->where('categorias.soma', 'S');
+
+        if ($request->filled('data_de') && $request->filled('data_ate')) {
+            $query->whereBetween('movimentos.dt', [
+                $request->data_de,
+                $request->data_ate
+            ]);
+        }
+
+        $dados = $query
+        ->groupBy('categorias.nome')
+        ->select(
+            'categorias.nome',
+            DB::raw('SUM(movimentos.valor) as total')
+        )
+        ->get();
+
+        // dd(DB::getQueryLog());
+            /*
+        select `categorias`.`nome`, SUM(movimentos.valor) as total 
+        from `movimentos` 
+        inner join `categorias` on `movimentos`.`categoria_id` = `categorias`.`id` 
+        where `categorias`.`soma` = ? and `movimentos`.`dt` between ? and ? 
+        group by `categorias`.`nome`
+        */
+
+        return view('Movimentos.pie', [
+            'descricao'    => $request->descricao,
+            'data_de'      => $request->data_de,
+            'data_ate'     => $request->data_ate,
+            'tipo_filtro'  => $request->tipo_filtro,
+            'labels'       => $dados->pluck('nome'),
+            'values'       => $dados->pluck('total'),
+        ]);
+        
     }
 
     public function pieData2()
