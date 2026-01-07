@@ -843,6 +843,14 @@ class MovimentoController extends Controller
             ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
             ->where('categorias.soma', 'S');
 
+        if ($request->filled('descricao')) {
+            $query->where('descricao', 'like', "%{$request->descricao}%");
+        }
+
+        if ($request->filled('tipo_filtro')) {
+            $query->where('tipo_lc', $request->tipo_filtro);
+        }
+
         if ($request->filled('data_de') && $request->filled('data_ate')) {
             $query->whereBetween('movimentos.dt', [
                 $request->data_de,
