@@ -197,6 +197,8 @@ class MovimentoController extends Controller
           'tipo_filtro' => $request->tipo_filtro,
           'qtde_registros' => count($movimentos),
           'totalMovimento' => $total,
+          'totalDespesa' => $totalDespesa,
+          'totalReceita' => $totalReceita,
           'sel' => $sel ? 'Filtros - Seleção: ' . $sel : ''
          ]);
 
@@ -864,6 +866,7 @@ class MovimentoController extends Controller
             'categorias.nome',
             DB::raw('SUM(movimentos.valor) as total')
         )
+        ->orderBy('total')
         ->get();
 
         // dd(DB::getQueryLog());
@@ -882,6 +885,7 @@ class MovimentoController extends Controller
             'tipo_filtro'  => $request->tipo_filtro,
             'labels'       => $dados->pluck('nome'),
             'values'       => $dados->pluck('total'),
+            'dados' => $dados
         ]);
         
     }

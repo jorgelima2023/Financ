@@ -503,6 +503,18 @@
                                 @php } @endphp
                             </tr>
 
+                            <tr>
+                                <td colspan="3"><strong>Despesas:</strong></td>
+                                <td colspan="2"></td>
+                                <td style="color:#C00;"><strong>+{{ number_format($totalDespesa, 2, ',', '.') }}</strong></td>
+                                <td colspan="3"></td>                                   
+                            </tr>
+                            <tr>
+                                <td colspan="3"><strong>Receitas:</strong></td>
+                                <td colspan="2"></td>
+                                <td style="color:#050;"><strong>+{{ number_format($totalReceita, 2, ',', '.') }}</strong></td>
+                                <td colspan="3"></td>    
+                            </tr>
                     </tbody>
                 </table>
 
