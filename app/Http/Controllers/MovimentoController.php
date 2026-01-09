@@ -782,7 +782,9 @@ class MovimentoController extends Controller
          //dd($request->all());
         // recebe os filtros para montar a consulta
 
-        DB::enableQueryLog();
+        // ----------------------  debug query
+        
+        //DB::enableQueryLog();
         
         /*
         $query = DB::table('movimentos');
@@ -878,6 +880,7 @@ class MovimentoController extends Controller
         group by `categorias`.`nome`
         */
 
+        // -------- versao 1
         return view('Movimentos.pie', [
             'descricao'    => $request->descricao,
             'data_de'      => $request->data_de,
@@ -887,6 +890,9 @@ class MovimentoController extends Controller
             'values'       => $dados->pluck('total'),
             'dados' => $dados
         ]);
+        
+       
+
         
     }
 
