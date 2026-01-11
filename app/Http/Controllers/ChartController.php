@@ -6,25 +6,26 @@ use Illuminate\Http\Request;
 
 class ChartController extends Controller
 {
-    public function pieData(Request $request)
+    public function index()
     {
-        //$descricao  = $request->descricao;
-        $tipo       = $request->tipo_filtro;
-        $dataDe     = $request->data_de;
-        $dataAte    = $request->data_ate;
-        
-        dd('req=' . $request->all());
+        // Dados simulando banco
+        $chartData = [
+            'labels' => ['Produto A', 'Produto B', 'Produto C'],
+            'values' => [120, 80, 45]
+        ];
 
-        // Exemplos (depois pode alimentar via DB)
-        // $labels = ["Produto A", "Produto B", "Produto C"];
-        // $values = [25, 20, 50];
-        // $colors = ["#4e73df", "#1cc88a", "#36b9cc"];
-//dd('aqui...');
-        // return response()->json([
-        //     "labels" => $labels,
-        //     "values" => $values,
-        //     "colors" => $colors
-        // ]);
+        return view('Movimentos.chartdashboard', compact('chartData'));
+    }
+
+    public function pieData()
+    {
+         // Dados simulando banco
+        $chartData = [
+            'labels' => ['Produto A', 'Produto B', 'Produto C'],
+            'values' => [120, 80, 45]
+        ];
+
+        return view('Movimentos.grafico', compact('chartData'));
 
         // ===================================================================================
         // $produtos = \DB::table('produtos')

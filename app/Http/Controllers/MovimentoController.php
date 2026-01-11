@@ -8,6 +8,7 @@ use App\Models\Categoria;
 use App\Models\Forma_pgto;
 use App\Models\Movimento;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -23,67 +24,9 @@ class MovimentoController extends Controller
     //public function index(categoria $categoria )
     public function index(Request $request)
     {
+        //dd('tipo_filtro=' . $request->tipo_filtro);
 
-        //DB::enableQueryLog();
-
-        //$movimentos = Movimento::with('categoria', 'forma_pgto')
-            //->where('categoria_id', $categoria->id)
-            //->where('forma_pgto_id', $forma_pgto->id)
-        //->orderBy('dt')
-            //->orderByPivot('dt', 'descricao')
-        //->get();
-
-        // $movimentos = Movimento::when($request->has('descricao'), function($whenQuery) use($request){
-        //     $whenQuery->where('descricao', 'like' , '%' . $request->descricao . '%' );
-        // } )
-        // ->with('categoria', 'forma_pgto')
-        // ->orderBy('dt')
-        // ;
-
-        // ===================================================================================
-        // consulta original - desabilitada
-
-        if( 1 == 2 ){
-            $movimentos = Movimento::when($request->has('descricao'), function($whenQuery) use($request){
-                $whenQuery->where('descricao', 'like' , '%' . $request->descricao . '%' );
-            } )
-            ->when($request->filled('data_de'), function($whenQuery) use($request){
-                $whenQuery->where('dt', '>=' , \Carbon\Carbon::parse($request->data_de)->format('Y-m-d H:i:s') );
-            } )
-            ->when($request->filled('data_ate'), function($whenQuery) use($request){
-                $whenQuery->where('dt', '<=' , \Carbon\Carbon::parse($request->data_ate)->format('Y-m-d H:i:s') );
-            } )
-            ->orderByDesc('dt')
-            ->get()
-            //->paginate(1000)
-            //->withQueryString()
-            ;
-        }
-        // ===================================================================================
-
-        // ===================================================================================
-        // opcao order by coluna tabela relacionada
-        if( 1 == 2 ){
-            
-            $movimentos = Movimento::select('movimentos.*')
-            ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
-            ->with(['categoria', 'forma_pgto'])
-            ->when($request->has('descricao'), function($whenQuery) use($request){
-                $whenQuery->where('descricao', 'like' , '%' . $request->descricao . '%' );
-                } )
-            ->when($request->has('tipo_filtro'), function($whenQuery) use($request){
-                $whenQuery->where('tipo_lc', '=' , $request->tipo_filtro );
-                } )    
-            ->when($request->filled('data_de'), function($whenQuery) use($request){
-                $whenQuery->where('dt', '>=' , \Carbon\Carbon::parse($request->data_de)->format('Y-m-d H:i:s') );
-                } )
-            ->when($request->filled('data_ate'), function($whenQuery) use($request){
-                $whenQuery->where('dt', '<=' , \Carbon\Carbon::parse($request->data_ate)->format('Y-m-d H:i:s') );
-                } )
-            ->orderBy('movimentos.dt', 'asc')
-            ->orderBy('categorias.classif', 'asc')
-            ->get();
-        }
+        DB::enableQueryLog();
         // ===================================================================================
         
         // tratamento se a data vier vazia.
@@ -132,7 +75,12 @@ class MovimentoController extends Controller
         }
         if( $request->has('tipo_filtro') && $request->tipo_filtro ){
             $sel .= $sel ? ', ' : '' ;
-            $sel .= " Tipo:" . ($request->tipo_filtro == 'O') ? 'Obrigação' : 'Previsão';
+            if( $request->tipo_filtro == 'O' ){
+                $sel .= " Tipo:Obrigação";
+            }else{
+                $sel .= " Tipo:Previsão";
+            }                    
+            //$sel .= " Tipo:" . ($request->tipo_filtro == 'O') ? 'Obrigação' : 'Previsão';
             //$filtro[] = " Tipo={$request->tipo_filtro}";
         }
         if ( $request->filled('data_de') && $request->data_de ){
@@ -183,7 +131,7 @@ class MovimentoController extends Controller
 
         
 
-        // dd(DB::getQueryLog());   //esse funciona ok!
+        //dd(DB::getQueryLog());   //esse funciona ok!
 
         
 
@@ -896,39 +844,5 @@ class MovimentoController extends Controller
         
     }
 
-    public function pieData2()
-    {
-        // Exemplos (depois pode alimentar via DB)
-        // $labels = ["Produto A", "Produto B", "Produto C"];
-        // $values = [45, 30, 25];
-        // $colors = ["#4e73df", "#1cc88a", "#36b9cc"];
 
-        // return 
-        //     response()->json([
-        //     "labels" => $labels,
-        //     "values" => $values,
-        //     "colors" => $colors
-        //     ]);
-
-            // return view('Movimentos.pie',
-            // response()->json([
-            // "labels" => $labels,
-            // "values" => $values,
-            // "colors" => $colors
-            // ])
-            // );
-
-        // ===================================================================================
-        // $produtos = \DB::table('produtos')
-        // ->select('categoria', \DB::raw('count(*) as total'))
-        // ->groupBy('categoria')
-        // ->get();
-
-        // return response()->json([
-        //     'labels' => $produtos->pluck('categoria'),
-        //     'values' => $produtos->pluck('total'),
-        //     'colors' => ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e'] // ou gerar dinamicamente
-        // ]);
-
-    }
 }
