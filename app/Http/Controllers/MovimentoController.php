@@ -27,6 +27,7 @@ class MovimentoController extends Controller
         //dd('tipo_filtro=' . $request->tipo_filtro);
 
         DB::enableQueryLog();
+        
         // ===================================================================================
         
         // tratamento se a data vier vazia.
@@ -49,12 +50,21 @@ class MovimentoController extends Controller
             $dataAte = $request->filled('data_ate')
                 ? \Carbon\Carbon::parse($request->data_ate)->endOfDay()
                 : \Carbon\Carbon::now()->endOfDay();
+                
+                /*
+                $movimentos = Movimento::select('movimentos.*')
+                ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
+                ->with(['categoria', 'forma_pgto'])
+                */
 
             $movimentos = Movimento::select('movimentos.*')
                 ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
                 ->with(['categoria', 'forma_pgto'])
                 ->when($request->filled('descricao'), function ($q) use ($request) {
                     $q->where('descricao', 'like', '%' . $request->descricao . '%');
+                })
+                ->when($request->filled('categoriabusca'), function ($q) use ($request) {
+                    $q->where('categorias.nome', '=', $request->categoriabusca );
                 })
                 ->when($request->filled('tipo_filtro'), function ($q) use ($request) {
                     $q->where('tipo_lc', $request->tipo_filtro);
@@ -71,7 +81,10 @@ class MovimentoController extends Controller
         if( $request->has('descricao') && $request->descricao ){
             $sel .= $sel ? ', ' : '' ;
             $sel .= " Descrição:{$request->descricao}";
-            //$filtro[] = " Descricao={$request->descricao}";
+        }
+        if( $request->has('categoriabusca') && $request->categoriabusca ){
+            $sel .= $sel ? ', ' : '' ;
+            $sel .= " Categoria:{$request->categoriabusca}";
         }
         if( $request->has('tipo_filtro') && $request->tipo_filtro ){
             $sel .= $sel ? ', ' : '' ;
@@ -133,13 +146,24 @@ class MovimentoController extends Controller
 
         //dd(DB::getQueryLog());   //esse funciona ok!
 
-        
+        /*
+        consulta agrupada movimentos por categoria
+        SELECT * 
+        FROM ( 
+        SELECT tipo_lc,categorias.nome,categorias.classif, sum(movimentos.valor) as valor FROM movimentos INNER JOIN categorias ON movimentos.categoria_id = categorias.id WHERE tipo_lc = 'O' AND dt BETWEEN '2026-01-01' AND '2026-01-12' 
+        GROUP BY tipo_lc,categorias.nome,categorias.classif 
+        UNION ALL 
+        SELECT tipo_lc,categorias.nome,categorias.classif, sum(movimentos.valor) as valor FROM movimentos INNER JOIN categorias ON movimentos.categoria_id = categorias.id WHERE tipo_lc = 'P' AND dt BETWEEN '2026-01-01' AND '2026-01-12' 
+        GROUP BY tipo_lc,categorias.nome,categorias.classif ) AS subquery_combinada 
+        ORDER BY classif, tipo_lc;
+        */
 
         return view('Movimentos.index',
          ['menu' => 'movimentos',
           'movimentos' => $movimentos,
           'categorias' => $categorias,
           'descricao' => $request->descricao,
+          'categoriabusca' => $request->categoriabusca,
           'data_de' => $request->data_de,
           'data_ate' => $request->data_ate,
           'tipo_filtro' => $request->tipo_filtro,

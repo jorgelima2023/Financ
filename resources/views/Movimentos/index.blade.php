@@ -30,7 +30,7 @@
                                 <input type="text" name="descricao" class="form-control" id="descricao" 
                                 value="{{ $descricao }}"
                                 placeholder="Descricao do movimento">
-                            </div>
+                            </div>*Qualquer posição
                         </div>    
 
                         <div class="row">    
@@ -61,6 +61,15 @@
                                         <label class="form-check-label" for="tipo_filtro">Previsão</label>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-8 mb-1 d-flex align-items-center">
+                                <label for="categoriabusca" class="form-label me-2 mb-0">Categoria</label>
+                                <input type="text" name="categoriabusca" class="form-control" id="categoriabusca" 
+                                value="{{ $categoriabusca }}"
+                                placeholder="categoria do movimento">
                             </div>
                         </div>
 
@@ -413,7 +422,7 @@
                             <th class="text-left">Descrição</th>
                             <th class="text-left">Dcto</th>
                             <th class="text-left">Categoria</th>
-                            <th class="text-left">Forma Pgto</th>
+                            <!-- <th class="text-left">Forma Pgto</th> -->
                             <th class="text-right">Valor</th>
                             <!-- <th class="text-left">tipo_lcto</th>
                             <th class="text-left">tipo:0-Receita/1-Despesa</th>
@@ -468,9 +477,9 @@
                                 <td title="Descrição">{{ $movimento->descricao }}</td>
                                 <td title="Documento">{{ $movimento->dcto }}</td>
                                 <td title="Categoria">{{ $movimento->categoria_id }} - {{ $movimento->categoria->nome }}</td>
-                                <td title="Forma Pgto">{{ $movimento->forma_pgto_id }}
-                                    {{ $movimento->forma_pgto->nome }}
-                                </td>
+                                <!-- <td title="Forma Pgto">{{-- $movimento->forma_pgto_id }} -->
+                                    {{-- $movimento->forma_pgto->nome --}}
+                                <!-- </td> -->
 
                                 @php if(  $movimento->tipo == 0 ){ @endphp
                                     <td title="Despesa" style="color:#C00;"><strong>-{{ number_format($movimento->valor, 2, ',', '.') }}</strong></td>
