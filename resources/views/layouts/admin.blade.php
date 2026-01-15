@@ -22,7 +22,9 @@
         <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
            
         </form>
-        <!-- Navbar-->
+        <!--
+        ------------------------------- Navbar ---------------------------------------------------
+        -->
         <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
@@ -35,6 +37,9 @@
         </ul>
     </nav>
 
+    <!--
+    ------------------------------- Navbar - menus ---------------------------------------------------
+    -->
     <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
             <!-- <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion"> -->
@@ -47,32 +52,11 @@
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Dashboard
                         </a>
-
+                        
                         @can('index-user')
                             <a @class(['nav-link', 'active' => isset($menu) && $menu == 'users']) href="{{ route('user.index') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
                                 Usuários
-                            </a>
-                        @endcan
-
-                        @can('index-categoria')
-                            <a class="nav-link" href="{{ route('categorias.index') }}">
-                                <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
-                                Categorias
-                            </a>
-                        @endcan
-
-                        @can('form-categoria')
-                            <a class="nav-link" href="{{ route('categorias.form') }}">
-                                <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
-                                Categorias formulario
-                            </a>
-                        @endcan
-
-                        @can('form-forma_pgto')
-                            <a class="nav-link" href="{{ route('formaPagamentos.form') }}">
-                                <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
-                                Formas Pagamento formulario
                             </a>
                         @endcan
 
@@ -83,11 +67,41 @@
                             </a>
                         @endcan
 
+                        {{-- ============== categorias desativado item de menu =========================== --}}
+                        {{-- @can('index-categoria') --}}
+                            <!-- <a class="nav-link" href="{{ route('categorias.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                                Categorias
+                            </a> -->
+                        {{-- @endcan --}}
+
+                        {{-- ============== categorias formulario =========================== --}}
+                        @can('form-categoria')
+                            <a class="nav-link" href="{{ route('categorias.form') }}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                                Categorias
+                            </a>
+                        @endcan
+
+                        {{-- ============== Formas Pagamento formulario =========================== --}}
+                        @can('form-forma_pgto')
+                            <a class="nav-link" href="{{ route('formaPagamentos.form') }}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                                Formas Pagamento
+                            </a>
+                        @endcan
+
+                        @can('index-movimento')
                             <a @class(['nav-link', 'active' => isset($menu) && $menu == 'movimentos']) href="{{ route('movimentos.index') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
                                 Movimentos
                             </a>
-                        
+                        @endcan
+
+                            <a @class(['nav-link', 'active' => isset($menu) && $menu == 'movimentos-relatorio']) href="{{ route('movimentos.relatorioselecao') }}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
+                                Movimentos - relatório
+                            </a>
 
                         <a class="nav-link" href="{{ route('login.destroy') }}">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>

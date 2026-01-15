@@ -174,9 +174,20 @@ Route::group(['middleware' => 'auth'], function () {
     ===============================================================================================
     */
 
+
     // ------------------------------ movimentos
+
+    route::get('/movimentoRelatorioSelecao', 
+        [MovimentoController::class, 'relatorioselecao'] )->name('movimentos.relatorioselecao')
+        ->middleware('permission:index-movimento');
+
+    route::get('/movimentoRelatorioVisualizacao', 
+        [MovimentoController::class, 'relatoriovisualizacao'] )->name('movimentos.relatoriovisualizacao')
+        ->middleware('permission:index-movimento');
+
     route::get('/index-movimento', 
-        [MovimentoController::class, 'index'] )->name('movimentos.index');
+        [MovimentoController::class, 'index'] )->name('movimentos.index')
+        ->middleware('permission:index-movimento');
 
     Route::post('/store-movimento', 
         [MovimentoController::class, 'store'])->name('movimentos.store')

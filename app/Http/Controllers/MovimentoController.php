@@ -42,41 +42,37 @@ class MovimentoController extends Controller
           startOfDay() / endOfDay() evitam problemas com horário
         */ 
 
-        if( 1 == 1 ){
-            $dataDe  = $request->filled('data_de')
-                ? \Carbon\Carbon::parse($request->data_de)->startOfDay()
-                : \Carbon\Carbon::now()->startOfDay();
+        $dataDe  = $request->filled('data_de')
+            ? \Carbon\Carbon::parse($request->data_de)->startOfDay()
+            : \Carbon\Carbon::now()->startOfDay();
 
-            $dataAte = $request->filled('data_ate')
-                ? \Carbon\Carbon::parse($request->data_ate)->endOfDay()
-                : \Carbon\Carbon::now()->endOfDay();
-                
-                /*
-                $movimentos = Movimento::select('movimentos.*')
-                ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
-                ->with(['categoria', 'forma_pgto'])
-                */
-
+        $dataAte = $request->filled('data_ate')
+            ? \Carbon\Carbon::parse($request->data_ate)->endOfDay()
+            : \Carbon\Carbon::now()->endOfDay();
+            
+            /*
             $movimentos = Movimento::select('movimentos.*')
-                ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
-                ->with(['categoria', 'forma_pgto'])
-                ->when($request->filled('descricao'), function ($q) use ($request) {
-                    $q->where('descricao', 'like', '%' . $request->descricao . '%');
-                })
-                ->when($request->filled('categoriabusca'), function ($q) use ($request) {
-                    $q->where('categorias.nome', '=', $request->categoriabusca );
-                })
-                ->when($request->filled('tipo_filtro'), function ($q) use ($request) {
-                    $q->where('tipo_lc', $request->tipo_filtro);
-                })
-                ->whereBetween('dt', [$dataDe, $dataAte])
-                ->orderBy('movimentos.dt', 'asc')
-                ->orderBy('categorias.classif', 'asc')
-                ->get();
+            ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
+            ->with(['categoria', 'forma_pgto'])
+            */
 
-        }
+        $movimentos = Movimento::select('movimentos.*')
+            ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
+            ->with(['categoria', 'forma_pgto'])
+            ->when($request->filled('descricao'), function ($q) use ($request) {
+                $q->where('descricao', 'like', '%' . $request->descricao . '%');
+            })
+            ->when($request->filled('categoriabusca'), function ($q) use ($request) {
+                $q->where('categorias.nome', '=', $request->categoriabusca );
+            })
+            ->when($request->filled('tipo_filtro'), function ($q) use ($request) {
+                $q->where('tipo_lc', $request->tipo_filtro);
+            })
+            ->whereBetween('dt', [$dataDe, $dataAte])
+            ->orderBy('movimentos.dt', 'asc')
+            ->orderBy('categorias.classif', 'asc')
+            ->get();
 
-        $filtro = "";
         $sel = "";
         if( $request->has('descricao') && $request->descricao ){
             $sel .= $sel ? ', ' : '' ;
@@ -93,18 +89,14 @@ class MovimentoController extends Controller
             }else{
                 $sel .= " Tipo:Previsão";
             }                    
-            //$sel .= " Tipo:" . ($request->tipo_filtro == 'O') ? 'Obrigação' : 'Previsão';
-            //$filtro[] = " Tipo={$request->tipo_filtro}";
         }
         if ( $request->filled('data_de') && $request->data_de ){
             $sel .= $sel ? ', ' : '' ;
             $sel .= " Data de:" . \Carbon\Carbon::parse($request->data_de)->format('d-m-Y');
-            //$filtro[] = " data_de={$request->data_de}";
         }
         if ( $request->filled('data_ate') && $request->data_ate ){
             $sel .= $sel ? ', ' : '' ;
             $sel .= " Data ate:" . \Carbon\Carbon::parse($request->data_ate)->format('d-m-Y');
-            //$filtro[] = " data_ate={$request->data_ate}";
         }
 
         $categorias = Categoria::orderBy('classif', 'ASC')
@@ -868,5 +860,94 @@ class MovimentoController extends Controller
         
     }
 
+    public function relatorioselecao(){
+        
+        return view('Movimentos.relatorioselecao',
+         ['menu' => 'movimentos-relatorio']);
 
+    }
+
+    public function relatoriovisualizacao(Request $request){
+        //dd($request);
+
+        DB::enableQueryLog();
+
+        $dataDe  = $request->filled('data_de')
+            ? \Carbon\Carbon::parse($request->data_de)->startOfDay()
+            : \Carbon\Carbon::now()->startOfDay();
+
+        $dataAte = $request->filled('data_ate')
+            ? \Carbon\Carbon::parse($request->data_ate)->endOfDay()
+            : \Carbon\Carbon::now()->endOfDay();
+    
+             /*
+        consulta agrupada movimentos por categoria
+        SELECT * 
+        FROM ( 
+        SELECT tipo_lc,categorias.nome,categorias.classif, sum(movimentos.valor) as valor 
+        FROM movimentos 
+        INNER JOIN categorias ON movimentos.categoria_id = categorias.id 
+        WHERE tipo_lc = 'O' AND dt BETWEEN '2026-01-01' AND '2026-01-12' 
+        GROUP BY tipo_lc,categorias.nome,categorias.classif 
+        UNION ALL 
+        SELECT tipo_lc,categorias.nome,categorias.classif, sum(movimentos.valor) as valor 
+        FROM movimentos 
+        INNER JOIN categorias ON movimentos.categoria_id = categorias.id 
+        WHERE tipo_lc = 'P' AND dt BETWEEN '2026-01-01' AND '2026-01-12' 
+        GROUP BY tipo_lc,categorias.nome,categorias.classif ) AS subquery_combinada 
+        ORDER BY classif, tipo_lc;
+        */
+
+        $movimentos = Movimento::select('movimentos.*')
+        ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
+        ->with(['categoria', 'forma_pgto'])
+        ->when($request->filled('descricao'), function ($q) use ($request) {
+            $q->where('descricao', 'like', '%' . $request->descricao . '%');
+        })
+        ->when($request->filled('categoriabusca'), function ($q) use ($request) {
+            $q->where('categorias.nome', '=', $request->categoriabusca );
+        })
+        ->when($request->filled('tipo_filtro'), function ($q) use ($request) {
+            $q->where('tipo_lc', $request->tipo_filtro);
+        })
+        ->whereBetween('dt', [$dataDe, $dataAte])
+        ->orderBy('movimentos.dt', 'asc')
+        ->orderBy('categorias.classif', 'asc')
+        ->get();
+
+        $sel = "";
+        if( $request->has('descricao') && $request->descricao ){
+            $sel .= $sel ? ', ' : '' ;
+            $sel .= " Descrição:{$request->descricao}";
+        }
+        if( $request->has('categoriabusca') && $request->categoriabusca ){
+            $sel .= $sel ? ', ' : '' ;
+            $sel .= " Categoria:{$request->categoriabusca}";
+        }
+        if( $request->has('tipo_filtro') && $request->tipo_filtro ){
+            $sel .= $sel ? ', ' : '' ;
+            if( $request->tipo_filtro == 'O' ){
+                $sel .= " Tipo:Obrigação";
+            }else{
+                $sel .= " Tipo:Previsão";
+            }                    
+        }
+        if ( $request->filled('data_de') && $request->data_de ){
+            $sel .= $sel ? ', ' : '' ;
+            $sel .= " Data de:" . \Carbon\Carbon::parse($request->data_de)->format('d-m-Y');
+        }
+        if ( $request->filled('data_ate') && $request->data_ate ){
+            $sel .= $sel ? ', ' : '' ;
+            $sel .= " Data ate:" . \Carbon\Carbon::parse($request->data_ate)->format('d-m-Y');
+        }
+
+        $categorias = Categoria::orderBy('classif', 'ASC')
+        // teste alerta nenhum registro encontrado ->where('id', 1000)
+        ->get();
+
+        return view('Movimentos.relatoriovisualizacao',
+         ['menu' => 'movimentos-relatorio',
+         'request' => $request]);
+
+    }
 }
