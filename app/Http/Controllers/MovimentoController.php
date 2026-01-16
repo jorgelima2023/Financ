@@ -898,6 +898,52 @@ class MovimentoController extends Controller
         ORDER BY classif, tipo_lc;
         */
 
+        $dataInicio = $dataDe;
+        $dataFim    = $dataAte;
+
+                // Usar DB::select para executar a consulta SQL bruta
+        $resultados = DB::select("
+            SELECT *
+            FROM (
+                SELECT 
+                    tipo_lc, categorias.nome, categorias.classif,
+                    SUM(movimentos.valor) as valor
+                FROM
+                    movimentos
+                INNER JOIN
+                    categorias ON movimentos.categoria_id = categorias.id
+                WHERE
+                    tipo_lc = 'O' AND dt BETWEEN :dataInicioO AND :dataFimO
+                GROUP BY
+                    tipo_lc, categorias.nome, categorias.classif
+
+                UNION ALL
+
+                SELECT
+                    tipo_lc, categorias.nome, categorias.classif,
+                    SUM(movimentos.valor) as valor
+                FROM
+                    movimentos
+                INNER JOIN
+                    categorias ON movimentos.categoria_id = categorias.id
+                WHERE
+                    tipo_lc = 'P' AND dt BETWEEN :dataInicioP AND :dataFimP
+                GROUP BY
+                    tipo_lc, categorias.nome, categorias.classif
+            ) AS subquery_combinada
+            ORDER BY
+                classif;
+            ", [
+                // Passar os bindings para prevenir SQL Injection
+                'dataInicioO' => $dataInicio,
+                'dataFimO' => $dataFim,
+                'dataInicioP' => $dataInicio,
+                'dataFimP' => $dataFim,
+            ]);
+
+            // order by classif, tipo_lc; 
+
+        /*
         $movimentos = Movimento::select('movimentos.*')
         ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
         ->with(['categoria', 'forma_pgto'])
@@ -914,6 +960,7 @@ class MovimentoController extends Controller
         ->orderBy('movimentos.dt', 'asc')
         ->orderBy('categorias.classif', 'asc')
         ->get();
+        */
 
         $sel = "";
         if( $request->has('descricao') && $request->descricao ){
@@ -941,13 +988,18 @@ class MovimentoController extends Controller
             $sel .= " Data ate:" . \Carbon\Carbon::parse($request->data_ate)->format('d-m-Y');
         }
 
-        $categorias = Categoria::orderBy('classif', 'ASC')
+        //$categorias = Categoria::orderBy('classif', 'ASC')
         // teste alerta nenhum registro encontrado ->where('id', 1000)
-        ->get();
+        //->get();
+
+        // return view('sua_view', ['dados' => $resultados]);
+        // ou return response()->json($resultados);
+        $dados = $resultados;
 
         return view('Movimentos.relatoriovisualizacao',
          ['menu' => 'movimentos-relatorio',
-         'request' => $request]);
+          'sel' => $sel,
+         'dados' => $dados]);
 
     }
 }

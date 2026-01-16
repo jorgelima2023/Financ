@@ -46,7 +46,7 @@
                             </div>
                         </div>
 
-                        <div class="row">
+                        <!-- <div class="row">
 
                             <div class="col-8 mb-1 d-flex align-items-center">
                                 <label class="form-label me-2 mb-0">Tipo</label>
@@ -62,7 +62,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="row">
                             <div class="col-8 mb-1 d-flex align-items-center">
