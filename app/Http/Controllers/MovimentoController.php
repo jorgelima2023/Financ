@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 // Um relacionamento um-para-muitos 
 // é usado para definir relacionamentos 
@@ -352,9 +354,76 @@ class MovimentoController extends Controller
 
     //public function import(Request $request){
     
-    public function form(){
+    public function form(Request $request){
+
+    /* 
+    chatgpt: laravel salvar arquivo no c:\temp do windows
+    ==================================================================================================
+    use Illuminate\Support\Facades\Storage;
+    use Illuminate\Support\Facades\File;
+
+    // 1. Para uma pasta temporária de sistema (requer permissão)
+    $pathTemp = 'C:\\Temp'; // Caminho absoluto no Windows
+    $nomeArquivo = 'meu_arquivo.txt';
+    $caminhoCompleto = $pathTemp . '\\' . $nomeArquivo;
+
+    // Verifica e cria a pasta se não existir (requer permissão de administrador no Windows)
+    if (!File::exists($pathTemp)) {
+        File::makeDirectory($pathTemp, 0777, true); // 0777 para permissão ampla, mas cuidado com segurança
+    }
+    // Salva o arquivo
+    File::put($caminhoCompleto, 'Conteúdo do arquivo.');
+
+    // 2. Para arquivos temporários dentro do projeto Laravel (recomendado)
+    // Cria a pasta 'temp' dentro de storage/app/ (privado)
+    $pathStorageTemp = storage_path('app/temp');
+    if (!File::exists($pathStorageTemp)) {
+        File::makeDirectory($pathStorageTemp, 0777, true);
+    }
+    File::put($pathStorageTemp . '/' . $nomeArquivo, 'Conteúdo temporário do storage.');
+
+    // 3. Para arquivos públicos (ex: imagens)
+    // Cria a pasta 'temp' dentro de public/ (público)
+    $pathPublicTemp = public_path('temp');
+    if (!File::exists($pathPublicTemp)) {
+        File::makeDirectory($pathPublicTemp, 0777, true);
+    }
+    File::put($pathPublicTemp . '/' . $nomeArquivo, 'Conteúdo público temporário.');
+
+    // Se for para uso público, crie o link simbólico:
+    // php artisan storage:link (no terminal)
+    // Para acessar: /storage/temp/meu_arquivo.txt
+
+    Pontos Importantes:
+    Permissões: Salvar diretamente em C:\Temp pode falhar sem permissões de administrador. Prefira usar diretórios dentro do projeto Laravel (storage/app/temp ou public/temp).
+    storage_path(): Retorna o caminho para a pasta storage/ (privada).
+    public_path(): Retorna o caminho para a pasta public/ (acessível via web).
+    File::put(): Salva o conteúdo em um arquivo.
+    File::makeDirectory(): Cria diretórios, com permissões e recursividade. 
+    
+    Este vídeo explica como fazer upload de arquivos usando o framework Laravel
+    https://www.youtube.com/watch?v=ZRNpbog-JBU
+    
+    ==================================================================================================
+    */
+        // originalName: "extrato.ofx"
         //dd($request);
         //dd( file($request->file('file')) );
+        //file_put_contents('C:\\Temp\\extrato.ofx', file($request->file('file')));
+        
+        // 1. Para uma pasta temporária de sistema (requer permissão)
+        $pathTemp = 'C:\\Temp'; // Caminho absoluto no Windows
+        $nomeArquivo = 'extrato.ofx';
+        $caminhoCompleto = $pathTemp . '\\' . $nomeArquivo;
+        
+        // Salva o arquivo - no caminho , e o conteudo
+        //  conteudo em: file($request->file('file'))
+        //  sempre sobrescreve o arquivo 
+        File::put($caminhoCompleto, file($request->file('file')));
+
+        //dd($request);
+
+
 
         // $request->validate(
         //     ['file' => 'required|mimes:ofx!max:2048',
@@ -373,6 +442,7 @@ class MovimentoController extends Controller
         //     ]
         // );
         
+        // ler arquivo salvo em c:\temp do windows
         $caminho_do_arquivo = 'c:\\temp\\extrato.ofx';
         
         //função nativa do PHP 
@@ -482,10 +552,13 @@ class MovimentoController extends Controller
                 if (  (strpos(strtoupper($string), "JACOMAR") !== false) ) {
                     $cat = 45;
                 }
+                if (  (strpos(strtoupper($string), "FESTVAL") !== false) ) {
+                    $cat = 45;
+                }
                 if ( (strpos(strtoupper($string), "RESTAURANTE") !== false) ) {
                     $cat = 25;
                 }
-                if ( (strpos(strtoupper($string), "BUFFET SKINA") !== false) ) {
+                if ( (strpos(strtoupper($string), "BUFFETSKINA") !== false) ) {
                     $cat = 25;
                 }
                 if ( (strpos(strtoupper($string), "FARMACIA") !== false) ) {

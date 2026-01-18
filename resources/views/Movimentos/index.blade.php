@@ -100,17 +100,28 @@
         <div class="card mb-2 mt-2 pt-1 border-light shadow">
             <!-- <div class="card-body"> -->
                 <!-- <div class="row-4 col-6"> -->
-                <div class="mb-1 hstack gap-2">
+                <div class="mb-1 hstack gap-4">
                     
                     <!-- <a href="{{ route('movimentos.form') }}" target="_blank">
                         <i class="fa-solid fa-download"></i>
                         Importar</a> -->
-                    <button type="button" class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" 
+
+                    <!-- <button type="button" class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" 
                         title="Clique aqui para importar o arquivo .ofx"> 
                         <a href="{{ route('movimentos.form') }}" target="_blank">
                             <i class="fa-solid fa-download"></i>
                             Importar</a>
-                    </button>   
+                    </button>    -->
+
+                    <i class="fa-solid fa-download"></i>
+                            Importar</a>
+                    <form method="POST" action="/movimentos/form" enctype="multipart/form-data">
+                        @csrf
+                        <!-- <input type="file" name="file" accept=".xlsx, .xls"> -->
+                        <input type="file" name="file" accept=".xlsx, .xls, .ofx" >
+                        <button type="submit" class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7">Importar</button>
+                        
+                    </form>
 
                     <!--  pie chart movimentos 
                     enviar para rota:
@@ -121,6 +132,7 @@
                     o que nao fazer: enviar objeto inteiro na url, objeto inteiro / gigante / seguranca
                        <a href=  route('rota', $movimento) >
                         -->
+                       
                     <button type="button" class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" 
                         title="Clique aqui para gerar - Pie chart"> 
                         <a href="{{ route('Movimentos.pie' , 

@@ -204,7 +204,8 @@ Route::group(['middleware' => 'auth'], function () {
     //     [MovimentoController::class, 'import'])->name('movimentos.import')
     //     ;
 
-    Route::get('/movimentos/form', [MovimentoController::class, 'form'])->name('movimentos.form');
+    // Route::get('/movimentos/form', [MovimentoController::class, 'form'])->name('movimentos.form');
+    Route::post('/movimentos/form', [MovimentoController::class, 'form'])->name('movimentos.form');
     
     // receber dados form
     Route::put('/update-movimento-form', 
