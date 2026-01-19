@@ -32,12 +32,17 @@
                             <div class="d-flex align-items-center justify-content-between text-xs">
                             <div class="fw-500">{{ $dado->nome }}</div>
                             <div class="text-body">{{ number_format( $dado->total , 2, ',', '.') }}</div>
-                        </div>
+                            </div>
                         @empty
                             <div class="d-flex align-items-center justify-content-between text-xs">
                                 <div class="fw-500">Nenhum movimento encontrado!</div>
                         @endforelse
                         
+                        <div class="d-flex align-items-center justify-content-between text-xs">
+                            <div class="fw-500"><b>Total:</b></div>
+                            <div class="text-body"><b>{{ number_format( $totalDespesa , 2, ',', '.') }}</b></div>
+                        </div>
+
                         <!-- <div class="d-flex align-items-center justify-content-between text-xs">
                             <div class="fw-500">Debito Cartão</div>
                             <div class="text-body">19.450,00</div>

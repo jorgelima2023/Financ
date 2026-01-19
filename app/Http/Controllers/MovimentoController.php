@@ -908,6 +908,14 @@ class MovimentoController extends Controller
         ->orderBy('total')
         ->get();
 
+        
+        $totalDespesa = 0;
+        
+        foreach ($dados as $dad) {
+            $totalDespesa += $dad->total;
+            
+        }
+
         // dd(DB::getQueryLog());
             /*
         select `categorias`.`nome`, SUM(movimentos.valor) as total 
@@ -925,7 +933,8 @@ class MovimentoController extends Controller
             'tipo_filtro'  => $request->tipo_filtro,
             'labels'       => $dados->pluck('nome'),
             'values'       => $dados->pluck('total'),
-            'dados' => $dados
+            'dados'        => $dados,
+            'totalDespesa' => $totalDespesa
         ]);
         
        
