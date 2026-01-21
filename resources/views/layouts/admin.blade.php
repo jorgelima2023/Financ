@@ -100,7 +100,7 @@
 
                             <a @class(['nav-link', 'active' => isset($menu) && $menu == 'movimentos-relatorio']) href="{{ route('movimentos.relatorioselecao') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
-                                Movimentos - relatório
+                                Movimentos - relatório - Obrigação/Provisão
                             </a>
 
                         <a class="nav-link" href="{{ route('login.destroy') }}">

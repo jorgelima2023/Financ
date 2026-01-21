@@ -5,7 +5,7 @@
     <div class="container-fluid px-4">
 
         <div class="mb-1 hstack gap-2">
-            <h2 class="mt-3">Movimento - Relatório - Seleção</h2>
+            <h4 class="mt-3">Movimento - Relatório Obrigação/Provisão - Seleção</h4>
             <ol class="breadcrumb mb-3 mt-3 ms-auto">
                 <li class="breadcrumb-item">
                     <a href="{{ route('dashboard.index') }}" class="text-decoration-none">Dashboard</a>

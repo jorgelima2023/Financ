@@ -924,7 +924,9 @@ class MovimentoController extends Controller
         where `categorias`.`soma` = ? and `movimentos`.`dt` between ? and ? 
         group by `categorias`.`nome`
         */
-
+        
+        //dd($request->grafico);
+        
         // -------- versao 1
         return view('Movimentos.pie', [
             'descricao'    => $request->descricao,
@@ -934,7 +936,8 @@ class MovimentoController extends Controller
             'labels'       => $dados->pluck('nome'),
             'values'       => $dados->pluck('total'),
             'dados'        => $dados,
-            'totalDespesa' => $totalDespesa
+            'totalDespesa' => $totalDespesa,
+            'grafico'      => $request->grafico
         ]);
         
        

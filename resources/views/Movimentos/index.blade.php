@@ -103,22 +103,39 @@
 
         <div class="card mb-2 mt-2 pt-1 border-light shadow">
             <div class="row g-0 ">
-                <!-- <div class="mb-2 hstack gap-4"> -->
-                    <div class="col-sm-10 col-md-8"></div>
-                    <div class="col-2 col-md-4">
+                    <div class="col-md-6"></div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" 
+                                title="Clique aqui para gerar - Bar-Chart"> 
+                                <a href="{{ route('Movimentos.pie' , 
+                                            [ 'descricao' => $descricao , 
+                                            'tipo_filtro' => $tipo_filtro ,
+                                            'data_de' => $data_de ,
+                                            'data_ate' => $data_ate,
+                                            'grafico' => 'bar' 
+                                            ] ) }}" 
+                                        target="_blank">
+                                    <i class="fa-solid fa-pie"></i>Bar-Chart</a>
+                        </button>
+                    </div>
+                    
+                    <div class="col-md-1">
                         <button type="button" class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" 
                                 title="Clique aqui para gerar - Pie chart"> 
                                 <a href="{{ route('Movimentos.pie' , 
                                             [ 'descricao' => $descricao , 
                                             'tipo_filtro' => $tipo_filtro ,
                                             'data_de' => $data_de ,
-                                            'data_ate' => $data_ate 
+                                            'data_ate' => $data_ate,
+                                            'grafico' => 'doughnut' 
                                             ] ) }}" 
                                         target="_blank">
                                     <i class="fa-solid fa-pie"></i>Pie-Chart</a>
                         </button>
                     </div>
-                <!-- </div> -->
+
+                    <div class="col-md-4"></div>
+                
             </div>
         </div>
         

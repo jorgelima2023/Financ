@@ -8,7 +8,7 @@
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-chart-pie me-1"></i>
-                    Pie Chart 
+                    {{ $grafico }} - Chart 
                 </div>
                 <div class="card-body"><canvas id="pieChart" width="150%" height="60"></canvas></div>
                 <div class="card-footer small text-muted">
@@ -24,7 +24,7 @@
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-chart-pie me-1"></i>
-                    Pie Chart - Valores
+                    {{ $grafico }} - Chart - Valores
                 </div>
                 <div class="d-grid">
                     <div class="card-body">
@@ -69,7 +69,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-
+@php if(  $grafico == 'doughnut' ){ @endphp
 
 <script>
     const ctx = document.getElementById('pieChart');
@@ -88,7 +88,7 @@
 
     // type: 'pie'  type: 'bar' 'doughnut' 'outlabeledPie'
     new Chart(ctx, {
-        type: 'doughnut',
+        type: 'doughnut' ,
         data: {
             labels: @json($labels),
             datasets: [{
@@ -120,4 +120,59 @@
         }
     });
 </script>
+
+@php }else{ @endphp
+
+<script>
+    const ctx = document.getElementById('pieChart');
+
+    // backgroundColor: [
+    //                 '#4CAF50',
+    //                 '#FF9800',
+    //                 '#FF7800',
+    //                 '#FF5800',
+    //                 '#2196F3',
+    //                 '#2176F3',
+    //                 '#2156F3',
+    //                 '#651ee9ff',
+    //                 '#E91E63'
+    //             ]
+
+    // type: 'pie'  type: 'bar' 'doughnut' 'outlabeledPie'
+    new Chart(ctx, {
+        type: 'bar' ,
+        data: {
+            labels: @json($labels),
+            datasets: [{
+                data: @json($values),
+                backgroundColor: [
+                    '#006400',
+                    '#0000CD',
+                    '#FF0000',
+                    '#8B4513',
+                    '#00BFFF',
+                    '#FFD700',
+                    '#651ee9ff',
+                    '#00FF00',
+                    '#8B008B',
+                    '#FF5800',
+                    '#4682B4',
+                    '#40E0D0'
+                    
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+</script>
+
+@php } @endphp
+
 @endsection
