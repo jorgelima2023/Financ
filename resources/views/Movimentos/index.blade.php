@@ -466,6 +466,7 @@
                         <tr>
                             <th>Excl.</th>
                             <th>Edit.</th>
+                            <th class="text-left">Tipo</th>
                             <th class="text-left">Classif.</th>
                             <th class="text-left">Data</th>
                             <th class="text-left">Descrição</th>
@@ -521,6 +522,7 @@
                                     </button>
                                 </th>
 
+                                <td title="Categoria">{{ $movimento->tipo_lc == 'O' ? 'Obrig.' : 'Prev.' }}</td>
                                 <td title="Categoria">{{ $movimento->categoria->classif }}</td>
                                 <td title="Data">{{ \Carbon\Carbon::parse($movimento->dt)->tz('America/Sao_Paulo')->format('d/m/Y') }}</td>
                                 <td title="Descrição">{{ $movimento->descricao }}</td>

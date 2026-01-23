@@ -899,15 +899,28 @@ class MovimentoController extends Controller
             ]);
         }
 
-        $dados = $query
-        ->groupBy('categorias.nome')
-        ->select(
-            'categorias.nome',
-            DB::raw('SUM(movimentos.valor) as total')
-        )
-        ->orderBy('total')
-        ->get();
+        // ->groupBy('categorias.nome')
+        // 'categorias.nome',
 
+        if (!$request->filled('tipo_filtro')) { 
+            $dados = $query
+            ->groupBy('movimentos.tipo_lc', 'categorias.nome')
+            ->select(
+                DB::raw("CONCAT_WS(' ', categorias.nome , movimentos.tipo_lc ) as nome"),
+                DB::raw("SUM(movimentos.valor) as total")
+            )
+            ->orderBy('nome')
+            ->get();
+        }else{
+            $dados = $query
+            ->groupBy('categorias.nome')
+            ->select(
+                'categorias.nome',
+                DB::raw('SUM(movimentos.valor) as total')
+            )
+            ->orderBy('total')
+            ->get();
+        }
         
         $totalDespesa = 0;
         
@@ -923,6 +936,25 @@ class MovimentoController extends Controller
         inner join `categorias` on `movimentos`.`categoria_id` = `categorias`.`id` 
         where `categorias`.`soma` = ? and `movimentos`.`dt` between ? and ? 
         group by `categorias`.`nome`
+
+        select categorias.nome, SUM(movimentos.valor) as total 
+        from movimentos 
+        inner join categorias on movimentos.categoria_id = categorias.id 
+        where categorias.soma = 'S' and movimentos.dt between '2026-01-01' and '2026-01-22'  
+        group by categorias.nome
+
+        select CONCAT(movimentos.tipo_lc , ' ', categorias.nome ) as nome, SUM(movimentos.valor) as total
+        from movimentos 
+        inner join categorias on movimentos.categoria_id = categorias.id 
+        where categorias.soma = 'S' and movimentos.dt between '2026-01-01' and '2026-01-22'  
+        group by movimentos.tipo_lc , categorias.nome
+
+        select CONCAT_ws(' ', movimentos.tipo_lc , categorias.nome ) as nome, SUM(movimentos.valor) as total
+        from movimentos 
+        inner join categorias on movimentos.categoria_id = categorias.id 
+        where categorias.soma = 'S' and movimentos.dt between '2026-01-01' and '2026-01-22'  
+        group by movimentos.tipo_lc , categorias.nome
+
         */
         
         //dd($request->grafico);
