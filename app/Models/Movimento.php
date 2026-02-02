@@ -22,7 +22,8 @@ class Movimento extends Model implements Auditable
                             'descricao', 
                             'valor', 
                             'dt', 
-                            'dcto'];
+                            'dcto',
+                            'contascorrente_id'];
 
     /**
      * Get the phone associated with the user.
@@ -37,6 +38,9 @@ class Movimento extends Model implements Auditable
     {
         return $this->belongsTo(Forma_pgto::class);
     }
-
+    public function contascorrente()
+    {
+       return $this->belongsTo(ContasCorrente::class); 
+    }
 
    }

@@ -226,7 +226,8 @@ class MovimentoController extends Controller
                 //'valor' => $request->input('valor'),
                 'valor' => str_replace(',', '.', str_replace('.', '', $request->input('valor'))),
                 // Adicione `forma_pgto_id` se estiver usando
-                'forma_pgto_id' => 1 // ou pegue do formulário
+                'forma_pgto_id' => 1, // ou pegue do formulário
+                'contascorrente_id' => 1 // ou pegue do formulário
             ]);
 
             DB::commit();
@@ -298,6 +299,7 @@ class MovimentoController extends Controller
                 'valor' => str_replace(',', '.', str_replace('.', '', $request->input('editValor'))),
                 // Adicione `forma_pgto_id` se estiver usando
                 //'forma_pgto_id' => 1 // ou pegue do formulário
+                //'contascorrente_id' => 1 // ou pegue do formulário
             ]);
             
             DB::commit();
@@ -762,7 +764,8 @@ class MovimentoController extends Controller
                             'dcto' =>  $item['dcto'] ,
                             'valor' => $vlr, 
                             'categoria_id' => $item['categoria_id'],
-                            'forma_pgto_id' => 1
+                            'forma_pgto_id' => 1,
+                            'contascorrente_id' => 1
                         ]);
 
                         // Operação é concluída com êxito, conseguiu cadastrar sem erros
@@ -816,7 +819,7 @@ class MovimentoController extends Controller
         //  "data_de" => "2025-12-01"
         //  "data_ate" => "2025-12-31"
 
-         //dd($request->all());
+        // dd($request->all());
         // recebe os filtros para montar a consulta
 
         // ----------------------  debug query
@@ -882,7 +885,7 @@ class MovimentoController extends Controller
 
         $query = DB::table('movimentos')
             ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
-            ->where('categorias.soma', 'S');
+            ->where('categorias.soma', '1');
 
         if ($request->filled('descricao')) {
             $query->where('descricao', 'like', "%{$request->descricao}%");
@@ -929,7 +932,7 @@ class MovimentoController extends Controller
             
         }
 
-        // dd(DB::getQueryLog());
+         //dd(DB::getQueryLog());
             /*
         select `categorias`.`nome`, SUM(movimentos.valor) as total 
         from `movimentos` 
