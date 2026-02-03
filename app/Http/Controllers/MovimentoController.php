@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\MovimentoEditRequest;
 use App\Http\Requests\MovimentoRequest;
 use App\Models\Categoria;
+use App\Models\ContasCorrente;
 use App\Models\Forma_pgto;
 use App\Models\Movimento;
 use Exception;
@@ -60,12 +61,15 @@ class MovimentoController extends Controller
 
         $movimentos = Movimento::select('movimentos.*')
             ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
-            ->with(['categoria', 'forma_pgto'])
+            ->with(['categoria', 'forma_pgto', 'contascorrente'])
             ->when($request->filled('descricao'), function ($q) use ($request) {
                 $q->where('descricao', 'like', '%' . $request->descricao . '%');
             })
             ->when($request->filled('categoriabusca'), function ($q) use ($request) {
                 $q->where('categorias.nome', '=', $request->categoriabusca );
+            })
+            ->when($request->filled('contabusca'), function ($q) use ($request) {
+                $q->where('contascorrentes.nome', '=', $request->contabusca );
             })
             ->when($request->filled('tipo_filtro'), function ($q) use ($request) {
                 $q->where('tipo_lc', $request->tipo_filtro);
@@ -84,6 +88,10 @@ class MovimentoController extends Controller
             $sel .= $sel ? ', ' : '' ;
             $sel .= " Categoria:{$request->categoriabusca}";
         }
+        if( $request->has('contabusca') && $request->contabusca ){
+            $sel .= $sel ? ', ' : '' ;
+            $sel .= " Conta corrente:{$request->contabusca}";
+        }
         if( $request->has('tipo_filtro') && $request->tipo_filtro ){
             $sel .= $sel ? ', ' : '' ;
             if( $request->tipo_filtro == 'O' ){
@@ -101,9 +109,15 @@ class MovimentoController extends Controller
             $sel .= " Data ate:" . \Carbon\Carbon::parse($request->data_ate)->format('d-m-Y');
         }
 
-        $categorias = Categoria::orderBy('classif', 'ASC')
         // teste alerta nenhum registro encontrado ->where('id', 1000)
+
+        $categorias = Categoria::orderBy('classif', 'ASC')
         ->get();
+
+        $contascorrentes = ContasCorrente::orderBy('nome', 'ASC')
+        ->get();
+
+        //dd($contascorrentes);
 
         //return view('Movimentos.index', ['movimentos' => $movimentos ] );
 
@@ -156,6 +170,7 @@ class MovimentoController extends Controller
          ['menu' => 'movimentos',
           'movimentos' => $movimentos,
           'categorias' => $categorias,
+          'contascorrentes' => $contascorrentes,
           'descricao' => $request->descricao,
           'categoriabusca' => $request->categoriabusca,
           'data_de' => $request->data_de,
@@ -227,7 +242,7 @@ class MovimentoController extends Controller
                 'valor' => str_replace(',', '.', str_replace('.', '', $request->input('valor'))),
                 // Adicione `forma_pgto_id` se estiver usando
                 'forma_pgto_id' => 1, // ou pegue do formulário
-                'contascorrente_id' => 1 // ou pegue do formulário
+                'contascorrente_id' => $request->input('conta_id') // ou pegue do formulário
             ]);
 
             DB::commit();

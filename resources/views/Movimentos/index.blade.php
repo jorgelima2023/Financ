@@ -31,8 +31,6 @@
                                 value="{{ $descricao }}"
                                 placeholder="Descricao do movimento">
                             </div>*Qualquer posição
-
-                        
                         </div>    
 
                         <div class="row">    
@@ -49,7 +47,6 @@
                         </div>
 
                         <div class="row">
-
                             <div class="col-8 mb-1 d-flex align-items-center">
                                 <label class="form-label me-2 mb-0">Tipo</label>
                                 <div>
@@ -57,7 +54,6 @@
                                         <input class="form-check-input" type="radio" name="tipo_filtro" id="tipo_filtroO" value="O">
                                         <label class="form-check-label" for="tipo_filtro">Obrigação</label>
                                     </div>
-
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="tipo_filtro" id="tipo_filtroP" value="P">
                                         <label class="form-check-label" for="tipo_filtro">Previsão</label>
@@ -72,6 +68,15 @@
                                 <input type="text" name="categoriabusca" class="form-control" id="categoriabusca" 
                                 value="{{ $categoriabusca }}"
                                 placeholder="categoria do movimento">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-4 mb-1 d-flex align-items-center">
+                                <label for="contabusca" class="form-label me-2 mb-0">Conta Corrente</label>
+                                <input type="text" name="contabusca" class="form-control" id="contabusca" 
+                                value=""
+                                placeholder="Conta corrente do movimento">
                             </div>
                         </div>
 
@@ -143,18 +148,6 @@
             <!-- <div class="card-body"> -->
                 <!-- <div class="row-4 col-6"> -->
                 <div class="mb-1 hstack gap-4">
-                    
-                    <!-- <a href="{{ route('movimentos.form') }}" target="_blank">
-                        <i class="fa-solid fa-download"></i>
-                        Importar</a> -->
-
-                    <!-- <button type="button" class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" 
-                        title="Clique aqui para importar o arquivo .ofx"> 
-                        <a href="{{ route('movimentos.form') }}" target="_blank">
-                            <i class="fa-solid fa-download"></i>
-                            Importar</a>
-                    </button>    -->
-
                     <i class="fa-solid fa-download"></i>
                             </a>
                     <form method="POST" action="/movimentos/form" enctype="multipart/form-data">
@@ -167,24 +160,7 @@
                                 Importar
                             </button>
                         </div>
-
                     </form>
-
-                    <!--  pie chart movimentos 
-                    enviar para rota:
-                    um item - enviar ID
-                    variso itens - form + post
-                    filtro - query string , util relatorios, e dados completos buscar na controller
-
-                    o que nao fazer: enviar objeto inteiro na url, objeto inteiro / gigante / seguranca
-                       <a href=  route('rota', $movimento) >
-                        -->
-                       
-                    
-
-
-                <!-- </div> -->
-                
             </div>
         </div>
 
@@ -258,6 +234,23 @@
                                 </select>
                             </div>
                     
+                            <div class="col-5 mb-3 d-flex align-items-center" >
+                                <label for="conta" class="form-label me-2 mb-0">Conta</label>
+                                <!-- <input type="text" name="Conta" class="form-control" id="Conta" 
+                                    value="" required> -->
+
+                                <select name="conta_id" id="conta_id" class="form-select" required>
+                                    <option value="">Selecione uma conta</option>
+
+                                    @foreach ($contascorrentes as $contascorrente)
+                                        <option value="{{ $contascorrente->id }}"
+                                            {{ old('contascorrente->id') == $contascorrente->id ? 'selected' : '' }}>
+                                            {{ $contascorrente->nome }}
+                                        </option>
+                                    @endforeach
+                                </select>    
+                            </div>
+
                             <div class="col-8 mb-3 d-flex align-items-center" >
                                 <label for="descricao" class="form-label me-2 mb-0">Descrição</label>
                                 <input type="text" name="descricao" class="form-control" id="descricao" 
