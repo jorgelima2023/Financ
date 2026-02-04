@@ -71,14 +71,31 @@
                             </div>
                         </div>
                         
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-4 mb-1 d-flex align-items-center">
                                 <label for="contabusca" class="form-label me-2 mb-0">Conta Corrente</label>
                                 <input type="text" name="contabusca" class="form-control" id="contabusca" 
                                 value=""
                                 placeholder="Conta corrente do movimento">
                             </div>
+                        </div> -->
+
+                        <!-- ********************************************************** -->
+                        <div class="col-5 mb-3 d-flex align-items-center" >
+                            <label for="contabusca" class="form-label me-2 mb-0">Conta</label>
+                            
+                            <select name="contabusca" id="contabusca" class="form-select" >
+                                <option value="">Selecione uma conta</option>
+
+                                @foreach ($contascorrentes as $contascorrente)
+                                    <option value="{{ $contascorrente->id }}"
+                                        {{ old('contascorrente->id') == $contascorrente->id ? 'selected' : '' }}>
+                                        {{ $contascorrente->nome }}
+                                    </option>
+                                @endforeach
+                            </select>    
                         </div>
+                        <!-- ********************************************************** -->
 
                         <div class="row">
 

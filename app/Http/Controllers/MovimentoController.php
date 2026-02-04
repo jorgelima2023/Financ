@@ -61,6 +61,7 @@ class MovimentoController extends Controller
 
         $movimentos = Movimento::select('movimentos.*')
             ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
+            ->join('contascorrentes', 'movimentos.contascorrente_id', '=', 'contascorrentes.id')
             ->with(['categoria', 'forma_pgto', 'contascorrente'])
             ->when($request->filled('descricao'), function ($q) use ($request) {
                 $q->where('descricao', 'like', '%' . $request->descricao . '%');
@@ -69,7 +70,7 @@ class MovimentoController extends Controller
                 $q->where('categorias.nome', '=', $request->categoriabusca );
             })
             ->when($request->filled('contabusca'), function ($q) use ($request) {
-                $q->where('contascorrentes.nome', '=', $request->contabusca );
+                $q->where('movimentos.contascorrente_id', '=', $request->contabusca );
             })
             ->when($request->filled('tipo_filtro'), function ($q) use ($request) {
                 $q->where('tipo_lc', $request->tipo_filtro);
@@ -114,6 +115,24 @@ class MovimentoController extends Controller
         $categorias = Categoria::orderBy('classif', 'ASC')
         ->get();
 
+        // $contascorrentes = ContasCorrente::orderBy('nome', 'ASC')
+        // ->get();
+
+        // CREATE VIEW view_contas AS
+        // SELECT
+        //     CONCAT(
+        //         COALESCE(nome, ''),
+        //         COALESCE(agencia, ''),
+        //         COALESCE(conta, '')
+        //     ) AS nome_completo
+        // FROM contascorrentes;
+
+        // SELECT CONCAT_WS('', nome, agencia, conta) as nome
+        // FROM contascorrentes;
+
+        // SELECT CONCAT_WS(' - ', nome, agencia, conta)
+        // FROM contascorrentes;
+
         $contascorrentes = ContasCorrente::orderBy('nome', 'ASC')
         ->get();
 
@@ -152,7 +171,7 @@ class MovimentoController extends Controller
 
         
 
-        //dd(DB::getQueryLog());   //esse funciona ok!
+        // dd(DB::getQueryLog());   //esse funciona ok!
 
         /*
         consulta agrupada movimentos por categoria
@@ -599,6 +618,7 @@ class MovimentoController extends Controller
                                             'descricao' => $primeiraTransacao->memo , 
                                             'categoria_id' => $cat,
                                             'forma_pgto_id' => 1,
+                                            'contascorrente_id' => 1,
                                             'tipo_lc' => 'O',
                                             'tipo' => $tipo,   
                                             'valor' => $primeiraTransacao->amount,
