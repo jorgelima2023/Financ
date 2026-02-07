@@ -171,7 +171,7 @@ class MovimentoController extends Controller
 
         
 
-        // dd(DB::getQueryLog());   //esse funciona ok!
+        //dd(DB::getQueryLog());   //esse funciona ok!
 
         /*
         consulta agrupada movimentos por categoria
