@@ -14,6 +14,95 @@
             </ol>
         </div>
 
+        <div class="card mb-1 border-light shadow">
+            <div class="card-header border border-light-subtle">
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-7">
+                        <span class="pesquisar">Pesquisar 2 - Filtros:</span>
+                    </div>
+                    <div class="col-md-3"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="descricao" class="form-label me-2 mb-0">Descrição</label>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" placeholder="First name" aria-label="First name">
+                    </div>
+                    <div class="col-md-3">
+                        * Qualquer posição
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="descricao" class="form-label me-2 mb-0">Cadastro de</label>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="date" name="data_de" class="form-control" id="data_de" value="{{ $data_de }}">
+                    </div>
+                    <!-- <div class="col-md-3">
+                        Até
+                    </div> -->
+                    <div class="col-md-4">
+                        <input type="date" name="data_de" class="form-control" id="data_de" value="{{ $data_de }}">
+                    </div>
+                    <!-- <div class="col-md-2">
+                    
+                    </div> -->
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <label for="descricao" class="form-label me-2 mb-0">Tipo</label>
+                    </div>
+                    <div class="col-md-7">
+                        <input class="form-check-input" type="radio" name="tipo_filtro" id="tipo_filtroO" value="O">
+                        <label class="form-check-label" for="tipo_filtro">Obrigação</label>
+                        <input class="form-check-input" type="radio" name="tipo_filtro" id="tipo_filtroP" value="P">
+                        <label class="form-check-label" for="tipo_filtro">Previsão</label>
+                    </div>
+                    <div class="col-md-3">
+                    
+                    </div>
+                </div>  
+                <div class="row">
+                    <div class="col-md-2">
+                        <label for="descricao" class="form-label me-2 mb-0">Categoria</label>
+                    </div>
+                    <div class="col-md-7">
+                        
+                                    <input type="text" name="categoriabusca" class="form-control" id="categoriabusca" 
+                                    value="{{ $categoriabusca }}"
+                                    placeholder="categoria do movimento">
+                    </div>
+                    <div class="col-md-3">
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <label for="descricao" class="form-label me-2 mb-0">Conta</label>
+                    </div>
+                    <div class="col-md-7">
+                        <select name="contabusca" id="contabusca" class="form-select" >
+                                <option value="">Selecione uma conta</option>
+
+                                @foreach ($contascorrentes as $contascorrente)
+                                    <option value="{{ $contascorrente->id }}"
+                                        {{ old('contascorrente->id') == $contascorrente->id ? 'selected' : '' }}>
+                                        {{ $contascorrente->nome }}
+                                    </option>
+                                @endforeach
+                            </select> 
+                    </div>
+                    <div class="col-md-3">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- pesquisar -->
         <div class="card mb-1 border-light shadow">
             <div class="card-header border border-light-subtle">

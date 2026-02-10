@@ -133,8 +133,10 @@ class MovimentoController extends Controller
         // SELECT CONCAT_WS(' - ', nome, agencia, conta)
         // FROM contascorrentes;
 
-        $contascorrentes = ContasCorrente::orderBy('nome', 'ASC')
-        ->get();
+        //$contascorrentes = ContasCorrente::orderBy('nome', 'ASC')
+        //->get();
+
+        $contascorrentes = DB::select("SELECT id, CONCAT_WS(' - ', nome, agencia, conta) as nome FROM contascorrentes");
 
         //dd($contascorrentes);
 
