@@ -1,7 +1,16 @@
 @extends('layouts.admin')
 
 @section('content')
-    
+
+<style>
+    .label-fixa {
+        width: 130px;   /* controla o alinhamento */
+    }
+    .data-width {
+        width: 150px;   /* mesma largura sempre */
+    }
+</style>
+
     <div class="container-fluid px-4">
 
         <div class="mb-1 hstack gap-2">
@@ -22,68 +31,229 @@
                 <!-- <span class="pesquisar" style="font-weight: 350; background-color: #D3D3D3;">Pesquisar - Filtros:</span> -->
                 <span class="pesquisar">Pesquisar - Filtros:</span>
 
+                        <!-- me-5 Aumentar a margem da label (mais simples) -->
+                        <!-- GAP Isso cria espaçamento automático entre todos os elementos internos. -->
+
+                        <!-- Opção 1 — Melhor prática (usando grid do Bootstrap) -->
+                        <!-- Deixe o label em uma coluna e o input em outra: -->
+                        <!-- Opção 3 — Usando form-check-inline (quando for horizontal fixo) -->
+
+                        <!-- SOLUÇÃO CORRETA (padrão profissional) -->
+                            <!-- Use d-flex + largura fixa na label: -->
+
+                            <!-- SOLUÇÃO CORRETA (alinhamento perfeito)
+                            Defina:
+                            Largura fixa para a label
+                            Largura fixa para o primeiro input de data
+                            Use flex-grow-1 no campo descrição -->
+
                 <div class="card-body">
                     
                     <form action="{{ route('movimentos.index') }}">
-                        <!-- me-5 Aumentar a margem da label (mais simples) -->
-                        <!-- GAP Isso cria espaçamento automático entre todos os elementos internos. -->
-                        
-                        <div class="row">
-                            <!-- <div class="col-8 mb-1 d-flex align-items-center gap-3"> -->
+
+                        <!-- <div class="row mb-2 align-items-center">
+                            <label for="descricao" class="col-form-label">Descrição</label>
+                        </div>
+                        <div class="col-6">
+                            <input type="text" name="descricao" class="form-control" id="descricao" value="{{ $descricao }}"
+                                placeholder="Descricao do movimento">
+                        </div> -->
+
+                        <!-- <div class="row mb-2 align-items-center">
+                            <div class="col-2">
+                                <label for="data_de" class="col-form-label">Cadastro de</label>
+                            </div>
+                        </div>
+
+                        <div class="col-3">
+                            <input type="date" name="data_de" class="form-control" id="data_de" value="{{ $data_de }}"> 
+                        </div>
+
+                        <div class="col-1 text-center">
+                            <label for="data_ate" class="col-form-label">até</label>
+                        </div>
+
+                        <div class="col-3">
+                            <input type="date" name="data_ate" class="form-control" id="data_ate" value="{{ $data_ate }}">
+                        </div> -->
+
+                        <!-- <div class="d-flex align-items-center gap-2">
+                             <label for="descricao" class="col-form-label">Descrição</label>
+                             <input type="text" name="descricao" class="form-control" id="descricao" value="{{ $descricao }}"
+                                placeholder="Descricao do movimento">
+                        </div>
+
+                        <div class="d-flex align-items-center gap-2">
+                            <label for="data_de" class="mb-0">Cadastro de</label>
+                            <input type="date" class="form-control w-auto" name="data_de">
+
+                            <span>até</span>
+
+                            <input type="date" class="form-control w-auto" name="data_ate">
+                        </div> -->
+
+                        <!-- <div class="row">
                             <div class="col-8 mb-1 d-flex align-items-center gap-5">
-                                <!-- <label for="descricao" class="form-label me-5 mb-0">Descrição</label> -->
                                 <label for="descricao" class="form-label me-5 mb-0">Descrição</label>
                                 <input type="text" name="descricao" class="form-control" id="descricao" 
                                 value="{{ $descricao }}"
                                 placeholder="Descricao do movimento">
                             </div>*Qualquer posição
-                        </div>    
+                        </div>     -->
 
-                        <div class="row">    
-                            <!-- <div class="col-8 mb-1 d-flex align-items-center gap-3"> -->
+                        <!-- <div class="row">    
                             <div class="col-8 mb-1 d-flex align-items-center gap-5">
                                     <label for="data_de" class="form-label me-5 mb-0">Cadastro de</label>
                                     <input type="date" name="data_de" class="form-control" 
                                     id="data_de" value="{{ $data_de }}"> 
-                            <!-- </div> -->
-                            <!-- <div class="col-3 mb-1 d-flex align-items-center gap-3">  -->
+                            
                                     <label for="data_ate" class="form-label me-0 mb-0">ate</label>
                                     <input type="date" name="data_ate" class="form-control" 
                                     id="data_ate" value="{{ $data_ate }}">
                             </div>
-                        </div>
+                        </div> -->
+                
+                        <!-- ====================================================================================================  -->
+                         <!-- opcao 1  -->
 
-                        <div class="row">
-                            <div class="col-8 mb-1 d-flex align-items-center gap-5">
-                                <label for="tipo_filtro" class="form-label me-5 mb-0">Tipo</label>
-                                <!-- <div class="d-flex align-items-center gap-1"> -->
-                                <!-- <div class="d-flex "> -->
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="tipo_filtro" id="tipo_filtroO" value="O">
-                                        <label class="form-check-label" for="tipo_filtro">Obrigação</label>
-                                    </div>
-                                    <div class="form-check form-check-inlineme">
-                                        <input class="form-check-input" type="radio" name="tipo_filtro" id="tipo_filtroP" value="P">
-                                        <label class="form-check-label" for="tipo_filtro">Previsão</label>
-                                    </div>
-                                <!-- </div> -->
+                        <!-- <div class="row">
+                            <div class="col-8 mb-2 d-flex align-items-center">
+                                <label for="descricao" class="label-fixa mb-0">Descrição</label>
+                                <input type="text" name="descricao"
+                                    class="form-control flex-grow-1"
+                                    id="descricao"
+                                    value="{{ $descricao }}"
+                                    placeholder="Descricao do movimento">
                             </div>
                         </div>
 
                         <div class="row">
-                            <!-- <div class="col-8 mb-1 d-flex align-items-center gap-3"> -->
-                            <div class="col-8 mb-1 d-flex align-items-center gap-5">
-                                <label for="categoriabusca" class="form-label me-5 mb-0">Categoria</label>
+                            <div class="col-8 mb-2 d-flex align-items-center">
+                                <label for="data_de" class="label-fixa mb-0">Cadastro de</label>
+
+                                <input type="date" name="data_de"
+                                    class="form-control data-width me-3"
+                                    id="data_de"
+                                    value="{{ $data_de }}">
+
+                                <label for="data_ate" class="mb-0 me-2">até</label>
+
+                                <input type="date" name="data_ate"
+                                    class="form-control data-width"
+                                    id="data_ate"
+                                    value="{{ $data_ate }}">
+                            </div>
+                        </div> -->
+                        
+                        <!-- ====================================================================================================  -->
+                        <!-- opcao 2  -->
+                        <!-- Alternativa ainda mais profissional (recomendada)
+                             Se quiser alinhamento 100% perfeito sem depender de largura fixa manual, use grid: 
+                             O que isso faz?
+                             Todas as labels começam na mesma posição e Todos os inputs começam alinhados
+                             Não precisa usar gap, me-5, largura fixa etc
+                             Fica profissional e responsivo
+
+                            | Descrição   | [____________________]        |
+                            | Cadastro de | [____] até [____]             | 
+
+                            Bootstrap usa essa escala:                    col-form-label?
+                            | Classe | Espaço       |                     Ajustar o alinhamento vertical
+                            | ------ | ------------ |                     Aplicar o padding correto
+                            | mb-0   | sem margem   |                     Deixar o label alinhado com form-control
+                            | mb-1   | pequeno      |                     Manter padrão visual do Bootstrap
+                            | mb-2   | médio        |
+                            | mb-3   | maior        |                     Classe	Quando usar
+                            | mb-4   | grande       |                     form-label  Label acima do input
+                            | mb-5   | muito grande |                     col-form-label Label ao lado do input (usando grid)
+
+                            se usar: row + col use col-form-label
+
+                            mb-3 → espaço embaixo                               Label ao Lado (Grid Horizontal)
+                            form-label → estilo padrão da label                 Forma profissional para sistemas
+                            form-control → estiliza input (largura 100%)        row → cria linha
+                            Descrição                                           col-2 → label ocupa 2 colunas
+                            [________________________]                          col-6 → input ocupa 6 colunas
+                                                                                col-form-label → alinhamento correto da label
+                                                                                align-items-center → centraliza verticalmente
+                                                                                Descrição     [______________________]
+                                                                                Período       [_____] até [_____]
+
+                            classes:
+                            d-flex → ativa flexbox
+                            me-3 → margem direita
+                            w-50 → largura 50%
+                                                     
+                            Sistema de Espaçamentos Bootstrap
+                            | Classe | Significado |
+                            | ------ | ----------- |
+                            | `m`    | margin      |
+                            | `p`    | padding     |
+                            | `t`    | top         |
+                            | `b`    | bottom      |
+                            | `s`    | esquerda    |
+                            | `e`    | direita     |
+                            | `0–5`  | intensidade |
+
+                            Regra de Ouro
+                            Formulário simples → form-label
+                            Formulário profissional alinhado → row + col + col-form-label
+                            Evite alinhar com me-5 e gap-5
+                            Use o grid para estrutura
+
+                        -->
+
+                        <div class="row mb-2 align-items-center">
+                            <div class="col-2">
+                                <label for="descricao" class="col-form-label">Descrição</label>
+                            </div>
+                            <div class="col-6">
+                                <!-- <input type="text" class="form-control" id="descricao"> -->
+                                <input type="text" name="descricao" class="form-control flex-grow-1"
+                                    id="descricao" value="{{ $descricao }}" placeholder="Descricao do movimento">
+                            </div>
+                        </div>
+
+                        <div class="row mb-2 align-items-center">
+                            <div class="col-2">
+                                <label for="data_de" class="col-form-label">Cadastro de</label>
+                            </div>
+                            <div class="col-3">
+                                <input type="date" class="form-control" id="data_de">
+                            </div>
+                            <div class="col-1 text-center">até</div>
+                            <div class="col-3">
+                                <input type="date" class="form-control" id="data_ate">
+                            </div>
+                        </div>
+
+                        <div class="row mb-2 align-items-center">
+                            <div class="col-2">
+                                <label for="tipo_filtro" class="col-form-label">Tipo</label>
+                            </div>
+                            <div class="col-3">
+                                <input class="form-check-input" type="radio" name="tipo_filtro" id="tipo_filtroO" value="O">
+                                <label class="form-check-label" for="tipo_filtro">Obrigação</label>
+                                <input class="form-check-input" type="radio" name="tipo_filtro" id="tipo_filtroP" value="P">
+                                <label class="form-check-label" for="tipo_filtro">Previsão</label>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2 align-items-center">
+                            <div class="col-2">
+                                <label for="categoriabusca" class="col-form-label">Categoria</label>
+                            </div>
+                            <div class="col-6">
                                 <input type="text" name="categoriabusca" class="form-control" id="categoriabusca" 
-                                value="{{ $categoriabusca }}"
-                                placeholder="categoria do movimento">
+                                    value="{{ $categoriabusca }}" placeholder="categoria do movimento">
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-8 mb-1 d-flex align-items-center gap-5" >
-                                <label for="contabusca" class="form-label me-5 mb-0">Conta</label>
-                                
+                        <div class="row mb-2 align-items-center">
+                            <div class="col-2">
+                                <label for="contabusca" class="col-form-label">Conta</label>
+                            </div>
+                            <div class="col-5">
                                 <select name="contabusca" id="contabusca" class="form-select" >
                                     <option value="">Selecione uma conta</option>
 
@@ -93,9 +263,56 @@
                                             {{ $contascorrente->nome }}
                                         </option>
                                     @endforeach
-                                </select>    
+                                </select>
                             </div>
                         </div>
+
+                        <!-- ====================================================================================================  -->
+
+                        <!-- <div class="row">
+                            <div class="col-8 mb-1 d-flex align-items-center gap-5">
+                                <label for="tipo_filtro" class="form-label me-5 mb-0">Tipo</label>
+                               
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="tipo_filtro" id="tipo_filtroO" value="O">
+                                        <label class="form-check-label" for="tipo_filtro">Obrigação</label>
+                                    </div>
+                                    <div class="form-check form-check-inlineme">
+                                        <input class="form-check-input" type="radio" name="tipo_filtro" id="tipo_filtroP" value="P">
+                                        <label class="form-check-label" for="tipo_filtro">Previsão</label>
+                                    </div>
+                                
+                            </div>
+                        </div> -->
+
+                        <!-- <div class="row">
+                            
+                            <div class="col-8 mb-1 d-flex align-items-center gap-5">
+                                <label for="categoriabusca" class="form-label me-5 mb-0">Categoria</label>
+                                <input type="text" name="categoriabusca" class="form-control" id="categoriabusca" 
+                                value="{{-- $categoriabusca --}}"
+                                placeholder="categoria do movimento">
+                            </div>
+                        </div> -->
+
+                        <!-- <div class="row">
+                            <div class="col-8 mb-1 d-flex align-items-center gap-5" >
+                                <label for="contabusca" class="form-label me-5 mb-0">Conta</label>
+                                
+                                <select name="contabusca" id="contabusca" class="form-select" >
+                                    <option value="">Selecione uma conta</option>
+
+                                    @foreach ($contascorrentes as $contascorrente)
+                                        <option value="{{ $contascorrente->id }}"
+                                            {{-- old('contascorrente->id') == $contascorrente->id ? 'selected' : '' --}}>
+                                            {{-- $contascorrente->nome --}}
+                                        </option>
+                                    @endforeach
+                                </select>    
+                            </div>
+                        </div> -->
+
+                        
 
                         <div class="row">
 
