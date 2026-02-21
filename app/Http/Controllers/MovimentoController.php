@@ -90,8 +90,9 @@ class MovimentoController extends Controller
             $sel .= " Categoria:{$request->categoriabusca}";
         }
         if( $request->has('contabusca') && $request->contabusca ){
+            $cc = ContasCorrente::where('id', $request->contabusca)->first();
             $sel .= $sel ? ', ' : '' ;
-            $sel .= " Conta corrente:{$request->contabusca}";
+            $sel .= " Conta corrente:{$request->contabusca} {$cc->nome} - {$cc->agencia} - {$cc->conta}";
         }
         if( $request->has('tipo_filtro') && $request->tipo_filtro ){
             $sel .= $sel ? ', ' : '' ;
