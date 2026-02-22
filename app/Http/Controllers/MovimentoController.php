@@ -66,8 +66,11 @@ class MovimentoController extends Controller
             ->when($request->filled('descricao'), function ($q) use ($request) {
                 $q->where('descricao', 'like', '%' . $request->descricao . '%');
             })
-            ->when($request->filled('categoriabusca'), function ($q) use ($request) {
+            /*->when($request->filled('categoriabusca'), function ($q) use ($request) {
                 $q->where('categorias.nome', '=', $request->categoriabusca );
+            })*/
+            ->when($request->filled('categoria_id'), function ($q) use ($request) {
+                $q->where('categorias.id', '=', $request->categoria_id );
             })
             ->when($request->filled('contabusca'), function ($q) use ($request) {
                 $q->where('movimentos.contascorrente_id', '=', $request->contabusca );
@@ -172,9 +175,12 @@ class MovimentoController extends Controller
         // nao funciona Log::info('sql' , ['' => $movimentos->toRawSql()]);
         // nao funciona dd($movimentos->toSql());
 
-        
 
-        //dd(DB::getQueryLog());   //esse funciona ok!
+        // ===========================================================================
+        //       debug sql query   dd(DB::getQueryLog())
+        // ===========================================================================
+        
+        // dd(DB::getQueryLog());   //esse funciona ok!
 
         /*
         consulta agrupada movimentos por categoria
@@ -1020,9 +1026,11 @@ class MovimentoController extends Controller
 
     public function relatorioselecao(){
         
-        return view('Movimentos.relatorioselecao',
-         ['menu' => 'movimentos-relatorio']);
+        $categorias = Categoria::orderBy('classif', 'ASC')->get();
 
+        return view('Movimentos.relatorioselecao', 
+         ['menu' => 'movimentos-relatorio',
+          'categorias' => $categorias]);
     }
 
     public function relatoriovisualizacao(Request $request){
@@ -1059,6 +1067,14 @@ class MovimentoController extends Controller
         $dataInicio = $dataDe;
         $dataFim    = $dataAte;
 
+        if( $request->has('descricao') && $request->descricao ){
+            $descrel = ' like ' . '%' . $request->descricao . '%';
+        }
+        
+        if( $request->has('categoria_id') && $request->categoria_id ){
+            $categrel = $request->categoria_id;
+        }
+
                 // Usar DB::select para executar a consulta SQL bruta
         $resultados = DB::select("
             SELECT *
@@ -1072,6 +1088,7 @@ class MovimentoController extends Controller
                     categorias ON movimentos.categoria_id = categorias.id
                 WHERE
                     tipo_lc = 'O' AND dt BETWEEN :dataInicioO AND :dataFimO
+                    and categorias.id = :catrelO
                 GROUP BY
                     tipo_lc, categorias.nome, categorias.classif
 
@@ -1086,6 +1103,7 @@ class MovimentoController extends Controller
                     categorias ON movimentos.categoria_id = categorias.id
                 WHERE
                     tipo_lc = 'P' AND dt BETWEEN :dataInicioP AND :dataFimP
+                    and categorias.id = :catrelP
                 GROUP BY
                     tipo_lc, categorias.nome, categorias.classif
             ) AS subquery_combinada
@@ -1097,6 +1115,8 @@ class MovimentoController extends Controller
                 'dataFimO' => $dataFim,
                 'dataInicioP' => $dataInicio,
                 'dataFimP' => $dataFim,
+                'catrelO'  => $categrel,
+                'catrelP'  => $categrel,
             ]);
 
             // order by classif, tipo_lc; 
@@ -1125,18 +1145,21 @@ class MovimentoController extends Controller
             $sel .= $sel ? ', ' : '' ;
             $sel .= " Descrição:{$request->descricao}";
         }
+
+              
+
         if( $request->has('categoriabusca') && $request->categoriabusca ){
             $sel .= $sel ? ', ' : '' ;
             $sel .= " Categoria:{$request->categoriabusca}";
         }
-        if( $request->has('tipo_filtro') && $request->tipo_filtro ){
-            $sel .= $sel ? ', ' : '' ;
-            if( $request->tipo_filtro == 'O' ){
-                $sel .= " Tipo:Obrigação";
-            }else{
-                $sel .= " Tipo:Previsão";
-            }                    
-        }
+        // if( $request->has('tipo_filtro') && $request->tipo_filtro ){
+        //     $sel .= $sel ? ', ' : '' ;
+        //     if( $request->tipo_filtro == 'O' ){
+        //         $sel .= " Tipo:Obrigação";
+        //     }else{
+        //         $sel .= " Tipo:Previsão";
+        //     }                    
+        // }
         if ( $request->filled('data_de') && $request->data_de ){
             $sel .= $sel ? ', ' : '' ;
             $sel .= " Data de:" . \Carbon\Carbon::parse($request->data_de)->format('d-m-Y');
@@ -1153,6 +1176,8 @@ class MovimentoController extends Controller
         // return view('sua_view', ['dados' => $resultados]);
         // ou return response()->json($resultados);
         $dados = $resultados;
+
+        //dd(DB::getQueryLog()); 
 
         return view('Movimentos.relatoriovisualizacao',
          ['menu' => 'movimentos-relatorio',

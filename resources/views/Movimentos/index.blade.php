@@ -26,13 +26,13 @@
                     
                     <form action="{{ route('movimentos.index') }}">
 
-                        <div class="row mb-2 align-items-center">
+                        <div class="row mb-2 align-items-center">  
                             <div class="col-2">
                                 <label for="descricao" class="col-form-label">Descrição</label>
                             </div>
                             <div class="col-6">
-                                <input type="text" name="descricao" class="form-control flex-grow-1"
-                                    id="descricao" value="{{ $descricao }}" placeholder="Descricao do movimento (*Qualquer posição)">
+                                <input type="text" class="form-control flex-grow-1" placeholder="Descricao do movimento (*Qualquer posição)"
+                                    name="descricao" id="descricao" value="{{ $descricao }}" >
                             </div>                            
                         </div>
 
@@ -41,11 +41,11 @@
                                 <label for="data_de" class="col-form-label">Cadastro de</label>
                             </div>
                             <div class="col-3">
-                                <input type="date" name="data_de" class="form-control" id="data_de" value="{{ $data_de }}">
+                                <input type="date" class="form-control" name="data_de" id="data_de" value="{{ $data_de }}">
                             </div>
                             <div class="col-1 text-center">até</div>
                             <div class="col-3">
-                                <input type="date" name="data_ate" class="form-control" id="data_de" value="{{ $data_ate }}">
+                                <input type="date" class="form-control" name="data_ate" id="data_de" value="{{ $data_ate }}">
                             </div>
                         </div>
 
@@ -66,8 +66,20 @@
                                 <label for="categoriabusca" class="col-form-label">Categoria</label>
                             </div>
                             <div class="col-6">
-                                <input type="text" name="categoriabusca" class="form-control" id="categoriabusca" 
-                                    value="{{ $categoriabusca }}" placeholder="categoria do movimento">
+                                <!-- <input type="text" name="categoriabusca" class="form-control" id="categoriabusca" 
+                                    value="{{ $categoriabusca }}" placeholder="categoria do movimento"> -->
+
+                                <select name="categoria_id" id="categoria" class="form-select">
+                                    <option value="">Selecione uma categoria</option>
+
+                                    @foreach ($categorias as $categoria)
+                                        <option value="{{ $categoria->id }}"
+                                            {{ old('categoria_id') == $categoria->id ? 'selected' : '' }}>
+                                            {{ $categoria->nome }}
+                                        </option>
+                                    @endforeach
+                                </select>
+
                             </div>
                         </div>
 
