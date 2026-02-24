@@ -1075,8 +1075,53 @@ class MovimentoController extends Controller
             $categrel = $request->categoria_id;
         }
 
+        if( $request->has('categoria_id') && $request->categoria_id ){
+
                 // Usar DB::select para executar a consulta SQL bruta
-        $resultados = DB::select("
+            $resultados = DB::select("
+                SELECT *
+                FROM (
+                    SELECT 
+                        tipo_lc, categorias.nome, categorias.classif,
+                        SUM(movimentos.valor) as valor
+                    FROM
+                        movimentos
+                    INNER JOIN
+                        categorias ON movimentos.categoria_id = categorias.id
+                    WHERE
+                        tipo_lc = 'O' AND dt BETWEEN :dataInicioO AND :dataFimO
+                        and categorias.id = :catrelO
+                    GROUP BY
+                        tipo_lc, categorias.nome, categorias.classif
+
+                    UNION ALL
+
+                    SELECT
+                        tipo_lc, categorias.nome, categorias.classif,
+                        SUM(movimentos.valor) as valor
+                    FROM
+                        movimentos
+                    INNER JOIN
+                        categorias ON movimentos.categoria_id = categorias.id
+                    WHERE
+                        tipo_lc = 'P' AND dt BETWEEN :dataInicioP AND :dataFimP
+                        and categorias.id = :catrelP
+                    GROUP BY
+                        tipo_lc, categorias.nome, categorias.classif
+                ) AS subquery_combinada
+                ORDER BY
+                    classif;
+                ", [
+                    // Passar os bindings para prevenir SQL Injection
+                    'dataInicioO' => $dataInicio,
+                    'dataFimO' => $dataFim,
+                    'dataInicioP' => $dataInicio,
+                    'dataFimP' => $dataFim,
+                    'catrelO'  => $categrel,
+                    'catrelP'  => $categrel,
+                ]);
+        }else{
+            $resultados = DB::select("
             SELECT *
             FROM (
                 SELECT 
@@ -1088,7 +1133,6 @@ class MovimentoController extends Controller
                     categorias ON movimentos.categoria_id = categorias.id
                 WHERE
                     tipo_lc = 'O' AND dt BETWEEN :dataInicioO AND :dataFimO
-                    and categorias.id = :catrelO
                 GROUP BY
                     tipo_lc, categorias.nome, categorias.classif
 
@@ -1103,7 +1147,6 @@ class MovimentoController extends Controller
                     categorias ON movimentos.categoria_id = categorias.id
                 WHERE
                     tipo_lc = 'P' AND dt BETWEEN :dataInicioP AND :dataFimP
-                    and categorias.id = :catrelP
                 GROUP BY
                     tipo_lc, categorias.nome, categorias.classif
             ) AS subquery_combinada
@@ -1115,9 +1158,8 @@ class MovimentoController extends Controller
                 'dataFimO' => $dataFim,
                 'dataInicioP' => $dataInicio,
                 'dataFimP' => $dataFim,
-                'catrelO'  => $categrel,
-                'catrelP'  => $categrel,
             ]);
+        }
 
             // order by classif, tipo_lc; 
 
