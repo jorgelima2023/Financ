@@ -191,9 +191,6 @@
         <!-- Modal de cadastro -->
         <div class="modal fade" id="cadModal" tabindex="-1" aria-labelledby="cadModalLabel" aria-hidden="true">
             <div class="modal-dialog">
-
-                <!-- <x-alert /> -->
-
                 <form method="POST" action="{{ route('movimentos.store') }}">
                     @csrf
                     @method('POST')
@@ -202,11 +199,10 @@
                             <h5 class="modal-title" id="cadModalLabel">Cadastrar Movimento</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                         </div>
-
+                        
+                        <!-- conteudo -->
                         <div class="modal-body">
-                            <!-- conteudo -->
-
-                            <div class="row mb-2 align-items-center">
+                            <div class="row mb-1 align-items-center">
                                 <div class="col-3">
                                     <label for="data" class="col-form-label">Data</label>
                                 </div>
@@ -214,13 +210,7 @@
                                     <input type="date" name="data" class="form-control" id="data" value="{{ old('data') }}" required>
                                 </div>
                             </div>
-
-                            <!-- <div class="col-5 d-flex align-items-center">
-                                <label for="data" class="form-label me-2 mb-0">Data</label>
-                                <input type="date" name="data" class="form-control" id="data" value="{{ old('data') }}" required>
-                            </div> -->
-                            
-                            <div class="row mb-2 align-items-center">
+                            <div class="row mb-1 align-items-center">
                                 <div class="col-3">
                                     <label for="tipo_filtro" class="col-form-label">Tipo Lcto</label>
                                 </div>
@@ -231,25 +221,7 @@
                                     <label class="form-check-label" for="tipo_lcto">Despesa</label>
                                 </div>
                             </div>
-
-                            <!-- <div class="col-6 mb-4 d-flex align-items-center" >
-                                <label class="form-label me-2 mb-0">Tipo Lcto</label>
-                                <div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="tipo_lcto" id="tipo_lcto_receita" value="1"
-                                            {{-- old('tipo') == '1' ? 'checked' : '' --}} required>
-                                        <label class="form-check-label" for="tipo_lcto">Receita</label>
-                                    </div>
-
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="tipo_lcto" id="tipo_lcto_despesa" value="0"
-                                            {{-- old('tipo') == '0' ? 'checked' : '' --}} required>
-                                        <label class="form-check-label" for="tipo_lcto">Despesa</label>
-                                    </div>
-                                </div>
-                            </div> -->
-
-                            <div class="row mb-2 align-items-center">
+                            <div class="row mb-1 align-items-center">
                                 <div class="col-3">
                                     <label for="tipo" class="col-form-label">Tipo</label>
                                 </div>
@@ -260,25 +232,7 @@
                                     <label class="form-check-label" for="tipo">Previsão</label>
                                 </div>
                             </div>
-
-                            <!-- <div class="col-5 mb-4 d-flex align-items-center" >
-                                <label class="form-label me-2 mb-0">Tipo</label>
-                                <div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="tipo" id="tipo_obrigacao" value="O"
-                                            {{-- old('tipo') == 'O' ? 'checked' : '' --}} required>
-                                        <label class="form-check-label" for="tipo">Obrigação</label>
-                                    </div>
-
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="tipo" id="tipo_previsao" value="P"
-                                            {{-- old('tipo') == 'P' ? 'checked' : '' --}} required>
-                                        <label class="form-check-label" for="tipo">Previsão</label>
-                                    </div>
-                                </div>
-                            </div> -->
-
-                            <div class="row mb-2 align-items-center">
+                            <div class="row mb-1 align-items-center">
                                 <div class="col-3">
                                     <label for="categoria" class="col-form-label">Categoria</label>
                                 </div>
@@ -294,22 +248,7 @@
                                     </select>
                                 </div>
                             </div>
-
-                            <!-- <div class="col-5 mb-3 d-flex align-items-center" >
-                                <label for="categoria" class="form-label me-2 mb-0">Categoria</label>
-                                <select name="categoria_id" id="categoria" class="form-select" required>
-                                    <option value="">Selecione uma categoria</option>
-
-                                    @foreach ($categorias as $categoria)
-                                        <option value="{{ $categoria->id }}"
-                                            {{ old('categoria_id') == $categoria->id ? 'selected' : '' }}>
-                                            {{ $categoria->nome }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div> -->
-                    
-                            <div class="row mb-2 align-items-center">
+                            <div class="row mb-1 align-items-center">
                                 <div class="col-3">
                                     <label for="conta" class="col-form-label">Conta</label>
                                 </div>
@@ -326,22 +265,7 @@
                                     </select>
                                 </div>
                             </div>
-
-                            <!-- <div class="col-5 mb-3 d-flex align-items-center" >
-                                <label for="conta" class="form-label me-2 mb-0">Conta</label>
-                                <select name="conta_id" id="conta_id" class="form-select" required>
-                                    <option value="">Selecione uma conta</option>
-
-                                    @foreach ($contascorrentes as $contascorrente)
-                                        <option value="{{ $contascorrente->id }}"
-                                            {{ old('contascorrente->id') == $contascorrente->id ? 'selected' : '' }}>
-                                            {{ $contascorrente->nome }}
-                                        </option>
-                                    @endforeach
-                                </select>    
-                            </div> -->
-
-                            <div class="row mb-2 align-items-center">
+                            <div class="row mb-1 align-items-center">
                                 <div class="col-3">
                                     <label for="descricao" class="col-form-label">Descrição</label>
                                 </div>
@@ -349,14 +273,7 @@
                                     <input type="text" name="descricao" class="form-control" id="descricao" value="{{ old('descricao') }}" required>
                                 </div>
                             </div>
-
-                            <!-- <div class="col-8 mb-3 d-flex align-items-center" >
-                                <label for="descricao" class="form-label me-2 mb-0">Descrição</label>
-                                <input type="text" name="descricao" class="form-control" id="descricao" 
-                                    value="{{ old('descricao') }}" required>
-                            </div> -->
-
-                            <div class="row mb-2 align-items-center">
+                            <div class="row mb-1 align-items-center">
                                 <div class="col-3">
                                     <label for="dcto" class="col-form-label">Dcto</label>
                                 </div>
@@ -364,14 +281,7 @@
                                     <input type="text" name="dcto" class="form-control" id="dcto" value="{{ old('dcto') }}" required>
                                 </div>
                             </div>
-
-                            <!-- <div class="col-8 mb-3 d-flex align-items-center" >
-                                <label for="dcto" class="form-label me-2 mb-0">Dcto</label>
-                                <input type="text" name="dcto" class="form-control" id="dcto" 
-                                    value="{{ old('dcto') }}" required>
-                            </div> -->
- 
-                            <div class="row mb-2 align-items-center">
+                            <div class="row mb-1 align-items-center">
                                 <div class="col-3">
                                     <label for="valor" class="col-form-label">Valor</label>
                                 </div>
@@ -379,13 +289,6 @@
                                     <input type="text" name="valor" class="form-control" id="valor" value="{{ old('valor') }}" required>
                                 </div>
                             </div>
-
-                            <!-- <div class="col-4 mb-3 d-flex align-items-center" >
-                                <label for="valor" class="form-label me-2 mb-0">Valor</label>
-                                <input type="text" name="valor" class="form-control" id="valor" 
-                                    value="{{ old('valor') }}" required>
-                            </div> -->
-
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
@@ -403,7 +306,6 @@
 
                 <!-- <x-alert /> -->
 
-                    <!-- action js -->
                     <form method="POST" action="" id="formEditMovimento">
                     @csrf
                     @method('PUT')
@@ -413,19 +315,38 @@
                             <h5 class="modal-title" id="editModalLabel">Alterar Movimento</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                         </div>
-
+                        <!-- conteudo -->
                         <div class="modal-body">
-                            
-                            
 
                             <input type="hidden" name="editMovimentoId" id="editMovimentoId">
                             
-                            <div class="col-5 d-flex align-items-center">
+                            <div class="row mb-1 align-items-center">
+                                <div class="col-3">
+                                    <label for="editdt" class="col-form-label">Data</label>
+                                </div>
+                                <div class="col-4">
+                                    <input type="date" name="editdt" class="form-control" id="editdt" required>
+                                </div>
+                            </div>
+
+                            <!-- <div class="col-5 d-flex align-items-center">
                                 <label for="data" class="form-label me-2 mb-0">Data</label>
                                 <input type="date" name="editdt" class="form-control" id="editdt" required>
-                            </div>
+                            </div> -->
                             
-                            <div class="col-12 mb-4 d-flex align-items-center" >
+                            <div class="row mb-1 align-items-center">
+                                <div class="col-3">
+                                    <label for="tipo_filtro" class="col-form-label">Tipo Lcto</label>
+                                </div>
+                                <div class="col-5">
+                                    <input class="form-check-input" type="radio" name="edittipo" id="edittipo_lc_1" value="1" required>
+                                    <label class="form-check-label" for="edittipo_lc_1">Receita</label>
+                                    <input class="form-check-input" type="radio" name="edittipo" id="edittipo_lc_0" value="0">
+                                    <label class="form-check-label" for="edittipo_lc_0">Despesa</label>
+                                </div>
+                            </div>
+
+                            <!-- <div class="col-12 mb-4 d-flex align-items-center" >
                                 <label class="form-label me-2 mb-0">Tipo Lcto</label>
                                 <div>
                                     <div class="form-check form-check-inline">
@@ -437,7 +358,7 @@
                                         <label class="form-check-label" for="edittipo_lc_0">Despesa</label>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <div class="col-12 mb-4 d-flex align-items-center" >
                                 <label class="form-label me-2 mb-0">Tipo</label>
