@@ -58,6 +58,8 @@ class MovimentoController extends Controller
             ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
             ->with(['categoria', 'forma_pgto'])
             */
+                                         
+        //$movimentos = Movimento::select('movimentos.*')
 
         $movimentos = Movimento::select('movimentos.*')
             ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
@@ -81,7 +83,8 @@ class MovimentoController extends Controller
             ->whereBetween('dt', [$dataDe, $dataAte])
             ->orderBy('movimentos.dt', 'asc')
             ->orderBy('categorias.classif', 'asc')
-            ->get();
+            ->get();  // get vai retornar uma collection 
+            //->firstOrFail();
 
         $sel = "";
         if( $request->has('descricao') && $request->descricao ){
@@ -140,7 +143,13 @@ class MovimentoController extends Controller
         //$contascorrentes = ContasCorrente::orderBy('nome', 'ASC')
         //->get();
 
-        $contascorrentes = DB::select("SELECT id, CONCAT_WS(' - ', nome, agencia, conta) as nome FROM contascorrentes");
+        $contascorrentes = DB::select("SELECT id, id as contascorrente_id , CONCAT_WS(' - ', nome, agencia, conta, id) as nome FROM contascorrentes");
+
+        //$contascorrentes = ContasCorrente::orderBy('nome', 'ASC')
+        //->get();
+
+        $contase = ContasCorrente::orderBy('nome', 'ASC')
+        ->get();
 
         //dd($contascorrentes);
 
@@ -160,11 +169,12 @@ class MovimentoController extends Controller
 
         // =================================
         // opcao 2 somar valores 
-
+        $totalDespesa = 0;
         $totalDespesa = $movimentos->filter(function ($movimento) {
             return $movimento->tipo == 0;
         })->sum('valor');
 
+        $totalReceita = 0;
         $totalReceita = $movimentos->filter(function ($movimento) {
             return $movimento->tipo == 1;
         })->sum('valor');
@@ -180,7 +190,7 @@ class MovimentoController extends Controller
         //       debug sql query   dd(DB::getQueryLog())
         // ===========================================================================
         
-        // dd(DB::getQueryLog());   //esse funciona ok!
+        //dd(DB::getQueryLog());   //esse funciona ok!
 
         /*
         consulta agrupada movimentos por categoria
@@ -194,17 +204,20 @@ class MovimentoController extends Controller
         ORDER BY classif, tipo_lc;
         */
 
+        // 'qtde_registros' => count($movimentos)
+
         return view('Movimentos.index',
          ['menu' => 'movimentos',
           'movimentos' => $movimentos,
           'categorias' => $categorias,
           'contascorrentes' => $contascorrentes,
+          'contase' => $contase,
           'descricao' => $request->descricao,
           'categoriabusca' => $request->categoriabusca,
           'data_de' => $request->data_de,
           'data_ate' => $request->data_ate,
           'tipo_filtro' => $request->tipo_filtro,
-          'qtde_registros' => count($movimentos),
+          'qtde_registros' => count($movimentos), 
           'totalMovimento' => $total,
           'totalDespesa' => $totalDespesa,
           'totalReceita' => $totalReceita,
@@ -336,6 +349,8 @@ class MovimentoController extends Controller
                 'tipo' => $request->input('edittipo'),  
 
                 'categoria_id' => $request->input('editcategoria_id'),
+                'contascorrente_id' => $request->input('conta_id'),
+
                 'descricao' => $request->input('editDescricao'),
                 'dcto' => $request->input('editdcto'),
                 //'valor' => $request->input('valor'),
