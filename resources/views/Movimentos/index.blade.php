@@ -257,6 +257,7 @@
                                     </select>
                                 </div>
                             </div>
+                            
                             <div class="row mb-1 align-items-center">
                                 <div class="col-3">
                                     <label for="conta" class="col-form-label">Conta</label>
@@ -274,6 +275,25 @@
                                     </select>
                                 </div>
                             </div>
+
+                            <div class="row mb-1 align-items-center">
+                                <div class="col-3">
+                                    <label for="Forma" class="col-form-label">Forma Pgto</label>
+                                </div>
+                                <div class="col-5">
+                                    <select name="forma_pgto_id" id="forma_pgto_id" class="form-select" required>
+                                        <option value="">Selecione uma Forma de Pagamento</option>
+
+                                        @foreach ($forma_pgtos as $forma_pgto)
+                                            <option value="{{ $forma_pgto->id }}"
+                                                {{ old('forma_pgto_id') == $forma_pgto->id ? 'selected' : '' }}>
+                                                {{ $forma_pgto->nome }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
                             <div class="row mb-1 align-items-center">
                                 <div class="col-3">
                                     <label for="descricao" class="col-form-label">Descrição</label>
@@ -312,9 +332,7 @@
         <!-- Modal de Edição -->
         <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
             <div class="modal-dialog">
-
-                <!-- <x-alert /> -->
-
+        <!-- <x-alert /> -->
                     <form method="POST" action="" id="formEditMovimento">
                     @csrf
                     @method('PUT')
@@ -337,11 +355,6 @@
                                     <input type="date" name="editdt" class="form-control" id="editdt" required>
                                 </div>
                             </div>
-
-                            <!-- <div class="col-5 d-flex align-items-center">
-                                <label for="data" class="form-label me-2 mb-0">Data</label>
-                                <input type="date" name="editdt" class="form-control" id="editdt" required>
-                            </div> -->
                             
                             <div class="row mb-1 align-items-center">
                                 <div class="col-3">
@@ -355,19 +368,6 @@
                                 </div>
                             </div>
 
-                            <!-- <div class="col-12 mb-4 d-flex align-items-center" >
-                                <label class="form-label me-2 mb-0">Tipo Lcto</label>
-                                <div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="edittipo" id="edittipo_lc_1" value="1" required>
-                                        <label class="form-check-label" for="edittipo_lc_1">Receita</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="edittipo" id="edittipo_lc_0" value="0" required>
-                                        <label class="form-check-label" for="edittipo_lc_0">Despesa</label>
-                                    </div>
-                                </div>
-                            </div> -->
                             <div class="row mb-1 align-items-center">
                                 <div class="col-3">
                                     <label for="tipo" class="col-form-label">Tipo</label>
@@ -380,26 +380,12 @@
                                 </div>
                             </div>
 
-                            <!-- <div class="col-12 mb-4 d-flex align-items-center" >
-                                <label class="form-label me-2 mb-0">Tipo</label>
-                                <div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="edittipo_lc" id="edittipo_o" value="O" required>
-                                        <label class="form-check-label" for="edittipo_o">Obrigação</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="edittipo_lc" id="edittipo_p" value="P" required>
-                                        <label class="form-check-label" for="edittipo_p">Previsão</label>
-                                    </div>
-                                </div>
-                            </div> -->
-
                             <div class="row mb-1 align-items-center">
                                 <div class="col-3">
                                     <label for="editcategoria_id" class="col-form-label">Categoria</label>
                                 </div>
                                 <div class="col-6">
-                                    <select name="categoria_id" id="editcategoria_id" class="form-select" required>
+                                    <select name="editcategoria_id" id="editcategoria_id" class="form-select" required>
                                         <option value="">Selecione uma categoria</option>
                                         @foreach ($categorias as $categoria)
                                             <option value="{{ $categoria->id }}"
@@ -410,21 +396,6 @@
                                     </select>
                                 </div>
                             </div>
-
-                            <!-- <div class="col-10 mb-3 d-flex align-items-center" >
-                                <label for="editcategoria_id" class="form-label me-2 mb-0">Categoria</label>
-                                <select name="editcategoria_id" id="editcategoria_id" class="form-select" required>
-                                    <option value="">Selecione uma categoria</option>
-
-                                    @foreach ($categorias as $categoria)
-                                        <option value="{{ $categoria->id }}"
-                                            {{ old('editcategoria_id') == $categoria->id ? 'selected' : '' }}>
-                                            {{ $categoria->nome }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div> -->
-
 
                             <div class="row mb-1 align-items-center">
                                 <div class="col-3">
@@ -447,17 +418,30 @@
 
                             <div class="row mb-1 align-items-center">
                                 <div class="col-3">
+                                    <label for="Forma" class="col-form-label">Forma Pgto</label>
+                                </div>
+                                <div class="col-5">
+                                    <select name="eforma_pgto_id" id="eforma_pgto_id" class="form-select" required>
+                                        <option value="">Selecione uma Forma de Pagamento</option>
+
+                                        @foreach ($forma_pgtos as $forma_pgto)
+                                            <option value="{{ $forma_pgto->id }}"
+                                                {{ old('forma_pgto_id') == $forma_pgto->id ? 'selected' : '' }}>
+                                                {{ $forma_pgto->nome }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-1 align-items-center">
+                                <div class="col-3">
                                     <label for="editDescricao" class="col-form-label">Descrição</label>
                                 </div>
                                 <div class="col-7">
                                     <input type="text" name="editDescricao" class="form-control" id="editDescricao" required>
                                 </div>
                             </div>
-
-                            <!-- <div class="col-8 mb-3 d-flex align-items-center" >
-                                <label for="editDescricao" class="form-label me-2 mb-0">Descrição</label>
-                                <input type="text" name="editDescricao" class="form-control" id="editDescricao" required>
-                            </div> -->
 
                             <div class="row mb-1 align-items-center">
                                 <div class="col-3">
@@ -468,12 +452,6 @@
                                 </div>
                             </div>
 
-                            <!-- <div class="col-8 mb-3 d-flex align-items-center" >
-                                <label for="editdcto" class="form-label me-2 mb-0">Dcto</label>
-                                <input type="text" name="editdcto" class="form-control" id="editdcto" 
-                                     required>
-                            </div> -->
- 
                             <div class="row mb-1 align-items-center">
                                 <div class="col-3">
                                     <label for="editValor" class="col-form-label">Valor</label>
@@ -482,11 +460,6 @@
                                     <input type="text" name="editValor" class="form-control" id="editValor" required>
                                 </div>
                             </div>
-
-                            <!-- <div class="col-4 mb-3 d-flex align-items-center" >
-                                <label for="editValor" class="form-label me-2 mb-0">Valor</label>
-                                <input type="text" name="editValor" class="form-control" id="editValor" required>
-                            </div> -->
 
                         </div>
                         <div class="modal-footer">
@@ -587,7 +560,7 @@
                             <th class="text-left">Descrição</th>
                             <th class="text-left">Dcto</th>
                             <th class="text-left">Categoria</th>
-                            <!-- <th class="text-left">Forma Pgto</th> -->
+                            <th class="text-left">Forma Pgto</th>
                             <th class="text-right">Valor</th>
                             <!-- <th class="text-left">tipo_lcto</th>
                             <th class="text-left">tipo:0-Receita/1-Despesa</th>
@@ -609,6 +582,7 @@
                                             data-descricao="{{ $movimento->descricao }}"
                                             data-valor="{{ number_format($movimento->valor, 2, ',', '.') }}"
                                             data-categoria_nome="{{ $movimento->categoria->nome }}"
+                                            data-categoria_nome="{{ $movimento->forma_pgto->nome }}"
                                             data-dcto="{{ $movimento->dcto }}"
                                             data-dt="{{ $movimento->dt }}"
                                             data-tipo="{{ $movimento->tipo == 'O' ? 'Obrigação' : 'Provisão' }}"
@@ -629,6 +603,7 @@
                                             data-valor="{{ number_format($movimento->valor, 2, ',', '.') }}"
                                             data-categoria_id="{{ $movimento->categoria_id }}"
                                             data-conta_id="{{ $movimento->contascorrente_id }}"
+                                            data-forma_pgto_id="{{ $movimento->forma_pgto_id }}"
                                             data-dcto="{{ $movimento->dcto }}"
                                             data-dt="{{ $movimento->dt }}"
                                             data-tipo="{{ $movimento->tipo }}"
@@ -644,9 +619,7 @@
                                 <td title="Descrição">{{ $movimento->descricao }}</td>
                                 <td title="Documento">{{ $movimento->dcto }}</td>
                                 <td title="Categoria">{{ $movimento->categoria_id }} - {{ $movimento->categoria->nome }}</td>
-                                <!-- <td title="Forma Pgto">{{-- $movimento->forma_pgto_id }} -->
-                                    {{-- $movimento->forma_pgto->nome --}}
-                                <!-- </td> -->
+                                <td title="Forma Pgto">{{ $movimento->forma_pgto_id }} - {{ $movimento->forma_pgto->nome }}</td>
 
                                 @php if(  $movimento->tipo == 0 ){ @endphp
                                     <td title="Despesa" style="color:#C00;"><strong>-{{ number_format($movimento->valor, 2, ',', '.') }}</strong></td>
@@ -725,6 +698,8 @@
 
             var conta_id = button.getAttribute('data-conta_id');
 
+            var forma_id = button.getAttribute('data-forma_pgto_id');
+
             var dcto = button.getAttribute('data-dcto');
             var dt = button.getAttribute('data-dt');
             var tipo = button.getAttribute('data-tipo');
@@ -736,6 +711,7 @@
             document.getElementById('editcategoria_id').value = categoria_id;
 
             document.getElementById('econta_id').value = conta_id;
+            document.getElementById('eforma_pgto_id').value = forma_id;
 
             document.getElementById('editdcto').value = dcto;
             document.getElementById('editdt').value = dt;

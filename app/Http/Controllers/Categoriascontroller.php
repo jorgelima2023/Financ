@@ -17,7 +17,7 @@ class Categoriascontroller extends Controller
         // Recuperar os registros do banco dados
         // $courses = Course::where('id', 1000)->get();
         // $courses = Course::paginate(10);
-        $categorias = Categoria::orderBy('nome', 'ASC')
+        $categorias = Categoria::orderBy('classif', 'ASC')
         // teste alerta nenhum registro encontrado ->where('id', 1000)
         ->get();
 

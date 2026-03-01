@@ -26,6 +26,7 @@ class MovimentoEditRequest extends FormRequest
             //'tipo_lc' => 'required|boolean',     // 1-Receita , 0-Despesa
             //'tipo_lc' => 'required|in:1,0',
             //'tipo' => 'required|in:O,P',   // "O" Obrigacao , "P" Provisao
+            'eforma_pgto_id' => 'required|exists:forma_pgtos,id',
             'editcategoria_id' => 'required|exists:categorias,id',
             'editDescricao' => 'required|string|max:150',
             'editdcto' => 'required|string|max:50',
@@ -39,6 +40,7 @@ class MovimentoEditRequest extends FormRequest
             'editdt.required' => 'Campo data obrigatorio',
             //'tipo_lc.required' => 'Campo tipo lançamento obrigatorio, informar:Receita ou Despesa',
             //'tipo.required' => 'Campo tipo obrigatorio, informar:Obrigação ou Provisão',
+            'eforma_pgto_id.required' => 'Campo Forma pagamento obrigatorio',
             'editcategoria_id.required' => 'Campo Categoria obrigatorio',
             'editDescricao.required' => 'Campo Descrição obrigatorio',
             'editdcto.required' => 'Campo Documento obrigatorio',

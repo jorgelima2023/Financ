@@ -64,6 +64,7 @@ class MovimentoController extends Controller
         $movimentos = Movimento::select('movimentos.*')
             ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
             ->join('contascorrentes', 'movimentos.contascorrente_id', '=', 'contascorrentes.id')
+            ->join('forma_pgtos', 'movimentos.forma_pgto_id', '=', 'forma_pgtos.id')
             ->with(['categoria', 'forma_pgto', 'contascorrente'])
             ->when($request->filled('descricao'), function ($q) use ($request) {
                 $q->where('descricao', 'like', '%' . $request->descricao . '%');
@@ -148,7 +149,7 @@ class MovimentoController extends Controller
         //$contascorrentes = ContasCorrente::orderBy('nome', 'ASC')
         //->get();
 
-        $contase = ContasCorrente::orderBy('nome', 'ASC')
+        $forma_pgtos = Forma_pgto::orderBy('nome', 'ASC')
         ->get();
 
         //dd($contascorrentes);
@@ -208,10 +209,10 @@ class MovimentoController extends Controller
 
         return view('Movimentos.index',
          ['menu' => 'movimentos',
-          'movimentos' => $movimentos,
-          'categorias' => $categorias,
-          'contascorrentes' => $contascorrentes,
-          'contase' => $contase,
+            'movimentos' => $movimentos,
+            'categorias' => $categorias,
+            'contascorrentes' => $contascorrentes,
+            'forma_pgtos' => $forma_pgtos,
           'descricao' => $request->descricao,
           'categoriabusca' => $request->categoriabusca,
           'data_de' => $request->data_de,
@@ -282,7 +283,7 @@ class MovimentoController extends Controller
                 //'valor' => $request->input('valor'),
                 'valor' => str_replace(',', '.', str_replace('.', '', $request->input('valor'))),
                 // Adicione `forma_pgto_id` se estiver usando
-                'forma_pgto_id' => 1, // ou pegue do formulário
+                'forma_pgto_id' => $request->input('forma_pgto_id') , // ou pegue do formulário
                 'contascorrente_id' => $request->input('conta_id') // ou pegue do formulário
             ]);
 
@@ -305,8 +306,12 @@ class MovimentoController extends Controller
 
     //public function update(Request $request){
     //public function update(MovimentoEditRequest $request, Movimento $movimento){
+    //public function update(Request $request, Movimento $movimento){
     public function update(MovimentoEditRequest $request, Movimento $movimento){
+        
        //dd($request);
+
+        //Log::info('Movimento alterar: {$movimento}', ['request' => $request ] );
 
         $validated = $request->validated();
 
@@ -331,6 +336,30 @@ class MovimentoController extends Controller
         // "editdcto" => "d-AA"
         // "editValor" => "18.23"
 
+
+
+//         dd( 'dt:' . $request->input('editdt') . 
+//             'tipo_lc:' . $request->input('edittipo_lc') .
+//             'tipo:' . $request->input('edittipo') .  
+//             'categoria_id:' . $request->input('editcategoria_id') . 
+//             'contascorrente_id:' . $request->input('econta_id') .
+//             'descricao:' . $request->input('editDescricao') .
+//             'dcto:' . $request->input('editdcto') .
+//             'valor:' . $request->input('editValor') .
+//             'forma_pgto_id:' . $request->input('eforma_pgto_id') 
+
+//         );
+                    //         dt:2026-02-01
+                    // tipo_lc:O
+                    // tipo:1
+                    // categoria_id:38
+                    // contascorrente_id:1
+                    // descricao:Sld Ant
+                    // dcto:0
+                    // valor:874,20
+                    // forma_pgto_id:7
+
+
         DB::beginTransaction();
         
         try {
@@ -349,14 +378,14 @@ class MovimentoController extends Controller
                 'tipo' => $request->input('edittipo'),  
 
                 'categoria_id' => $request->input('editcategoria_id'),
-                'contascorrente_id' => $request->input('conta_id'),
+                'contascorrente_id' => $request->input('econta_id'),
 
                 'descricao' => $request->input('editDescricao'),
                 'dcto' => $request->input('editdcto'),
                 //'valor' => $request->input('valor'),
                 'valor' => str_replace(',', '.', str_replace('.', '', $request->input('editValor'))),
                 // Adicione `forma_pgto_id` se estiver usando
-                //'forma_pgto_id' => 1 // ou pegue do formulário
+                'forma_pgto_id' => $request->input('eforma_pgto_id') ,
                 //'contascorrente_id' => 1 // ou pegue do formulário
             ]);
             
