@@ -1,0 +1,132 @@
+@extends('layouts.admin')
+
+@section('content')
+
+<div class="container-fluid px-4">
+    <!-- 'mb-1' margem de 1 em relacao ao rodape 'hstack gap-2' alinhamento vertical cfme no. itens (curso) (Dashboard)  -->  
+    <!-- 'mt' margem top e 'mb' margem bottom -->
+    <div class="mb-1 hstack gap-2">   
+        <h2 class="mt-3">Contas Corrente - formulario</h2>
+        <!-- mb-3 mt-3 margem em relacao ao topo (active) marca item como ativo -->
+        <ol class="breadcrumb mb-3 mt-3 ms-auto">
+            <li class="breadcrumb-item"><a href="#" class="text-decoration-none">Dashboard</a></li>
+            <li class="breadcrumb-item active">Contas Corrente</li>
+        </ol>
+    </div>
+    
+    <!-- <div class="card mb-5"> -->
+    <div class="card mb-5 border-light shadow">
+        <!-- cabecalho -->
+        
+        
+
+        <div class="card-body">
+            <x-alert />
+            
+            <form class="row g-3" action="{{ route('contaCorrente.form.update', ['ContasCorrente' => $ContasCorrente ] ) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <!-- <th class="d-none d-md-table-cell">id</th> -->
+                            <th></th> 
+                            <th>Nome</th>
+                            <th>Agência</th>
+                            <th>Conta</th>
+                            <th>Cod.Compe</th>
+                            <th>Carteira</th>
+                            <th class="d-none d-sm-table-cell">Excluir</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+                        @php
+                            $i = 0
+                        @endphp
+
+                        @forelse ($ContasCorrente as $ContaCorrente)
+                        
+                        <tr class="linha-item {{ old("itens.$i.excluir") ? 'linha-excluir' : '' }}">
+
+                            {{-- enviar o campo id para controle se incluir ou editar --}}
+                            <td style="width: 1px;" align="left">
+                                <input type="hidden" name="itens[{{ $i }}][id]" maxlength="5" size="5" 
+                                    class="form-control" id="itens[{{ $i }}][id]" value="{{$ContaCorrente->id}}">
+                            </td>
+                            
+                            <td style="width: 345px;" align="left">
+                                <input type="text" name="itens[{{ $i }}][nome]" 
+                                    class="form-control" id="itens[{{ $i }}][nome]" maxlength="60" size="60" 
+                                    value="{{ old("itens.$i.nome", $ContaCorrente->nome) }}" >
+                            </td>
+
+                            <td style="width: 245px;" align="left">
+                                <input type="text" name="itens[{{ $i }}][agencia]" 
+                                    class="form-control" id="itens[{{ $i }}][agencia]" maxlength="10" size="10" 
+                                    value="{{ old("itens.$i.agencia", $ContaCorrente->agencia) }}" >
+                            </td>
+
+                            <td style="width: 245px;" align="left">
+                                <input type="text" name="itens[{{ $i }}][conta]" 
+                                    class="form-control" id="itens[{{ $i }}][conta]" maxlength="10" size="10" 
+                                    value="{{ old("itens.$i.conta", $ContaCorrente->conta) }}" >
+                            </td>
+
+                            <td style="width: 245px;" align="left">
+                                <input type="text" name="itens[{{ $i }}][cod_compe]" 
+                                    class="form-control" id="itens[{{ $i }}][cod_compe]" maxlength="10" size="10" 
+                                    value="{{ old("itens.$i.cod_compe", $ContaCorrente->cod_compe) }}" >
+                            </td>
+                            
+                            <td style="width: 245px;" align="left">
+                                <input type="text" name="itens[{{ $i }}][carteira]" 
+                                    class="form-control" id="itens[{{ $i }}][carteira]" maxlength="10" size="10" 
+                                    value="{{ old("itens.$i.carteira", $ContaCorrente->carteira) }}" >
+                            </td>
+
+                            {{--
+                            o valor de old(...) se o form tiver sido enviado e houver esse valor;
+                            ou então o valor de $categoria->soma do banco (por exemplo, 1 ou 0)
+                            --}}
+                            <td style="width: 120px;" align="left">
+                                <input type="checkbox" name="itens[{{ $i }}][excluir]" value="1"
+                                title="Se marcado o registro será excluído!"
+                                class="checkbox-excluir">
+                            </td>
+
+                            <td style="width: 100px;" align="right">
+                            </td>
+
+                            @php
+                                $i++
+                            @endphp
+                            
+                        </tr>
+                        
+                        @empty
+                            
+                            <div class="alert alert-danger" role="alert">
+                                Nenhuma Conta corrente encontrada!
+                            </div>
+                        @endforelse
+
+                    </tbody>
+                </table>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-warning btn-sm">Editar</button>
+                </div>
+
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@endsection

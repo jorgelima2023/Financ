@@ -47,12 +47,13 @@
 
                 <div class="sb-sidenav-menu">
                     <div class="nav">
-                        
+                        <!-- ------------------------ Dashboard -------------------------------   -->
                         <a @class(['nav-link', 'active' => isset($menu) && $menu == 'dashboard']) href="{{ route('dashboard.index') }}">
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Dashboard
                         </a>
-                        
+
+                        <!-- ------------------------ usuarios -------------------------------   -->
                         @can('index-user')
                             <a @class(['nav-link', 'active' => isset($menu) && $menu == 'users']) href="{{ route('user.index') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
@@ -60,6 +61,7 @@
                             </a>
                         @endcan
 
+                        <!-- ------------------------ Papéis -------------------------------   -->
                         @can('index-role')
                             <a @class(['nav-link', 'active' => isset($menu) && $menu == 'roles']) href="{{ route('role.index') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-network-wired"></i></div>
@@ -76,6 +78,7 @@
                         {{-- @endcan --}}
 
                         {{-- ============== categorias formulario =========================== --}}
+                        <!-- ------------------------ Categorias-formulario -------------------------------   -->
                         @can('form-categoria')
                             <a class="nav-link" href="{{ route('categorias.form') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
@@ -84,6 +87,7 @@
                         @endcan
 
                         {{-- ============== Formas Pagamento formulario =========================== --}}
+                        <!-- ------------------------ Formas Pagamento-formulario -------------------------------   -->
                         @can('form-forma_pgto')
                             <a class="nav-link" href="{{ route('formaPagamentos.form') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
@@ -91,6 +95,12 @@
                             </a>
                         @endcan
 
+                        <a class="nav-link" href="{{ route('contaCorrente.form') }}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                                Conta Corrente
+                            </a>
+
+                        <!-- ------------------------ Movimentos -------------------------------   -->
                         @can('index-movimento')
                             <a @class(['nav-link', 'active' => isset($menu) && $menu == 'movimentos']) href="{{ route('movimentos.index') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
@@ -98,10 +108,13 @@
                             </a>
                         @endcan
 
+                        <!-- ------------------------ Movimentos - relatório -------------------------------   -->
+                         @can('index-movimento')
                             <a @class(['nav-link', 'active' => isset($menu) && $menu == 'movimentos-relatorio']) href="{{ route('movimentos.relatorioselecao') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
                                 Movimentos - relatório - Obrigação/Provisão
                             </a>
+                        @endcan
 
                         <a class="nav-link" href="{{ route('login.destroy') }}">
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>

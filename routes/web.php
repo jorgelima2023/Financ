@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Categoriascontroller;
 use App\Http\Controllers\ChartController;
+use App\Http\Controllers\contaCorrenteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\formaPagamentoscontroller;
@@ -129,6 +130,20 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/update-forma_pgto-form', 
         [formaPagamentoscontroller::class, 'updateFormaPgto'])->name('forma_pgto.form.update')
         ->middleware('permission:form-forma_pgto'); // receber dados form
+
+    /*
+    ===============================================================================================
+    rotas restritas - middleware:
+    form contas correntes - formulario edicao, inclusao, exclusao, visualizar/listar
+    ===============================================================================================
+    */
+    route::get('/form-contaCorrente', 
+        [contaCorrenteController::class, 'form'] )->name('contaCorrente.form');
+        //->middleware('permission:form-forma_pgto');    
+
+    Route::put('/update-contaCorrente-form', 
+        [contaCorrenteController::class, 'updateContaCorrente'])->name('contaCorrente.form.update');
+        //->middleware('permission:form-forma_pgto'); // receber dados form
 
 
         /*

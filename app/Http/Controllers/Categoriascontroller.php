@@ -6,6 +6,7 @@ use App\Http\Requests\CategoriaRequest;
 use App\Models\Categoria;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Nette\Utils\Arrays;
