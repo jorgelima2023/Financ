@@ -48,12 +48,17 @@ class MovimentoController extends Controller
 
         $dataDe  = $request->filled('data_de')
             ? \Carbon\Carbon::parse($request->data_de)->startOfDay()
-            : \Carbon\Carbon::now()->startOfDay();
+            : \Carbon\Carbon::now()->startOfMonth();
+            // \Carbon\Carbon::now()->startOfDay()
+            
 
         $dataAte = $request->filled('data_ate')
             ? \Carbon\Carbon::parse($request->data_ate)->endOfDay()
-            : \Carbon\Carbon::now()->endOfDay();
+            : \Carbon\Carbon::now()->endOfMonth();
+            // \Carbon\Carbon::now()->endOfDay()
             
+        //Log::info("Movimento index, data de: {$dataDe} data ate:{$dataAte}" ); 
+
             /*
             $movimentos = Movimento::select('movimentos.*')
             ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')

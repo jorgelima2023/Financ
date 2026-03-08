@@ -49,7 +49,7 @@
                             <div class="col-2">
                                 <label for="data_de" class="col-form-label">Cadastro de</label>
                             </div>
-                            <div class="col-3">
+                            <div class="col-3">                  
                                 <input type="date" class="form-control" name="data_de" id="data_de" value="{{ $data_de }}">
                             </div>
                             <div class="col-1 text-center">até</div>
