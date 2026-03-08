@@ -548,7 +548,11 @@ class MovimentoController extends Controller
         $contaBancaria = reset($ofx->bankAccounts);
         $dataInicio = $contaBancaria->statement->startDate;
         $dataFim = $contaBancaria->statement->endDate;
+        
+        //dd('cc=' . $contaBancaria->accountNumber);
 
+        //dd($contaBancaria);
+        
         $di = \Carbon\Carbon::parse($dataInicio)->tz('America/Sao_Paulo')->format('d/m/Y');
         $df = \Carbon\Carbon::parse($dataFim)->tz('America/Sao_Paulo')->format('d/m/Y');
         
@@ -560,12 +564,17 @@ class MovimentoController extends Controller
 
             $categorias = Categoria::orderBy('classif', 'ASC')->get();
 
+            $forma_pgtos = Forma_pgto::orderBy('nome', 'ASC')->get();
+
             // buscar um id nulo, zero para carregar a model
             $movimentos = Movimento::orderBy('descricao', 'ASC')
             ->where('id', 0)
             ->get();
             
             //$primeiraTransacao = reset($transacoes);
+            //dd($contaBancaria);
+            
+            $agcc = $contaBancaria->accountNumber;
 
             $i = 0;
             foreach ($contaBancaria->statement->transactions as $ofxEntity) {
@@ -584,12 +593,14 @@ class MovimentoController extends Controller
                 echo "checkNumber da primeira transação: " . $primeiraTransacao->checkNumber . "<br>";
                 echo "<br>";  
                 */
-                
+                //dd($primeiraTransacao);
+
+
                 // 'tipo_lc': "O" - obrigacao
                 // tipo: $primeiraTransacao->type  'CREDIT' ou 'DEBIT'
                 $tipo = $primeiraTransacao->type == 'CREDIT' ? 'CR' : 'DB';
                 $dit = \Carbon\Carbon::parse($primeiraTransacao->date)->tz('America/Sao_Paulo')->format('d/m/Y');
-//dd($dit);
+                //dd($dit);
                 $cat = 32;  // debito cartao
 
                 $string = $primeiraTransacao->memo;
@@ -676,7 +687,8 @@ class MovimentoController extends Controller
                                             'tipo_lc' => 'O',
                                             'tipo' => $tipo,   
                                             'valor' => $primeiraTransacao->amount,
-                                            'dcto' => $primeiraTransacao->checkNumber ]));
+                                            'dcto' => $primeiraTransacao->checkNumber,
+                                             ]));
                 }
 
                 //dd($movimentos);
@@ -704,7 +716,7 @@ class MovimentoController extends Controller
                     ]
                 */
 
-            return view('movimentos.form', ['movimentos' => $movimentos , 'categorias' => $categorias ]  );
+            return view('movimentos.form', ['movimentos' => $movimentos , 'categorias' => $categorias , 'forma_pgtos' => $forma_pgtos , 'agcc' => $agcc ]  );
             //return view('movimentos.abrirOfx');
 
             //target="_blank"

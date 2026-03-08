@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('contascorrentes', function (Blueprint $table) {
             $table->id()->primary();
             $table->string('nome', 80);
-            $table->string('agencia', 7)->nullable();;
-            $table->string('conta', 10)->nullable();;
-            $table->string('cod_compe', 10)->nullable();;
-            $table->string('carteira', 10)->nullable();;
+            $table->string('agencia', 7)->nullable();
+            $table->string('conta', 10)->nullable();
+            $table->string('cod_compe', 10)->nullable();
+            $table->string('carteira', 10)->nullable();
+            $table->timestamps();  // created_at , updated_at
         });
 
     }

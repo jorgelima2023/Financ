@@ -14,11 +14,14 @@
     <div class="card mb-5 border-light shadow">
         <div class="card-body">
             <x-alert />
+            <div>Agência/Conta: {{ $agcc }}</div>
+
             <form class="row g-3" action="{{ route('Movimentos.form.update', ['movimentos' => $movimentos ] ) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <table class="table table-striped table-hover">
                     <thead>
+                        
                         <tr>
                             <!-- <th class="d-none d-md-table-cell">id</th> -->
                             <th></th> 
@@ -29,6 +32,7 @@
                             <th class="d-none d-sm-table-cell">Documento</th>
                             <th class="d-none d-sm-table-cell">Valor</th>
                             <th class="d-none d-sm-table-cell">Categoria</th>
+                            <th class="d-none d-sm-table-cell">Forma Pagamento</th>
                         </tr>
 
                         <tbody>
@@ -74,16 +78,11 @@
                                     </td>
                                     
                                     <td style="width: 240px;" align="left">
-                                        <!-- <label for="categoria" class="form-label me-2 mb-0">Categoria</label> -->
                                         <select name="itens[{{ $i }}][categoria_id]" id="itens[{{ $i }}][categoria_id]" 
                                             class="form-select" required>
                                             <option value="">Selecione a categoria</option>
 
                                             @foreach ($categorias as $categoria)
-
-                                            
-                                            
-                                            <!-- value="{{ $categoria->id }}" -->
                                                 <option value="{{ $movimento->categoria_id == $categoria->id ? $movimento->categoria_id : $categoria->id }}"
                                                     {{ $movimento->categoria_id == $categoria->id ? 'selected' : '' }}>
                                                     {{ $categoria->nome }}
@@ -91,6 +90,21 @@
                                             @endforeach
                                         </select>
                                     </td>
+                                    
+                                    <td style="width: 240px;" align="left">
+                                        <select name="itens[{{ $i }}][forma_pgto_id]" id="itens[{{ $i }}][forma_pgto_id]" 
+                                            class="form-select" required>
+                                            <option value="">Selecione a forma pagamento</option>
+
+                                            @foreach ($forma_pgtos as $forma_pgto)
+                                                <option value="{{ $movimento->forma_pgto_id == $categoria->id ? $movimento->forma_pgto_id : $forma_pgto->id }}"
+                                                    {{ $movimento->forma_pgto_id == $forma_pgto->id ? 'selected' : '' }}>
+                                                    {{ $forma_pgto->nome }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+
                                     @php
                                         $i++;
                                         $reg++;
