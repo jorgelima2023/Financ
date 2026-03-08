@@ -52,7 +52,7 @@
                                         {{ $reg }}
                                     </td>
                                     <td style="width: 145px;" align="left">
-                                        <input readonly type="text" name="itens[{{ $i }}][dt]" 
+                                        <input type="text" name="itens[{{ $i }}][dt]" 
                                             class="form-control" id="itens[{{ $i }}][dt]" maxlength="15" size="15" 
                                             value="{{ $movimento->dt }}" >
                                     </td>
@@ -62,17 +62,17 @@
                                             value="{{ $movimento->descricao }}" >
                                     </td>
                                     <td style="width: 70px;" align="left">
-                                        <input readonly type="text" name="itens[{{ $i }}][tipo]" 
+                                        <input type="text" name="itens[{{ $i }}][tipo]" 
                                             class="form-control" id="itens[{{ $i }}][tipo]" maxlength="10" size="10" 
                                             value="{{ $movimento->tipo }}" >
                                     </td>
                                     <td style="width: 120px;" align="left">
-                                        <input readonly type="text" name="itens[{{ $i }}][dcto]" 
+                                        <input type="text" name="itens[{{ $i }}][dcto]" 
                                             class="form-control" id="itens[{{ $i }}][dcto]" maxlength="20" size="20" 
                                             value="{{ $movimento->dcto }}" >
                                     </td>
                                     <td style="width: 123px;" align="left">
-                                        <input readonly type="text" name="itens[{{ $i }}][valor]" 
+                                        <input type="text" name="itens[{{ $i }}][valor]" 
                                             class="form-control" id="itens[{{ $i }}][valor]" maxlength="15" size="15" 
                                             value="{{ number_format($movimento->valor, 2, ',', '.') }}" >
                                     </td>
