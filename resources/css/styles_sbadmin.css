@@ -7951,6 +7951,11 @@ textarea.form-control-lg {
   font-size: 1rem !important;
 }
 
+.fs-7 {   
+  /*tbody movimentos index*/ 
+  font-size: 0.85rem !important;
+}
+
 .fst-italic {
   font-style: italic !important;
 }

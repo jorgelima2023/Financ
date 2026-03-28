@@ -31,7 +31,7 @@
                 
                 <span class="pesquisar">Pesquisar - Filtros:</span>
 
-                <div class="card-body">
+                <div class="card-body fs-6">
                     
                     <form action="{{ route('movimentos.index') }}">
 
@@ -203,7 +203,7 @@
                 <form method="POST" action="{{ route('movimentos.store') }}">
                     @csrf
                     @method('POST')
-                    <div class="modal-content">
+                    <div class="modal-content fs-7">
                         <div class="modal-header">
                             <h5 class="modal-title" id="cadModalLabel">Cadastrar Movimento</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
@@ -337,7 +337,7 @@
                     @csrf
                     @method('PUT')
                     
-                    <div class="modal-content">
+                    <div class="modal-content fs-7">
                         <div class="modal-header">
                             <h5 class="modal-title" id="editModalLabel">Alterar Movimento</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
@@ -482,7 +482,7 @@
                     @csrf
                     @method('delete')
                     
-                    <div class="modal-content">
+                    <div class="modal-content fs-7">
                         <div class="modal-header">
                             <h5 class="modal-title" id="editModalLabel">Excluir Movimento</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
@@ -549,7 +549,7 @@
 
                 <!-- <x-alert /> -->
 
-                <table class="table table-striped table-hover">
+                <table class="table table-striped table-hover fs-7">
                     <thead>
                         <tr>
                             <th>Excl.</th>
@@ -559,6 +559,7 @@
                             <th class="text-left">Data</th>
                             <th class="text-left">Descrição</th>
                             <th class="text-left">Dcto</th>
+                            <th class="text-left">Conta</th>
                             <th class="text-left">Categoria</th>
                             <th class="text-left">Forma Pgto</th>
                             <th class="text-right">Valor</th>
@@ -618,13 +619,14 @@
                                 <td title="Data">{{ \Carbon\Carbon::parse($movimento->dt)->tz('America/Sao_Paulo')->format('d/m/Y') }}</td>
                                 <td title="Descrição">{{ $movimento->descricao }}</td>
                                 <td title="Documento">{{ $movimento->dcto }}</td>
+                                <td title="Conta">{{ $movimento->contascorrente->nome }} - {{ $movimento->contascorrente->conta }}</td>
                                 <td title="Categoria">{{ $movimento->categoria_id }} - {{ $movimento->categoria->nome }}</td>
                                 <td title="Forma Pgto">{{ $movimento->forma_pgto_id }} - {{ $movimento->forma_pgto->nome }}</td>
 
                                 @php if(  $movimento->tipo == 0 ){ @endphp
-                                    <td title="Despesa" style="color:#C00;"><strong>-{{ number_format($movimento->valor, 2, ',', '.') }}</strong></td>
+                                    <td title="Despesa" style="color:#C00;"><strong>{{ number_format($movimento->valor, 2, ',', '.') }}</strong></td>
                                 @php }else{ @endphp
-                                    <td title="Receita" style="color:#050;"><strong>+{{ number_format($movimento->valor, 2, ',', '.') }}</strong></td>
+                                    <td title="Receita" style="color:#050;"><strong>{{ number_format($movimento->valor, 2, ',', '.') }}</strong></td>
                                 @php } @endphp
 
                                 <!-- <td>{{-- $movimento->tipo_lc --}}</td>
@@ -637,24 +639,24 @@
                         @endforelse
                             <tr>
                                 <td colspan="3"><strong>Total Lctos: {{ $qtde_registros }}</strong></td>
-                                <td colspan="5"></td>
+                                <td colspan="7"></td>
                                 @php if(  $totalMovimento > 0 ){ @endphp
-                                    <td style="color:#050;"><strong>+{{ number_format($totalMovimento, 2, ',', '.') }}</strong></td>
+                                    <td style="color:#050;"><strong>{{ number_format($totalMovimento, 2, ',', '.') }}</strong></td>
                                 @php }else{ @endphp
-                                    <td style="color:#C00;"><strong>-{{ number_format($totalMovimento, 2, ',', '.') }}</strong></td>
+                                    <td style="color:#C00;"><strong>{{ number_format($totalMovimento, 2, ',', '.') }}</strong></td>
                                 @php } @endphp
                             </tr>
 
                             <tr>
                                 <td colspan="3"><strong>Despesas:</strong></td>
-                                <td colspan="2"></td>
-                                <td style="color:#C00;"><strong>+{{ number_format($totalDespesa, 2, ',', '.') }}</strong></td>
+                                <td colspan="5"></td>
+                                <td style="color:#C00;"><strong>{{ number_format($totalDespesa, 2, ',', '.') }}</strong></td>
                                 <td colspan="3"></td>                                   
                             </tr>
                             <tr>
                                 <td colspan="3"><strong>Receitas:</strong></td>
-                                <td colspan="2"></td>
-                                <td style="color:#050;"><strong>+{{ number_format($totalReceita, 2, ',', '.') }}</strong></td>
+                                <td colspan="5"></td>
+                                <td style="color:#050;"><strong>{{ number_format($totalReceita, 2, ',', '.') }}</strong></td>
                                 <td colspan="3"></td>    
                             </tr>
                     </tbody>
