@@ -97,6 +97,8 @@
                                 <label for="contabusca" class="col-form-label">Conta</label>
                             </div>
                             <div class="col-5">
+
+                                @php if(  1 == 2 ){ @endphp
                                 <select name="contabusca" id="contabusca" class="form-select" >
                                     <option value="">Selecione uma conta</option>
 
@@ -107,6 +109,19 @@
                                         </option>
                                     @endforeach
                                 </select>
+                                @php } @endphp
+
+                                <select name="contabusca[]" id="contabusca" class="form-select" multiple >
+                                    <option value=""></option>
+
+                                    @foreach ($contascorrentes as $contascorrente)
+                                        <option value="{{ $contascorrente->id }}"
+                                            {{ old('contascorrente->id') == $contascorrente->id ? 'selected' : '' }}>
+                                            {{ $contascorrente->nome }}
+                                        </option>
+                                    @endforeach
+                                </select>
+
                             </div>
                         </div>
 

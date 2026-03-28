@@ -81,8 +81,13 @@ class MovimentoController extends Controller
             ->when($request->filled('categoria_id'), function ($q) use ($request) {
                 $q->where('categorias.id', '=', $request->categoria_id );
             })
-            ->when($request->filled('contabusca'), function ($q) use ($request) {
+            /*->when($request->filled('contabusca'), function ($q) use ($request) {
                 $q->where('movimentos.contascorrente_id', '=', $request->contabusca );
+                */
+            ->when($request->filled('contabusca'), function ($q) use ($request) {
+                $selectedContabuscaIds = $request->input('contabusca');
+                $q->where('movimentos.contascorrente_id', 'in ', $selectedContabuscaIds );
+
             })
             ->when($request->filled('tipo_filtro'), function ($q) use ($request) {
                 $q->where('tipo_lc', $request->tipo_filtro);
