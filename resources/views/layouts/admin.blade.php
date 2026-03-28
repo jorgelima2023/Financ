@@ -46,7 +46,7 @@
             <nav class="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
 
                 <div class="sb-sidenav-menu">
-                    <div class="nav">
+                    <div class="nav fs-7">
                         <!-- ------------------------ Dashboard -------------------------------   -->
                         <a @class(['nav-link', 'active' => isset($menu) && $menu == 'dashboard']) href="{{ route('dashboard.index') }}">
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
