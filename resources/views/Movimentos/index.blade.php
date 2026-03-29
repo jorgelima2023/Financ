@@ -111,9 +111,8 @@
                                 </select>
                                 @php } @endphp
 
-                                <select name="contabusca[]" id="contabusca" class="form-select" multiple >
-                                    <option value=""></option>
-
+                                <select name="contabusca[]" id="contabusca" class="form-select" multiple size="6">
+                                    
                                     @foreach ($contascorrentes as $contascorrente)
                                         <option value="{{ $contascorrente->id }}"
                                             {{ old('contascorrente->id') == $contascorrente->id ? 'selected' : '' }}>

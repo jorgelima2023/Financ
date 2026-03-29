@@ -67,6 +67,9 @@ class MovimentoController extends Controller
                                          
         //$movimentos = Movimento::select('movimentos.*')
 
+        //$selectedContabuscaIds = $request->input('contabusca');
+        //dd($selectedContabuscaIds);
+
         $movimentos = Movimento::select('movimentos.*')
             ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
             ->join('contascorrentes', 'movimentos.contascorrente_id', '=', 'contascorrentes.id')
@@ -86,7 +89,7 @@ class MovimentoController extends Controller
                 */
             ->when($request->filled('contabusca'), function ($q) use ($request) {
                 $selectedContabuscaIds = $request->input('contabusca');
-                $q->where('movimentos.contascorrente_id', 'in ', $selectedContabuscaIds );
+                $q->whereIn('movimentos.contascorrente_id', $selectedContabuscaIds )->get();
 
             })
             ->when($request->filled('tipo_filtro'), function ($q) use ($request) {
@@ -108,9 +111,19 @@ class MovimentoController extends Controller
             $sel .= " Categoria:{$request->categoriabusca}";
         }
         if( $request->has('contabusca') && $request->contabusca ){
-            $cc = ContasCorrente::where('id', $request->contabusca)->first();
+            //$cc = ContasCorrente::where('id', $request->contabusca)->first();
+            
+            $selectedContabuscaIds = $request->input('contabusca');
+                //$q->whereIn('movimentos.contascorrente_id', $selectedContabuscaIds )->get();
+            
+            $cc = ContasCorrente::whereIn('id', $selectedContabuscaIds)->get();
+            $ccNomes = $cc->pluck('nome')->implode(', '); 
+            //dd($nomes = $cc->pluck('nome')->toArray() );
             $sel .= $sel ? ', ' : '' ;
-            $sel .= " Conta corrente:{$request->contabusca} {$cc->nome} - {$cc->agencia} - {$cc->conta}";
+            $sel .= "Contas:" . $ccNomes;
+            //$sel .= " Conta corrente:{$request->contabusca} {$cc->nome} - {$cc->agencia} - {$cc->conta}";
+            //$sel .= " Conta corrente: {$cc->nome} - {$cc->agencia} - {$cc->conta}";
+
         }
         if( $request->has('tipo_filtro') && $request->tipo_filtro ){
             $sel .= $sel ? ', ' : '' ;
