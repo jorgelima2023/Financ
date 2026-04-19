@@ -17,7 +17,7 @@ class Categoria extends Model implements Auditable
 
     // indicar quais colunas devem receber dados, sempre que alterar tabela, deve descrever aqui
     // não precisa colocar o campo ID
-    protected $fillable = ['nome', 'classif', 'soma'];
+    protected $fillable = ['nome', 'classif', 'soma', 'lcto'];
 
     // return $this->hasMany('App\Cidade','estado_id');
     public function movimento()
