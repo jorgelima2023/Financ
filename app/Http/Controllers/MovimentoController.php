@@ -101,6 +101,8 @@ class MovimentoController extends Controller
             ->get();  // get vai retornar uma collection 
             //->firstOrFail();
 
+        // dd(DB::getQueryLog());
+
         $sel = "";
         if( $request->has('descricao') && $request->descricao ){
             $sel .= $sel ? ', ' : '' ;
@@ -144,8 +146,13 @@ class MovimentoController extends Controller
 
         // teste alerta nenhum registro encontrado ->where('id', 1000)
 
-        $categorias = Categoria::orderBy('classif', 'ASC')
-        ->get();
+        // anterior ... $categorias = Categoria::orderBy('classif', 'ASC')->get();
+
+        $categorias = DB::select("SELECT * FROM categorias where lcto = '1' and ativo = '1' order by classif");
+
+        // dd(DB::getQueryLog());
+
+        //dd($categorias);
 
         // $contascorrentes = ContasCorrente::orderBy('nome', 'ASC')
         // ->get();
@@ -215,7 +222,7 @@ class MovimentoController extends Controller
         //       debug sql query   dd(DB::getQueryLog())
         // ===========================================================================
         
-        //dd(DB::getQueryLog());   //esse funciona ok!
+        // dd(DB::getQueryLog());   //esse funciona ok!
 
         /*
         consulta agrupada movimentos por categoria

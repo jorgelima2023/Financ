@@ -32,20 +32,25 @@ class Categoriascontroller extends Controller
         // });
 
         // adiciona elemento vazio array - para incluir
-        $categorias->push(new Categoria(['id' => 0, 
-                                         'nome' => '' , 
-                                         'classif' => '', 
-                                         'soma' => '' ]));
+        // $fillable = ['nome', 'classif', 'soma', 'lcto'];
 
         $categorias->push(new Categoria(['id' => 0, 
                                          'nome' => '' , 
                                          'classif' => '', 
-                                         'soma' => '' ]));
+                                         'soma' => '' ,
+                                         'lcto' => '' ]));
+
+        $categorias->push(new Categoria(['id' => 0, 
+                                         'nome' => '' , 
+                                         'classif' => '', 
+                                         'soma' => '' ,
+                                         'lcto' => ''  ]));
                                 
         $categorias->push(new Categoria(['id' => 0, 
                                     'nome' => '' , 
                                     'classif' => '', 
-                                    'soma' => '' ]));
+                                    'soma' => '' ,
+                                    'lcto' => '' ]));
                                     
         //$categorias->push(new Categoria(['id' => null, 'nome' => '']));
         //$categorias->push(new Categoria(['id' => null, 'nome' => '']));
@@ -205,8 +210,9 @@ class Categoriascontroller extends Controller
                         $categoria = Categoria::create([
                             'nome' => $item['nome'] , 
                             'classif' =>  $item['classif'] , 
-                            'soma' => isset($item['soma']) ? 1 : 0
-                            
+                            'soma' => isset($item['soma']) ? 1 : 0 ,
+                            'lcto' => isset($item['lcto']) ? 1 : 0 ,
+                            'ativo' => isset($item['ativo']) ? 1 : 0
                         ]);
 
                         // Operação é concluída com êxito, conseguiu cadastrar sem erros
@@ -241,7 +247,9 @@ class Categoriascontroller extends Controller
                         $categoria->update([
                             'nome' => $item['nome'],
                             'classif' => $item['classif'],
-                            'soma' => isset($item['soma']) ? 1 : 0
+                            'soma' => isset($item['soma']) ? 1 : 0 ,
+                            'lcto' => isset($item['lcto']) ? 1 : 0 ,
+                            'ativo' => isset($item['ativo']) ? 1 : 0
                         ]);
                     }else{
 

@@ -34,6 +34,8 @@
                             <th>Nome</th>
                             <th class="d-none d-sm-table-cell">Classificação</th>
                             <th class="d-none d-sm-table-cell">Somar</th>
+                            <th class="d-none d-sm-table-cell">Lcto</th>
+                            <th class="d-none d-sm-table-cell">Ativo</th>
                             <th class="d-none d-sm-table-cell">Excluir</th>
                         </tr>
 
@@ -71,6 +73,20 @@
                                 {{ old("itens.$i.soma", $categoria->soma ) ? 'checked' : '' }} >
                             </td>
                             
+                            <td style="width: 10px;" align="right">
+                                <input type="checkbox" name="itens[{{ $i }}][lcto]" 
+                                value="1"
+                                title="Se marcado permite lançamento!"
+                                {{ old("itens.$i.lcto", $categoria->lcto ) ? 'checked' : '' }} >
+                            </td>
+
+                            <td style="width: 10px;" align="right">
+                                <input type="checkbox" name="itens[{{ $i }}][ativo]" 
+                                value="1"
+                                title="Ativo ou Inativo!"
+                                {{ old("itens.$i.ativo", $categoria->ativo ) ? 'checked' : '' }} >
+                            </td>
+
                             {{--
                             o valor de old(...) se o form tiver sido enviado e houver esse valor;
                             ou então o valor de $categoria->soma do banco (por exemplo, 1 ou 0)
