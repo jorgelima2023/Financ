@@ -764,7 +764,30 @@ class MovimentoController extends Controller
         $data = $request;
         
         //dd($data);
+
+        //dd($data->agcc);  
         //dd($request);
+
+//DB::enableQueryLog();
+
+        // buscar do extrato a agencia e conta...
+        $movimento_agcc = DB::select("SELECT id 
+                FROM contascorrentes 
+                where  concat( agencia , '/' , conta ) = '{$data->agcc}' 
+                ");
+
+
+//dd(DB::getQueryLog());
+
+        //dd($movimento_agcc);
+        //exit;
+
+        /*  
+        $movimento_agcc = ContasCorrente::where('dcto', $item['dcto'])
+                ->where('dt', '=', $movDt)
+                ->get();
+         */
+                
 
         // $request->validate(
         //     ['itens.categoria_id' => 'required',
@@ -896,8 +919,10 @@ class MovimentoController extends Controller
                             'valor' => $vlr, 
                             'categoria_id' => $item['categoria_id'],
                             'forma_pgto_id' => 1,
-                            'contascorrente_id' => 1
+                            'contascorrente_id' => $movimento_agcc
                         ]);
+
+                        // 'contascorrente_id' => 1
 
                         // Operação é concluída com êxito, conseguiu cadastrar sem erros
                         DB::commit();

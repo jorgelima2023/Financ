@@ -42,6 +42,8 @@
                             @endphp
 
                             @forelse ($movimentos as $movimento)
+                                
+                                <input type="hidden" name="agcc" value="{{$agcc}}">
 
                                 <tr>
                                     <td>
