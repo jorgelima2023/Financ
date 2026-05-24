@@ -762,73 +762,47 @@ class MovimentoController extends Controller
     public function updateMovimentos(Request $request){
 
         $data = $request;
-        
         //dd($data);
 
-        //dd($data->agcc);  
-        //dd($request);
-
-//DB::enableQueryLog();
-
         // buscar do extrato a agencia e conta...
+        /*
         $movimento_agcc = DB::select("SELECT id 
                 FROM contascorrentes 
                 where  concat( agencia , '/' , conta ) = '{$data->agcc}' 
                 ");
 
+                com Query Builder
+                Nesse caso, $id já recebe diretamente o valor do campo id.
 
-//dd(DB::getQueryLog());
+            $id = DB::table('contascorrentes')
+            ->whereRaw("CONCAT(agencia, '/', conta) = ?", [$data->agcc])
+            ->value('id');
 
-        //dd($movimento_agcc);
+
+        */        
+
+        $movimento_agcc = DB::select("SELECT id FROM contascorrentes 
+                                      WHERE CONCAT(agencia, '/', conta) = ?
+                            ", [$data->agcc]);
+
+        // o DB::select() retorna um array de objetos. Então você precisa acessar o primeiro resultado 
+
+        $idcc = $movimento_agcc[0]->id ?? null;
+
+        //dd($data->agcc);
+        //dd($idcc);
         //exit;
-
-        /*  
-        $movimento_agcc = ContasCorrente::where('dcto', $item['dcto'])
-                ->where('dt', '=', $movDt)
-                ->get();
-         */
-                
-
-        // $request->validate(
-        //     ['itens.categoria_id' => 'required',
-        //     ],
-        //     ['itens.categoria_id' => 'Categoria não informada!'
-        //     ]
-        // );
-
-        /* 
-            "itens" => array:16 [▼
-            0 => array:7 [▼
-            "id" => null
-            "dt" => "01/08/2025"
-            "descricao" => "Rendimentos Poup Facil-depos a Partir 4/5/12"
-            "tipo" => "CR"
-            "dcto" => "0106767"
-            "valor" => "0.53"
-            "categoria_id" => "3"
-            ]
-
-            2 => array:7 [▼
-            "id" => null
-            "dt" => "04/08/2025"
-            "descricao" => "Visa Electron Condor Derosso lj"
-            "tipo" => "DB"
-            "dcto" => "0033328"
-            "valor" => "-31.68"
-            "categoria_id" => "2"
-            ]
-        */
 
         $falha = 0;
         $movIncluido = 0;
         $movjaexiste = 0;
-
+        
         foreach ($data['itens'] as $item) {
 
             if( empty( $item['id'] ) ){
                 
                 // localizar movimento pelo campo "dcto" chave registro, 
-                //    se nao existir inclui, caso contrario ja foi inderido.
+                //    se nao existir inclui, caso contrario ja foi inserido.
                 
                 $dataBr = $item['dt'];
                 // Converter para formato MySQL
@@ -837,45 +811,18 @@ class MovimentoController extends Controller
                 
                 $movDt = $dataMysql;
                 
-                //dd($movDt);
-
                 // debug
                 //DB::enableQueryLog();
-                
-                /*
-                Buscar um registro e testar se existe
-                $user = User::where('email', 'joao@email.com')->first();
-                if ($user) {
-                    echo "Usuário encontrado: " . $user->name;
-                } else {
-                    echo "Usuário não encontrado.";
-                }
-                */
-
-                //$movimento_Dcto = Movimento::where('dcto', $item['dcto'])->first();
                 
                 $movimento_Dcto = Movimento::where('dcto', $item['dcto'])
                 ->where('dt', '=', $movDt)
                 ->get();
-                
-                // dd($item['dcto']);  0000726  0000099
-
-                // if( $item['dcto'] == '0000726'){ 
-                //     dd(ini_get('max_input_vars'));
-                //     dd('dt=' . $item['dt'] . ' descr=' . $item['descricao'] . ' tipo=' . $item['tipo'] . 
-                //     ' dcto=' . $item['dcto'] . ' valor=' . $item['valor'] . ' cat=' . $item['categoria_id'] );
-                // }
-
-                //dd($movimento_Dcto);
-
-                // debug
-                //dd(DB::getQueryLog());
-
-                //dd($Movimento->dcto);
 
                 //if( empty($movimento_Dcto) ){
                 //if( !$movimento_Dcto ){
                 if ($movimento_Dcto->isEmpty()) {
+
+                
 
                     DB::beginTransaction();
 
@@ -884,31 +831,22 @@ class MovimentoController extends Controller
 
                     //  gravar tabela movimentos
                     // form => name="tipo" => campo "tipo_lcto" : 1-Receita , 0-Despesa
-
                     
                     $tp = $item['tipo'] == 'CR' ? 1 : 0;
-                    
 
-                    //$dataBr = $item['dt'];
-                    // Converter para formato MySQL
-                    //$dataMysql = \Carbon\Carbon::createFromFormat('d/m/Y', $dataBr)
-                    //        ->format('Y-m-d');
-                    
-                    //$movDt = $dataMysql;
-
-                    //dd($movDt);
-
-                    // validar campo valor do ofx , retirar sinal negativo
+                    // validar campo valor do ofx , retirar sinal negativo e formato decimal
+                    // no arquivo ofx vem sinal negativo!
                     if ( $item['tipo'] == 'DB'){
                         $vlr = str_replace(',', '.', str_replace('.', '', $item['valor'] )) * -1;
                     }else{
                         $vlr = str_replace(',', '.', str_replace('.', '', $item['valor'] ));
                     }
-                    //dd($item['dt']);
-                    //dd($movDt);
+
                     try {
                         
                         $movIncluido++;
+
+                        //DB::enableQueryLog();
 
                         $Movimento = Movimento::create([
                             'dt' => $movDt ,
@@ -919,15 +857,18 @@ class MovimentoController extends Controller
                             'valor' => $vlr, 
                             'categoria_id' => $item['categoria_id'],
                             'forma_pgto_id' => 1,
-                            'contascorrente_id' => $movimento_agcc
+                            'contascorrente_id' => $idcc
                         ]);
 
-                        // 'contascorrente_id' => 1
+                        //dd(DB::getQueryLog());
+                        //exit;
+
+                        // 'contascorrente_id' => 1  era fixo agora busca do arq ofx a conta
 
                         // Operação é concluída com êxito, conseguiu cadastrar sem erros
                         DB::commit();
-
-                        Log::info('Movimento incluido: {id}', ['id' => $Movimento ] );
+                        // registrar apenas log de erro se houver !
+                        // Log::info('Movimento incluido: {id}', ['id' => $Movimento ] );
 
                     } catch (Exception $e) {
 
@@ -937,19 +878,23 @@ class MovimentoController extends Controller
                         DB::rollBack();
                         Log::error('Movimento não incluido.', [ 'error' => $e->getMessage()]);
                     }
+
+                    
+
                 }else{
                     $movjaexiste++;
-                    
+                    //apresentar msg ao final !
                     //Log::info('Movimento já existe: {$movimento_Dcto->id}', ['id' => $movimento_Dcto ] );
                 }
             }
         }
 
+        // apresentar msg ao form que chamou !
         if( $falha == 0 ){   
-            //$categorias = Categoria::orderBy('nome', 'ASC')->get();
 
             // Carregar a VIEW
             //return view('categorias.index', ['categorias' => $categorias]);
+            // nao retorna a view mas ao form que chamou!
             $msgmov = 'Movimentos cadastrados com sucesso: (' . $movIncluido . ') movimentos!'; 
             if( $movjaexiste ){
                 $msgmov .= ' ( ' . $movjaexiste . ' ) Movimento já existe!';
