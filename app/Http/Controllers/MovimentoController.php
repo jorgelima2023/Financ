@@ -996,6 +996,8 @@ class MovimentoController extends Controller
             $query->where('tipo_lc', $request->tipo_filtro);
         }
 
+        $query->where('movimentos.contascorrente_id', $request->contabusca);
+
         if ($request->filled('data_de') && $request->filled('data_ate')) {
             $query->whereBetween('movimentos.dt', [
                 $request->data_de,

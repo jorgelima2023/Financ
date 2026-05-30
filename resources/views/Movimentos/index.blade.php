@@ -110,7 +110,7 @@
                                     @endforeach
                                 </select>
                                 @php } @endphp
-
+                                    
                                 <select name="contabusca[]" id="contabusca" class="form-select" multiple size="6">
                                     
                                     @foreach ($contascorrentes as $contascorrente)
@@ -164,7 +164,8 @@
                                             'tipo_filtro' => $tipo_filtro ,
                                             'data_de' => $data_de ,
                                             'data_ate' => $data_ate,
-                                            'grafico' => 'bar' 
+                                            'grafico' => 'bar',
+                                            'contabusca' => 1
                                             ] ) }}" 
                                         target="_blank">
                                     <i class="fa-solid fa-pie"></i>Bar-Chart</a>
@@ -179,7 +180,8 @@
                                             'tipo_filtro' => $tipo_filtro ,
                                             'data_de' => $data_de ,
                                             'data_ate' => $data_ate,
-                                            'grafico' => 'doughnut' 
+                                            'grafico' => 'doughnut',
+                                            'contabusca' => 1 
                                             ] ) }}" 
                                         target="_blank">
                                     <i class="fa-solid fa-pie"></i>Pie-Chart</a>
