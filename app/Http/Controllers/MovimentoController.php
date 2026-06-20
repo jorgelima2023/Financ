@@ -592,7 +592,10 @@ class MovimentoController extends Controller
         // Exemplo de como acessar uma transação específica
         if (!empty($transacoes)) {
 
-            $categorias = Categoria::orderBy('classif', 'ASC')->get();
+            //$categorias = Categoria::orderBy('classif', 'ASC')->get();
+            
+            $categorias = DB::select("SELECT * FROM categorias where lcto = '1' and ativo = '1' order by classif");
+
 
             $forma_pgtos = Forma_pgto::orderBy('nome', 'ASC')->get();
 
@@ -1085,7 +1088,10 @@ class MovimentoController extends Controller
 
     public function relatorioselecao(){
         
-        $categorias = Categoria::orderBy('classif', 'ASC')->get();
+        //$categorias = Categoria::orderBy('classif', 'ASC')->get();
+
+        $categorias = DB::select("SELECT * FROM categorias where lcto = '1' and ativo = '1' order by classif");
+
 
         return view('Movimentos.relatorioselecao', 
          ['menu' => 'movimentos-relatorio',
