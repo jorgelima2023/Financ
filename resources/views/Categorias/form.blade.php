@@ -58,7 +58,8 @@
                             <td style="width: 570px;" align="left">
                                 <input type="text" name="itens[{{ $i }}][nome]" 
                                     class="form-control" id="itens[{{ $i }}][nome]" maxlength="60" size="60" 
-                                    value="{{ old("itens.$i.nome", $categoria->nome) }}" >
+                                    value="{{ old("itens.$i.nome", $categoria->nome) }}"
+                                    title='Categoria:{{$categoria->id}}' >
                             </td>
                             <td class="d-none d-sm-table-cell">
                                 <input type="text" name="itens[{{ $i }}][classif]" 

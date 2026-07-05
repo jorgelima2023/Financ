@@ -59,7 +59,8 @@
                             <td style="width: 345px;" align="left">
                                 <input type="text" name="itens[{{ $i }}][nome]" 
                                     class="form-control" id="itens[{{ $i }}][nome]" maxlength="60" size="60" 
-                                    value="{{ old("itens.$i.nome", $ContaCorrente->nome) }}" >
+                                    value="{{ old("itens.$i.nome", $ContaCorrente->nome) }}"
+                                    title='Conta corrente:{{$ContaCorrente->id}}' >
                             </td>
 
                             <td style="width: 245px;" align="left">

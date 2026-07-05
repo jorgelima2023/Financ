@@ -170,7 +170,8 @@
                                             'contabusca' => 1
                                             ] ) }}" 
                                         target="_blank">
-                                    <i class="fa-solid fa-pie"></i>Bar-Chart</a>
+                                    <i class="fa-solid fa-pie"></i>Bar-Chart
+                                </a>
                         </button>
                     </div>
                     
@@ -186,11 +187,12 @@
                                             'contabusca' => 1 
                                             ] ) }}" 
                                         target="_blank">
-                                    <i class="fa-solid fa-pie"></i>Pie-Chart</a>
+                                    <i class="fa-solid fa-pie"></i>Pie-Chart
+                                </a>
                         </button>
                     </div>
 
-                    <div class="col-md-4"></div>
+                    <div class="col-md-4">Gráficos</div>
                 
             </div>
         </div>
@@ -198,17 +200,21 @@
         <div class="card mb-2 mt-2 pt-1 border-light shadow">
             <!-- <div class="card-body"> -->
                 <!-- <div class="row-4 col-6"> -->
-                <div class="mb-1 hstack gap-4">
+                <div class="mb-1 hstack gap-6">
                     <i class="fa-solid fa-download"></i>
-                            </a>
+                            
                     <form method="POST" action="/movimentos/form" enctype="multipart/form-data">
                         @csrf
                         <!-- <input type="file" name="file" accept=".xlsx, .xls"> -->
-                        <div class="mb-1 hstack gap-4">
+                        <div class="mb-1 hstack gap-3">
                             <input type="file" name="file" class="form-control form-control-sm" accept=".ofx" title=".ofx">
-                            
-                            <button type="submit" class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7">
-                                Importar
+                            <button type="submit" class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" id="btnofx" name="btn" value="btnofx">
+                                OFX
+                            </button>
+
+                            <input type="file" name="file" class="form-control form-control-sm" accept=".csv" title=".csv">
+                            <button type="submit" class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" id="btncsv" name="btn" value="btncsv">
+                                CSV
                             </button>
                         </div>
                     </form>

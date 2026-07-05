@@ -478,326 +478,539 @@ class MovimentoController extends Controller
         }
     }
 
-    // verificar se no import trouxe o http request
-    // importar arquivo ofx , recebe o path + name arquivo
-    // botao importar form index
-
     // ===========================================================================
     // metodo rota - form
+
+    // laravel importar excel  csv 
+
     // ===========================================================================
     public function form(Request $request){
 
-    /* 
-    chatgpt: laravel salvar arquivo no c:\temp do windows
-    ==================================================================================================
-    use Illuminate\Support\Facades\Storage;
-    use Illuminate\Support\Facades\File;
+        //dd($request);    no form colocado nome no botao para separar o tipo arq
+        // dd('botao ' . $request->btn);
+            // botao btnofx 
+            // botao btncsv
 
-    // 1. Para uma pasta temporária de sistema (requer permissão)
-    $pathTemp = 'C:\\Temp'; // Caminho absoluto no Windows
-    $nomeArquivo = 'meu_arquivo.txt';
-    $caminhoCompleto = $pathTemp . '\\' . $nomeArquivo;
+        if( $request->btn == "btncsv" )
+        {
+            //dd('botao ' . $request->btn);
+            $request->validate(
+                ['file' => 'required|mimes:csv,txt|max:2048',
+                ],
+                ['file.required' => 'O arquivo é requerido (.csv)',
+                 'file.mimes' => 'O arquivo deve ser do tipo (.csv)',
+                 'file.max' => 'Tamanho do arquivo excedido :max Mb'
+                ]
+            );
 
-    // Verifica e cria a pasta se não existir (requer permissão de administrador no Windows)
-    if (!File::exists($pathTemp)) {
-        File::makeDirectory($pathTemp, 0777, true); // 0777 para permissão ampla, mas cuidado com segurança
-    }
-    // Salva o arquivo
-    File::put($caminhoCompleto, 'Conteúdo do arquivo.');
+            // ao exportar planilha para csv : 
+               // 1-separador campos ";"
+               // 2-separador milhar "." 
+               // 3-retirar acentuacao do cabecalho
+               // 4-deixar a primeira linha do cabecalho
 
-    // 2. Para arquivos temporários dentro do projeto Laravel (recomendado)
-    // Cria a pasta 'temp' dentro de storage/app/ (privado)
-    $pathStorageTemp = storage_path('app/temp');
-    if (!File::exists($pathStorageTemp)) {
-        File::makeDirectory($pathStorageTemp, 0777, true);
-    }
-    File::put($pathStorageTemp . '/' . $nomeArquivo, 'Conteúdo temporário do storage.');
+            // colunas arquivo csv: 
+            // Data;Histórico;Valor (US$);Valor(R$)
 
-    // 3. Para arquivos públicos (ex: imagens)
-    // Cria a pasta 'temp' dentro de public/ (público)
-    $pathPublicTemp = public_path('temp');
-    if (!File::exists($pathPublicTemp)) {
-        File::makeDirectory($pathPublicTemp, 0777, true);
-    }
-    File::put($pathPublicTemp . '/' . $nomeArquivo, 'Conteúdo público temporário.');
+            // criar array colunas
+            $headers = ['Data', 'Historico', 'Valor(US$)', 'Valor(R$)'];
 
-    // Se for para uso público, crie o link simbólico:
-    // php artisan storage:link (no terminal)
-    // Para acessar: /storage/temp/meu_arquivo.txt
+            // Recebe o arquivo
+            // 'file' vem formulario 
+            //      input type="file" name="file"
+            $datafile = file($request->file('file'));
 
-    Pontos Importantes:
-    Permissões: Salvar diretamente em C:\Temp pode falhar sem permissões de administrador. Prefira usar diretórios dentro do projeto Laravel (storage/app/temp ou public/temp).
-    storage_path(): Retorna o caminho para a pasta storage/ (privada).
-    public_path(): Retorna o caminho para a pasta public/ (acessível via web).
-    File::put(): Salva o conteúdo em um arquivo.
-    File::makeDirectory(): Cria diretórios, com permissões e recursividade. 
-    
-    Este vídeo explica como fazer upload de arquivos usando o framework Laravel
-    https://www.youtube.com/watch?v=ZRNpbog-JBU
-    
-    ==================================================================================================
-    */
-        // originalName: "extrato.ofx"
-        //dd($request);
-        //dd( file($request->file('file')) );
-        //file_put_contents('C:\\Temp\\extrato.ofx', file($request->file('file')));
-        
+            // validar dados arquivo, vem como string
+            // dd( file($request->file('file')) );
 
-        // c:\temp\extrato.ofx
-        // sempre faz o upload do arquivo escolhido, e salvar na c:\temp do windows com nome fixo
+            // 1) receber o arquivo, ler os dados e converter a string em array , usar array_map
+            $dataFile = array_map('str_getcsv', file( $request->file('file') ) );
 
-        // 1. Para uma pasta temporária de sistema (requer permissão)
-        $pathTemp = 'C:\\Temp'; // Caminho absoluto no Windows
-        $nomeArquivo = 'extrato.ofx';
-        $caminhoCompleto = $pathTemp . '\\' . $nomeArquivo;
-        
-        // Salva o arquivo - no caminho , e o conteudo
-        //  conteudo em: file($request->file('file'))
-        //  sempre sobrescreve o arquivo 
-        File::put($caminhoCompleto, file($request->file('file')));
+            // dd(array_map('str_getcsv', file( $request->file('file') ) ));
 
-        // $request->validate(
-        //     ['file' => 'required|mimes:ofx!max:2048',
-        //     ],
-        //     ['file.required' => 'arq requerido',
-        //      'file.mimes' => 'arq deve ser do tipo ofx',
-        //      'file.max' => 'tamanho arq excedido :max Mb'
-        //     ]
-        // );
+            /*
+                     array_map
 
-        // $request->validate(
-        //     ['file' => 'required|max:2048',
-        //     ],
-        //     ['file.required' => 'O arquivo não foi informado!',
-        //      'file.max' => 'Tamanho arquivo excedido, tamanho :max Mb'
-        //     ]
-        // );
-        
-        // ler arquivo salvo em c:\temp do windows
-        $caminho_do_arquivo = 'c:\\temp\\extrato.ofx';
-        
-        //função nativa do PHP 
-        if (!file_exists($caminho_do_arquivo)) {
-            return back()->withInput()->with('error', '(C:\temp\extrato.ofx) não encontrado!');
-        }
-        
-        // ************************************************************************************
-        // inicio rotina, ler arquivo ofx 
-        // ************************************************************************************
+            0 => array:1 [▶]
+            1 => array:1 [▶]
+            2 => array:1 [▶]
+            3 => array:1 [▶]
 
-        $ofxParser = new \OfxParser\Parser();
+            array:19 
+                0 => array:1 [▼
+                    0 => "Data;Historico;Valor(US$);Valor(R$)"
+                ]
+                1 => array:1 [▼
+                    0 => "25/05;SEGURO SUPERPROTEGIDO;0.00;9.99"
+                ]
+            */
 
-        $ofx = $ofxParser->loadFromFile( 'C:\temp\extrato.ofx' );
-
-        // Acesse a primeira conta bancária (a variável $ofx contém um array de contas)
-        $contaBancaria = reset($ofx->bankAccounts);
-        $dataInicio = $contaBancaria->statement->startDate;
-        $dataFim = $contaBancaria->statement->endDate;
-        
-        //dd('cc=' . $contaBancaria->accountNumber);
-
-        //dd($contaBancaria);
-        
-        $di = \Carbon\Carbon::parse($dataInicio)->tz('America/Sao_Paulo')->format('d/m/Y');
-        $df = \Carbon\Carbon::parse($dataFim)->tz('America/Sao_Paulo')->format('d/m/Y');
-        
-        // Obtenha as transações da conta
-        $transacoes = $contaBancaria->statement->transactions;
-
-        // Exemplo de como acessar uma transação específica
-        if (!empty($transacoes)) {
-
-            //$categorias = Categoria::orderBy('classif', 'ASC')->get();
-            // filtrar categorias ativas e que esta indicado campo lcto que recebem lctos 
-            $categorias = DB::select("SELECT * FROM categorias where lcto = '1' and ativo = '1' order by classif");
-
-            $forma_pgtos = Forma_pgto::orderBy('nome', 'ASC')->get();
-
-            // ***********************************************************************
-            // buscar um id nulo, zero para carregar a model
-            // ***********************************************************************
-            $movimentos = Movimento::orderBy('descricao', 'ASC')
-            ->where('id', 0)
-            ->get();
-            
-            //$primeiraTransacao = reset($transacoes);
-            //dd($contaBancaria);
-
-            // leu do arquivo ofx
-            $agcc = $contaBancaria->accountNumber;
-
-            // ***************************************************************
-            // while dados arq carregado.
-            // ***************************************************************
-
-            // em busca dos campos necessarios do arquivo ofx
-
-            $i = 0;
-            foreach ($contaBancaria->statement->transactions as $ofxEntity) {
-                $i++;
-                $primeiraTransacao = $ofxEntity;
-
-                /*  debug mostrar valores...
-
-                $dit = \Carbon\Carbon::parse($primeiraTransacao->date)->tz('America/Sao_Paulo')->format('d/m/Y');
-                
-                echo "linha:" . $i . "<br>";
-                echo "Data da primeira transação: " . $dit . "<br>";
-                echo "Valor da primeira transação: " . $primeiraTransacao->amount . "<br>";
-                echo "tipo da primeira transação: " . $primeiraTransacao->type . "<br>";
-                echo "memo da primeira transação: " . $primeiraTransacao->memo . "<br>";
-                echo "checkNumber da primeira transação: " . $primeiraTransacao->checkNumber . "<br>";
-                echo "<br>";  
-                */
-                //dd($primeiraTransacao);
-
-
-                // 'tipo_lc': "O" - obrigacao
-                // tipo: $primeiraTransacao->type  'CREDIT' ou 'DEBIT'
-                $tipo = $primeiraTransacao->type == 'CREDIT' ? 'CR' : 'DB';
-                $dit = \Carbon\Carbon::parse($primeiraTransacao->date)->tz('America/Sao_Paulo')->format('d/m/Y');
-                //dd($dit);
-                $cat = 32;  // debito cartao
-
-                $string = $primeiraTransacao->memo;
-                
-                // *************************************************************************************
-                // executar um 'de' => 'para' na descricao do lancamento, 
-                //   e tentar localizar conforme a categoria
-                // a combo de categorias vai previamente preenchida
-                // *************************************************************************************
-
-                //if (Str::contains($string, $texto)) {
-                
-                if (strpos( strtoupper($string), "CLINIPAM") !== false) {
-                    $cat = 11;
-                }
-                if (strpos( strtoupper($string), "SAQ DIN") !== false) {
-                    $cat = 41;
-                }
-                if (strpos( strtoupper($string), "AGUA") !== false) {
-                    $cat = 14;
-                }
-                if (strpos( strtoupper($string), "TELEFONICA BRAS") !== false) {
-                    $cat = 40;
-                }
-                if (strpos( strtoupper($string), "COPEL") !== false) {
-                    $cat = 15;
-                }
-                if (strpos( strtoupper($string), "COPEL") !== false) {
-                    $cat = 15;
-                }
-                if (strpos( strtoupper($string), "POSTO") !== false) {
-                    $cat = 27;
-                }
-                if (strpos( strtoupper($string), "TV P/ASSINATURA") !== false) {
-                    $cat = 17;
-                }
-                if (strpos( strtoupper($string), "PAGTO COBRANCA BANCO BRADESCO") !== false) {
-                    $cat = 42;
-                }
-                if (strpos( strtoupper($string), "PAGTO COBRANCA ITAU UNIBANCO HOLDING") !== false) {
-                    $cat = 43;
-                }
-                if (strpos( strtoupper($string), "MNINFO") !== false) {
-                    $cat = 7;
-                }
-                if (strpos( strtoupper($string), "CLASSIC") !== false) {
-                    $cat = 36;
-                }
-                if (strpos( strtoupper($string), "RENDIMENTOS") !== false) {
-                    $cat = 39;
-                }
-                if ( (strpos(strtoupper($string), "CONDOR") !== false)  ) {
-                    $cat = 45;
-                }
-                if (  (strpos(strtoupper($string), "JACOMAR") !== false) ) {
-                    $cat = 45;
-                }
-                if (  (strpos(strtoupper($string), "FESTVAL") !== false) ) {
-                    $cat = 45;
-                }
-                if ( (strpos(strtoupper($string), "RESTAURANTE") !== false) ) {
-                    $cat = 25;
-                }
-                if ( (strpos(strtoupper($string), "BUFFETSKINA") !== false) ) {
-                    $cat = 25;
-                }
-                if ( (strpos(strtoupper($string), "FARMACIA") !== false) ) {
-                    $cat = 18;
-                }
-                if ( (strpos(strtoupper($string), "DROGARIA") !== false) ) {
-                    $cat = 18;
-                }
-                if ( (strpos(strtoupper($string), "PIX") !== false) ) {
-                    if ($tipo == "DB") {
-                        $cat = 33;
-                    }
-                    if ($tipo == "CR") {
-                        $cat = 9;
-                    }
-                }
-                
-                // *************************************************************************************
-                // criar um elemento na modal
-                // *************************************************************************************
-                $movimentos->push(new Movimento(['id' => 0, 
-                                            'dt' => $dit,
-                                            'descricao' => $primeiraTransacao->memo , 
-                                            'categoria_id' => $cat,
-                                            'forma_pgto_id' => 1,
-                                            'contascorrente_id' => 1,
-                                            'tipo_lc' => 'O',
-                                            'tipo' => $tipo,   
-                                            'valor' => $primeiraTransacao->amount,
-                                            'dcto' => $primeiraTransacao->checkNumber,
-                                             ]));
-                }
-
-                //dd($movimentos);
+            // 2) percorrer as linhas do arquivo csv depois de usar o array_map
+            foreach( $dataFile as $keyData => $row ){
                 /*
-                    #attributes: array:8 [
-                        "dt" => "01/08/2025"
-                        "descricao" => "Rendimentos Poup Facil-depos a Partir 4/5/12"
-                        "categoria_id" => 0
-                        "forma_pgto_id" => 1
-                        "tipo_lc" => "O"
-                        "tipo" => "CREDIT"
-                        "valor" => 0.53
-                        "dcto" => SimpleXMLElement 
-                    ]
+                        dd($row);
+                    com os dados do 1o. registro
+                    0 => "Data;Historico;Valor(US$);Valor(R$)"
+                */
+                /*
+                    dd($keyData);
+                    0
+                    mostra a chave 0 
+                */
+                /*    
+                    dd($row);
+                    0 => "Data;Historico;Valor(US$);Valor(R$)"
+                    mostra a chave 0 e o registro
+                */
+                /*    
+                    dd($dataFile);      $keyData 0 =>  1 => 2 =>
+                    0 => array:1 [▶]
+                    1 => array:1 [▶]
+                    2 => array:1 [▶]
+                */
 
-                    #fillable: array:8 [▼
-                        0 => "tipo"
-                        1 => "forma_pgto_id"
-                        2 => "tipo_lc"
-                        3 => "categoria_id"
-                        4 => "descricao"
-                        5 => "valor"
-                        6 => "dt"
-                        7 => "dcto"
+                /*    
+                    $row[0] ???
+
+                    0 => array:1 [▼
+                      $row[0]  0 => "Data;Historico;Valor(US$);Valor(R$)"
+                    ]
+                    1 => array:1 [▼
+                      $row[0]  0 => "25/05;SEGURO SUPERPROTEGIDO;0.00;9.99"
+                    ]
+                    2 => array:1 [▼
+                      $row[0]  0 => "20/05;Wellhub Marcia Lima;0.00;69.99"
                     ]
                 */
 
-            // retorna ao formulario 'form' com a preview dos lancamentos lidos do arq ofx
-            // faz uma conferencia nos dados, e ao submit do form gerar os lancamentos lidos
-            // a busca e pelo campo 'dcto' do lancamento, que é chave.
-            // se nao localizar faz a inclusao do lcto,
-            // ou seja um arquivo de movimentos ofx pode ser lido novamente.
-            // pode ser que puxou os movimentos do dia 1 ate 15
-            // e depois puxou novamente, agora com mais movimentos a partir do dia 15, 
-            // entao os movimentos ja incluidos do dia 1-15 permanecem, e os novos a partir do dia 15
-            // serao incluidos.
+                // converter a linha 'row' em array
+                $values = explode(';' , $row[0]);
 
-            return view('movimentos.form', ['movimentos' => $movimentos , 'categorias' => $categorias , 'forma_pgtos' => $forma_pgtos , 'agcc' => $agcc ]  );
+                /*
+                    dd($values);
+                    array:4 [▼ 
+                    0 => "Data"
+                    1 => "Historico"
+                    2 => "Valor(US$)"
+                    3 => "Valor(R$)"
+                    ]
+                */
 
-            //target="_blank"
-            //<a href="/sua-rota" target="_blank">Abrir em nova aba</a>
+                // 3) percorrer as colunas do cabecalho, independente da qtde de colunas,
+                //    se houver mais colunas, basta acresecentar no cabecalho variavel '$headers' ,
+                //    $headers = ['Data', 'Historico', 'Valor(US$)', 'Valor(R$)'];
+                //    '$key' tem os elementos colunas
+                foreach( $headers as $key => $header ){
 
-           
-        }else{
-            return back()->withInput()->with('error', 'Nenhuma transação encontrada!');
+                    // 4) atribui o valor ao elemento do array
+                    // 1o. elemento chave '$keyData'
+                    //     '$key' tem os elementos colunas
+                    $arrayValues[$keyData][$header] = $values[$key];
+                }
+
+            }
+
+            // 5) array de valores
+            // dd($arrayValues);
+            /*
+                      $arrayValues   array de valores 
+            0 => array:4 [▼
+                "Data" => "Data"
+                "Historico" => "Historico"
+                "Valor(US$)" => "Valor(US$)"
+                "Valor(R$)" => "Valor(R$)"
+            ]
+            1 => array:4 [▼
+                "Data" => "25/05"
+                "Historico" => "SEGURO SUPERPROTEGIDO"
+                "Valor(US$)" => "0.00"
+                "Valor(R$)" => "9.99"
+            ]
+            */
+
+            // cadastrar registros no banco dados, caso estejam campos esteja mesma ordem colunas
+            // Movimento::insert($arrayValues);
+
+            $falha = 0;
+            $dt = \Carbon\Carbon::now()->startOfMonth();  // 1a. dia mes
+            $dt = \Carbon\Carbon::parse($dt)->addDays(7); // dia 08 do mes
+            // dd('data ' . $dt );
+
+            // 6) percorrer array de valores 
+            foreach( $arrayValues as $key => $row ){
+
+                // verificar valores
+                // echo "<br> key " . $key . ' ' . $row['Data'] . ' ' . $row['Historico'] . ' ' . $row['Valor(US$)'] . ' ' . $row['Valor(R$)'];
+                
+                // 0 eh o cabecalho...
+                if( $key > 0 ){
+
+                    // o valor ja vem com o "." ponto
+                    $vlr = $row['Valor(R$)'];
+                    // 'valor' => str_replace(',', '.', str_replace('.', '', $vlr )),
+                    
+                    DB::beginTransaction();
+
+                    try {
+
+                        Movimento::create([
+                        'dt' => $dt ,
+                        'tipo_lc' => 'P' ,     
+                        'tipo' => 0  ,   
+                        'categoria_id' => 42 ,
+                        'descricao' => $row['Data'] . ' ' . $row['Historico'] ,
+                        'dcto' => '0' ,
+                        'valor' => $vlr ,
+                        'forma_pgto_id' => 6 , 
+                        'contascorrente_id' => 2 
+                    ]);
+
+                    DB::commit();
+
+                    } catch (Exception $e) {
+                        DB::rollBack();
+                        Log::error('Movimento não incluido.', [ 'error' => $e->getMessage()]);
+                        $falha++;
+                    }
+                }
+                    
+            }
+
+            
+            if( $falha > 0 ){
+                return back()->withInput()->with('error', 'Movimento não cadastrado!');
+            }else{
+                $regs = count($arrayValues) -1;
+                return redirect()->route('movimentos.index' )->with('success', 'Movimento cadastrado com sucesso! (' . $regs. ')' );
+            }
+            
+                
         }
+
+        if( $request->btn == "btnofx" )
+        {
+
+            // verificar se no import trouxe o http request
+            // importar arquivo ofx , recebe o path + name arquivo
+            // botao importar form index
+
+            /* 
+
+            chatgpt: laravel salvar arquivo no c:\temp do windows
+            ==================================================================================================
+            use Illuminate\Support\Facades\Storage;
+            use Illuminate\Support\Facades\File;
+
+            // 1. Para uma pasta temporária de sistema (requer permissão)
+            $pathTemp = 'C:\\Temp'; // Caminho absoluto no Windows
+            $nomeArquivo = 'meu_arquivo.txt';
+            $caminhoCompleto = $pathTemp . '\\' . $nomeArquivo;
+
+            // Verifica e cria a pasta se não existir (requer permissão de administrador no Windows)
+            if (!File::exists($pathTemp)) {
+                File::makeDirectory($pathTemp, 0777, true); // 0777 para permissão ampla, mas cuidado com segurança
+            }
+            // Salva o arquivo
+            File::put($caminhoCompleto, 'Conteúdo do arquivo.');
+
+            // 2. Para arquivos temporários dentro do projeto Laravel (recomendado)
+            // Cria a pasta 'temp' dentro de storage/app/ (privado)
+            $pathStorageTemp = storage_path('app/temp');
+            if (!File::exists($pathStorageTemp)) {
+                File::makeDirectory($pathStorageTemp, 0777, true);
+            }
+            File::put($pathStorageTemp . '/' . $nomeArquivo, 'Conteúdo temporário do storage.');
+
+            // 3. Para arquivos públicos (ex: imagens)
+            // Cria a pasta 'temp' dentro de public/ (público)
+            $pathPublicTemp = public_path('temp');
+            if (!File::exists($pathPublicTemp)) {
+                File::makeDirectory($pathPublicTemp, 0777, true);
+            }
+            File::put($pathPublicTemp . '/' . $nomeArquivo, 'Conteúdo público temporário.');
+
+            // Se for para uso público, crie o link simbólico:
+            // php artisan storage:link (no terminal)
+            // Para acessar: /storage/temp/meu_arquivo.txt
+
+            Pontos Importantes:
+            Permissões: Salvar diretamente em C:\Temp pode falhar sem permissões de administrador. Prefira usar diretórios dentro do projeto Laravel (storage/app/temp ou public/temp).
+            storage_path(): Retorna o caminho para a pasta storage/ (privada).
+            public_path(): Retorna o caminho para a pasta public/ (acessível via web).
+            File::put(): Salva o conteúdo em um arquivo.
+            File::makeDirectory(): Cria diretórios, com permissões e recursividade. 
+            
+            Este vídeo explica como fazer upload de arquivos usando o framework Laravel
+            https://www.youtube.com/watch?v=ZRNpbog-JBU
+            
+            ==================================================================================================
+        
+            */
+        
+            // originalName: "extrato.ofx"
+            //dd($request);
+            //dd( file($request->file('file')) );
+            //file_put_contents('C:\\Temp\\extrato.ofx', file($request->file('file')));
+            
+
+            // c:\temp\extrato.ofx
+            // sempre faz o upload do arquivo escolhido, e salvar na c:\temp do windows com nome fixo
+
+            // 1. Para uma pasta temporária de sistema (requer permissão)
+            $pathTemp = 'C:\\Temp'; // Caminho absoluto no Windows
+            $nomeArquivo = 'extrato.ofx';
+            $caminhoCompleto = $pathTemp . '\\' . $nomeArquivo;
+            
+            // Salva o arquivo - no caminho , e o conteudo
+            //  conteudo em: file($request->file('file'))
+            //  sempre sobrescreve o arquivo 
+            File::put($caminhoCompleto, file($request->file('file')));
+
+            // $request->validate(
+            //     ['file' => 'required|mimes:ofx!max:2048',
+            //     ],
+            //     ['file.required' => 'arq requerido',
+            //      'file.mimes' => 'arq deve ser do tipo ofx',
+            //      'file.max' => 'tamanho arq excedido :max Mb'
+            //     ]
+            // );
+
+            // $request->validate(
+            //     ['file' => 'required|max:2048',
+            //     ],
+            //     ['file.required' => 'O arquivo não foi informado!',
+            //      'file.max' => 'Tamanho arquivo excedido, tamanho :max Mb'
+            //     ]
+            // );
+            
+            // ler arquivo salvo em c:\temp do windows
+            $caminho_do_arquivo = 'c:\\temp\\extrato.ofx';
+            
+            //função nativa do PHP 
+            if (!file_exists($caminho_do_arquivo)) {
+                return back()->withInput()->with('error', '(C:\temp\extrato.ofx) não encontrado!');
+            }
+            
+            // ************************************************************************************
+            // inicio rotina, ler arquivo ofx 
+            // ************************************************************************************
+
+            $ofxParser = new \OfxParser\Parser();
+
+            $ofx = $ofxParser->loadFromFile( 'C:\temp\extrato.ofx' );
+
+            // Acesse a primeira conta bancária (a variável $ofx contém um array de contas)
+            $contaBancaria = reset($ofx->bankAccounts);
+            $dataInicio = $contaBancaria->statement->startDate;
+            $dataFim = $contaBancaria->statement->endDate;
+            
+            //dd('cc=' . $contaBancaria->accountNumber);
+
+            //dd($contaBancaria);
+            
+            $di = \Carbon\Carbon::parse($dataInicio)->tz('America/Sao_Paulo')->format('d/m/Y');
+            $df = \Carbon\Carbon::parse($dataFim)->tz('America/Sao_Paulo')->format('d/m/Y');
+            
+            // Obtenha as transações da conta
+            $transacoes = $contaBancaria->statement->transactions;
+
+            // Exemplo de como acessar uma transação específica
+            if (!empty($transacoes)) {
+
+                //$categorias = Categoria::orderBy('classif', 'ASC')->get();
+                // filtrar categorias ativas e que esta indicado campo lcto que recebem lctos 
+                $categorias = DB::select("SELECT * FROM categorias where lcto = '1' and ativo = '1' order by classif");
+
+                $forma_pgtos = Forma_pgto::orderBy('nome', 'ASC')->get();
+
+                // ***********************************************************************
+                // buscar um id nulo, zero para carregar a model
+                // ***********************************************************************
+                $movimentos = Movimento::orderBy('descricao', 'ASC')
+                ->where('id', 0)
+                ->get();
+                
+                //$primeiraTransacao = reset($transacoes);
+                //dd($contaBancaria);
+
+                // leu do arquivo ofx
+                $agcc = $contaBancaria->accountNumber;
+
+                // ***************************************************************
+                // while dados arq carregado.
+                // ***************************************************************
+
+                // em busca dos campos necessarios do arquivo ofx
+
+                $i = 0;
+                foreach ($contaBancaria->statement->transactions as $ofxEntity) {
+                    $i++;
+                    $primeiraTransacao = $ofxEntity;
+
+                    /*  debug mostrar valores...
+
+                    $dit = \Carbon\Carbon::parse($primeiraTransacao->date)->tz('America/Sao_Paulo')->format('d/m/Y');
+                    
+                    echo "linha:" . $i . "<br>";
+                    echo "Data da primeira transação: " . $dit . "<br>";
+                    echo "Valor da primeira transação: " . $primeiraTransacao->amount . "<br>";
+                    echo "tipo da primeira transação: " . $primeiraTransacao->type . "<br>";
+                    echo "memo da primeira transação: " . $primeiraTransacao->memo . "<br>";
+                    echo "checkNumber da primeira transação: " . $primeiraTransacao->checkNumber . "<br>";
+                    echo "<br>";  
+                    */
+                    //dd($primeiraTransacao);
+
+
+                    // 'tipo_lc': "O" - obrigacao
+                    // tipo: $primeiraTransacao->type  'CREDIT' ou 'DEBIT'
+                    $tipo = $primeiraTransacao->type == 'CREDIT' ? 'CR' : 'DB';
+                    $dit = \Carbon\Carbon::parse($primeiraTransacao->date)->tz('America/Sao_Paulo')->format('d/m/Y');
+                    //dd($dit);
+                    $cat = 32;  // debito cartao
+
+                    $string = $primeiraTransacao->memo;
+                    
+                    // *************************************************************************************
+                    // executar um 'de' => 'para' na descricao do lancamento, 
+                    //   e tentar localizar conforme a categoria
+                    // a combo de categorias vai previamente preenchida
+                    // *************************************************************************************
+
+                    //if (Str::contains($string, $texto)) {
+                    
+                    if (strpos( strtoupper($string), "CLINIPAM") !== false) {
+                        $cat = 11;
+                    }
+                    if (strpos( strtoupper($string), "SAQ DIN") !== false) {
+                        $cat = 41;
+                    }
+                    if (strpos( strtoupper($string), "AGUA") !== false) {
+                        $cat = 14;
+                    }
+                    if (strpos( strtoupper($string), "TELEFONICA BRAS") !== false) {
+                        $cat = 40;
+                    }
+                    if (strpos( strtoupper($string), "COPEL") !== false) {
+                        $cat = 15;
+                    }
+                    if (strpos( strtoupper($string), "COPEL") !== false) {
+                        $cat = 15;
+                    }
+                    if (strpos( strtoupper($string), "POSTO") !== false) {
+                        $cat = 27;
+                    }
+                    if (strpos( strtoupper($string), "TV P/ASSINATURA") !== false) {
+                        $cat = 17;
+                    }
+                    if (strpos( strtoupper($string), "PAGTO COBRANCA BANCO BRADESCO") !== false) {
+                        $cat = 42;
+                    }
+                    if (strpos( strtoupper($string), "PAGTO COBRANCA ITAU UNIBANCO HOLDING") !== false) {
+                        $cat = 43;
+                    }
+                    if (strpos( strtoupper($string), "MNINFO") !== false) {
+                        $cat = 7;
+                    }
+                    if (strpos( strtoupper($string), "CLASSIC") !== false) {
+                        $cat = 36;
+                    }
+                    if (strpos( strtoupper($string), "RENDIMENTOS") !== false) {
+                        $cat = 39;
+                    }
+                    if ( (strpos(strtoupper($string), "CONDOR") !== false)  ) {
+                        $cat = 45;
+                    }
+                    if (  (strpos(strtoupper($string), "JACOMAR") !== false) ) {
+                        $cat = 45;
+                    }
+                    if (  (strpos(strtoupper($string), "FESTVAL") !== false) ) {
+                        $cat = 45;
+                    }
+                    if ( (strpos(strtoupper($string), "RESTAURANTE") !== false) ) {
+                        $cat = 25;
+                    }
+                    if ( (strpos(strtoupper($string), "BUFFETSKINA") !== false) ) {
+                        $cat = 25;
+                    }
+                    if ( (strpos(strtoupper($string), "FARMACIA") !== false) ) {
+                        $cat = 18;
+                    }
+                    if ( (strpos(strtoupper($string), "DROGARIA") !== false) ) {
+                        $cat = 18;
+                    }
+                    if ( (strpos(strtoupper($string), "PIX") !== false) ) {
+                        if ($tipo == "DB") {
+                            $cat = 33;
+                        }
+                        if ($tipo == "CR") {
+                            $cat = 9;
+                        }
+                    }
+                    
+                    // *************************************************************************************
+                    // criar um elemento na modal
+                    // *************************************************************************************
+                    $movimentos->push(new Movimento(['id' => 0, 
+                                                'dt' => $dit,
+                                                'descricao' => $primeiraTransacao->memo , 
+                                                'categoria_id' => $cat,
+                                                'forma_pgto_id' => 1,
+                                                'contascorrente_id' => 1,
+                                                'tipo_lc' => 'O',
+                                                'tipo' => $tipo,   
+                                                'valor' => $primeiraTransacao->amount,
+                                                'dcto' => $primeiraTransacao->checkNumber,
+                                                ]));
+                    }
+
+                    //dd($movimentos);
+                    /*
+                        #attributes: array:8 [
+                            "dt" => "01/08/2025"
+                            "descricao" => "Rendimentos Poup Facil-depos a Partir 4/5/12"
+                            "categoria_id" => 0
+                            "forma_pgto_id" => 1
+                            "tipo_lc" => "O"
+                            "tipo" => "CREDIT"
+                            "valor" => 0.53
+                            "dcto" => SimpleXMLElement 
+                        ]
+
+                        #fillable: array:8 [▼
+                            0 => "tipo"
+                            1 => "forma_pgto_id"
+                            2 => "tipo_lc"
+                            3 => "categoria_id"
+                            4 => "descricao"
+                            5 => "valor"
+                            6 => "dt"
+                            7 => "dcto"
+                        ]
+                    */
+
+                // retorna ao formulario 'form' com a preview dos lancamentos lidos do arq ofx
+                // faz uma conferencia nos dados, e ao submit do form gerar os lancamentos lidos
+                // a busca e pelo campo 'dcto' do lancamento, que é chave.
+                // se nao localizar faz a inclusao do lcto,
+                // ou seja um arquivo de movimentos ofx pode ser lido novamente.
+                // pode ser que puxou os movimentos do dia 1 ate 15
+                // e depois puxou novamente, agora com mais movimentos a partir do dia 15, 
+                // entao os movimentos ja incluidos do dia 1-15 permanecem, e os novos a partir do dia 15
+                // serao incluidos.
+
+                return view('movimentos.form', ['movimentos' => $movimentos , 'categorias' => $categorias , 'forma_pgtos' => $forma_pgtos , 'agcc' => $agcc ]  );
+
+                //target="_blank"
+                //<a href="/sua-rota" target="_blank">Abrir em nova aba</a>
+
+            
+            }else{
+                return back()->withInput()->with('error', 'Nenhuma transação encontrada!');
+            }
+
+        }
+
     }
 
     // **************************************************************************************

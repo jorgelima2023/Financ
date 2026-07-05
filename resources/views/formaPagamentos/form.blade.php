@@ -54,7 +54,8 @@
                             <td style="width: 345px;" align="left">
                                 <input type="text" name="itens[{{ $i }}][nome]" 
                                     class="form-control" id="itens[{{ $i }}][nome]" maxlength="60" size="60" 
-                                    value="{{ old("itens.$i.nome", $formaPagamento->nome) }}" >
+                                    value="{{ old("itens.$i.nome", $formaPagamento->nome) }}"
+                                    title='Forma Pagamento:{{$formaPagamento->id}}' >
                             </td>
                             
                             {{--
