@@ -24,13 +24,114 @@ use Illuminate\Support\Facades\File;
 
 class MovimentoController extends Controller
 {
-    // index
-    //public function index(categoria $categoria )
+    public function indexGerar(Request $request)
+    {
+        if( $request->indexGerarLctos ){
+           
+            $falha = 0;
+            for ($i = 0; $i < $request->qtde; $i++){
+                $dt = $request->data_de;
+                
+                if( $i > 0 ){
+                    $dt = \Carbon\Carbon::parse($dt)->addDays(30*$i);
+                } 
+
+                /*
+                echo "<br> reg " . $i . ' ' . $dt . ' tipo_filtro ' . $request->tipo_filtro . 
+                    ' tipo_lcto ' . $request->tipo_lcto . ' categoria_id ' . $request->categoria_id . 
+                    ' contabusca ' . $request->contabusca . ' valor ' . $request->valor . 
+                    ' qtde ' . $request->qtde;
+                */
+
+                // form => name="tipo_lcto" => campo "tipo" : 1-Receita , 0-Despesa
+                //         name="tipo"      "O" Obrigacao , "P" Provisao
+
+                DB::beginTransaction();
+
+                try {
+                    Movimento::create([
+                    'dt' => $dt,
+                    'tipo_lc' => $request->tipo_filtro,      
+                    'tipo' => $request->tipo_lcto ,
+                    'categoria_id' => $request->categoria_id,
+                    'descricao' => $request->input('descricao'),
+                    'dcto' => '0',
+                    //'valor' => $request->input('valor'),
+                    'valor' => str_replace(',', '.', str_replace('.', '', $request->input('valor'))),
+                    // Adicione `forma_pgto_id` se estiver usando
+                    'forma_pgto_id' => $request->eforma_pgto_id , 
+                    'contascorrente_id' => $request->contabusca 
+                    ]);
+
+                    DB::commit();
+
+                    // Redirecionar o usuário, enviar a mensagem de sucesso
+                   // return redirect()->route('movimentos.indexGerar' )->with('success', 'Movimentos ( {$i} ) cadastrado com sucesso!');
+
+                } catch (Exception $e) {
+                    $falha++;
+                    DB::rollBack();
+                    Log::error('Movimento não incluido.', [ 'error' => $e->getMessage()]);
+                    // retorna ao form que chamou.
+                    //return back()->withInput()->with('error', 'Movimento não cadastrado!');
+                }
+            }
+
+
+            if( $i > 0 ){
+                if( $falha == 0){
+                // Redirecionar o usuário, enviar a mensagem de sucesso
+                $msgmov = 'Movimentos cadastrados com sucesso: (' . $i . ') movimentos!';
+                    return redirect()->route('movimentos.indexGerar' )->with('success', $msgmov);
+                }else{
+                    return back()->withInput()->with('error', 'Movimento não cadastrado!');
+                }
+                
+            }
+                
+            
+            // dd($request);
+            /*
+            "indexGerarLctos" => "1"
+            "descricao" => null
+            "data_de" => "2026-07-04"
+            "tipo_filtro" => "P"
+            "tipo_lcto" => "0"
+            "categoria_id" => "43"
+            "contabusca" => "2"
+            "valor" => "30"
+            "qtde" => "5"  
+            */
+            exit;
+        }
+        
+        //   montar select option categorias, apenas as que estão ativas, e indicadas recebem lcto
+        $categorias = DB::select("SELECT * FROM categorias where lcto = '1' and ativo = '1' order by classif");
+        // formulario para o filtro categorias, montar select option contas correntes
+        $contascorrentes = DB::select("SELECT id, id as contascorrente_id , CONCAT_WS(' - ', nome, agencia, conta, id) as nome FROM contascorrentes");
+        // formulario para o filtro forma_pgtos, montar select option
+        $forma_pgtos = Forma_pgto::orderBy('nome', 'ASC')->get();
+
+        $sel = '';
+
+        return view('Movimentos.indexGerar',
+         ['menu' => 'movimentos em lote' ,
+          'categorias' => $categorias,
+          'contascorrentes' => $contascorrentes,
+          'forma_pgtos' => $forma_pgtos,
+          'descricao' => '',
+          'categoriabusca' => '',
+          'data_de' => '',
+          'tipo_filtro' => '',
+          
+         ]);
+    }
+
     public function index(Request $request)
     {
-        //dd('tipo_filtro=' . $request->tipo_filtro);
 
-        DB::enableQueryLog();
+
+        //DB::enableQueryLog();   <<-- ativar debug mostrar consulta
         
         // ===================================================================================
         
@@ -44,32 +145,21 @@ class MovimentoController extends Controller
           Prefira filled() em vez de has() para evitar valores vazios
           whereBetween() é ideal para filtros de período
           startOfDay() / endOfDay() evitam problemas com horário
+
+          \Carbon\Carbon::now()->startOfMonth()  => 1o. dia do mes
+          \Carbon\Carbon::now()->startOfDay()    => data atual
         */ 
 
-        $dataDe  = $request->filled('data_de')
+        $dataDe  = $request->filled('data_de') 
             ? \Carbon\Carbon::parse($request->data_de)->startOfDay()
             : \Carbon\Carbon::now()->startOfMonth();
-            // \Carbon\Carbon::now()->startOfDay()
             
 
         $dataAte = $request->filled('data_ate')
             ? \Carbon\Carbon::parse($request->data_ate)->endOfDay()
             : \Carbon\Carbon::now()->endOfMonth();
-            // \Carbon\Carbon::now()->endOfDay()
-            
-        //Log::info("Movimento index, data de: {$dataDe} data ate:{$dataAte}" ); 
-
-            /*
-            $movimentos = Movimento::select('movimentos.*')
-            ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
-            ->with(['categoria', 'forma_pgto'])
-            */
-                                         
-        //$movimentos = Movimento::select('movimentos.*')
-
-        //$selectedContabuscaIds = $request->input('contabusca');
-        //dd($selectedContabuscaIds);
-
+        
+        // prepara a consulta com os movimentos    
         $movimentos = Movimento::select('movimentos.*')
             ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
             ->join('contascorrentes', 'movimentos.contascorrente_id', '=', 'contascorrentes.id')
@@ -78,15 +168,22 @@ class MovimentoController extends Controller
             ->when($request->filled('descricao'), function ($q) use ($request) {
                 $q->where('descricao', 'like', '%' . $request->descricao . '%');
             })
-            /*->when($request->filled('categoriabusca'), function ($q) use ($request) {
+            /* formulario campo input texto digitar a categoria, campo texto digitar categoria! 
+            ->when($request->filled('categoriabusca'), function ($q) use ($request) {
                 $q->where('categorias.nome', '=', $request->categoriabusca );
             })*/
+
+            /*  formulario campo select option, categorias   */
             ->when($request->filled('categoria_id'), function ($q) use ($request) {
                 $q->where('categorias.id', '=', $request->categoria_id );
             })
-            /*->when($request->filled('contabusca'), function ($q) use ($request) {
+
+            /*  formulario campo conta corrente select option, busca contas 
+            ->when($request->filled('contabusca'), function ($q) use ($request) {
                 $q->where('movimentos.contascorrente_id', '=', $request->contabusca );
                 */
+
+            /*  formulario campo conta corrente multi select option, busca contas    */
             ->when($request->filled('contabusca'), function ($q) use ($request) {
                 $selectedContabuscaIds = $request->input('contabusca');
                 $q->whereIn('movimentos.contascorrente_id', $selectedContabuscaIds )->get();
@@ -101,8 +198,11 @@ class MovimentoController extends Controller
             ->get();  // get vai retornar uma collection 
             //->firstOrFail();
 
-        // dd(DB::getQueryLog());
+        // dd(DB::getQueryLog());   <<-- ativar debug mostrar consulta 
 
+        // ************************************************
+        // montar selecao a ser apresentada no formulario
+        // ************************************************
         $sel = "";
         if( $request->has('descricao') && $request->descricao ){
             $sel .= $sel ? ', ' : '' ;
@@ -113,8 +213,11 @@ class MovimentoController extends Controller
             $sel .= " Categoria:{$request->categoriabusca}";
         }
         if( $request->has('contabusca') && $request->contabusca ){
+
+            // DESATIVADO !!! formulario campo select option contas correntes
             //$cc = ContasCorrente::where('id', $request->contabusca)->first();
             
+            // formulario campo multi select option contas correntes
             $selectedContabuscaIds = $request->input('contabusca');
                 //$q->whereIn('movimentos.contascorrente_id', $selectedContabuscaIds )->get();
             
@@ -123,10 +226,13 @@ class MovimentoController extends Controller
             //dd($nomes = $cc->pluck('nome')->toArray() );
             $sel .= $sel ? ', ' : '' ;
             $sel .= "Contas:" . $ccNomes;
+
+            // DESATIVADO !!! formulario mostrar conta select option
             //$sel .= " Conta corrente:{$request->contabusca} {$cc->nome} - {$cc->agencia} - {$cc->conta}";
             //$sel .= " Conta corrente: {$cc->nome} - {$cc->agencia} - {$cc->conta}";
 
         }
+
         if( $request->has('tipo_filtro') && $request->tipo_filtro ){
             $sel .= $sel ? ', ' : '' ;
             if( $request->tipo_filtro == 'O' ){
@@ -148,45 +254,15 @@ class MovimentoController extends Controller
 
         // anterior ... $categorias = Categoria::orderBy('classif', 'ASC')->get();
 
+        // formulario para o filtro categorias, 
+        //   montar select option categorias, apenas as que estão ativas, e indicadas recebem lcto
         $categorias = DB::select("SELECT * FROM categorias where lcto = '1' and ativo = '1' order by classif");
-
-        // dd(DB::getQueryLog());
-
-        //dd($categorias);
-
-        // $contascorrentes = ContasCorrente::orderBy('nome', 'ASC')
-        // ->get();
-
-        // CREATE VIEW view_contas AS
-        // SELECT
-        //     CONCAT(
-        //         COALESCE(nome, ''),
-        //         COALESCE(agencia, ''),
-        //         COALESCE(conta, '')
-        //     ) AS nome_completo
-        // FROM contascorrentes;
-
-        // SELECT CONCAT_WS('', nome, agencia, conta) as nome
-        // FROM contascorrentes;
-
-        // SELECT CONCAT_WS(' - ', nome, agencia, conta)
-        // FROM contascorrentes;
-
-        //$contascorrentes = ContasCorrente::orderBy('nome', 'ASC')
-        //->get();
-
+        // formulario para o filtro categorias, montar select option contas correntes
         $contascorrentes = DB::select("SELECT id, id as contascorrente_id , CONCAT_WS(' - ', nome, agencia, conta, id) as nome FROM contascorrentes");
+        // formulario para o filtro forma_pgtos, montar select option
+        $forma_pgtos = Forma_pgto::orderBy('nome', 'ASC')->get();
 
-        //$contascorrentes = ContasCorrente::orderBy('nome', 'ASC')
-        //->get();
-
-        $forma_pgtos = Forma_pgto::orderBy('nome', 'ASC')
-        ->get();
-
-        //dd($contascorrentes);
-
-        //return view('Movimentos.index', ['movimentos' => $movimentos ] );
-
+        
         /*  ==============================
             opcao 1 somar valores
 
@@ -213,16 +289,7 @@ class MovimentoController extends Controller
 
         $total = $totalReceita - $totalDespesa; 
 
-
-        // nao funciona Log::info('sql' , ['' => $movimentos->toRawSql()]);
-        // nao funciona dd($movimentos->toSql());
-
-
-        // ===========================================================================
-        //       debug sql query   dd(DB::getQueryLog())
-        // ===========================================================================
-        
-        // dd(DB::getQueryLog());   //esse funciona ok!
+        // dd(DB::getQueryLog());   //esse funciona ok!   <<---   mostrar consulta sql 
 
         /*
         consulta agrupada movimentos por categoria
@@ -236,14 +303,39 @@ class MovimentoController extends Controller
         ORDER BY classif, tipo_lc;
         */
 
+        // mostrar qtde total registros do select
         // 'qtde_registros' => count($movimentos)
 
+        // **********************************************************************
+        // retorna a view que chamou registros encontrados conforme os filtros.
+
+        /*  formulario index 
+            returno view
+            'menu'  => nome do menu para indicar o ativo
+            'movimentos' => $movimentos,    array colection com os movimentos
+            'categorias' => $categorias,    array colection com as categorias form selecao
+            'contascorrentes' => $contascorrentes,  array colection com as contascorrentes form selecao 
+            'forma_pgtos' => $forma_pgtos,  array colection com as forma_pgtos form selecao 
+
+            'descricao' => $request->descricao,  retorna a descricao informada ao form selecao
+            'categoriabusca' => $request->categoriabusca, retorna categoria informada ao form selecao
+            'data_de' => $request->data_de, retorna data_de informada ao form selecao
+            'data_ate' => $request->data_de, retorna data_ate informada ao form selecao
+            'tipo_filtro' => $request->tipo_filtro, retorna campo tipo_filtro informado ao form selecao
+            'qtde_registros' => count($movimentos), retorna qtde registros ao form selecao
+            'totalMovimento' => $total, retorna valor total movimentos ao form selecao
+            'totalDespesa' => $totalDespesa,   retorna valor total despesa movimentos ao form selecao
+             'totalReceita' => $totalReceita,  retorna valor total receita movimentos ao form selecao
+             'sel' => $sel     retorna campos da selecao ao formulario
+            */
+
+        // **********************************************************************
         return view('Movimentos.index',
          ['menu' => 'movimentos',
-            'movimentos' => $movimentos,
-            'categorias' => $categorias,
-            'contascorrentes' => $contascorrentes,
-            'forma_pgtos' => $forma_pgtos,
+          'movimentos' => $movimentos,
+          'categorias' => $categorias,
+          'contascorrentes' => $contascorrentes,
+          'forma_pgtos' => $forma_pgtos,
           'descricao' => $request->descricao,
           'categoriabusca' => $request->categoriabusca,
           'data_de' => $request->data_de,
@@ -259,29 +351,7 @@ class MovimentoController extends Controller
     }
 
     public function store(MovimentoRequest $request){
-        //dd($request);
-        // dd('data:' . $request->data . 
-        //    ' tipo:' . $request->tipo_lcto . 
-        //    ' tipo_lc:' . $request->tipo . 
-        //    ' categoria_id:' . $request->categoria_id . 
-        //    ' descricao:' . $request->descricao  . 
-        //    ' dcto:' . $request->dcto . 
-        //    ' valor:' . $request->valor ) ;
-
-           // "data:2025-09-21 tipo:0 tipo_lc:O categoria_id:1 descricao:jacomar dcto:01 valor:150"
-
-        // validar formulario campos:
-
-        // $request->validate([
-        //         'data' => 'required|date',
-        //         'tipo_lcto' => 'required|boolean',
-        //         'tipo' => 'required|in:O,P',
-        //         'categoria_id' => 'required|exists:categorias,id',
-        //         'descricao' => 'required|string|max:255',
-        //         'dcto' => 'required|string|max:50',
-        //         'valor' => 'required|numeric',
-        //     ]);
-
+        
         // tipo_lcto: 1-receita / 0-despesa
         // tipo_lc:   'O'-obrigacao / 'P'-previsao
         // $Movimento = Movimento::create([
@@ -294,15 +364,14 @@ class MovimentoController extends Controller
         //     'valor' => $request->valor ,
         // ]);
 
-        // validar o fomulario
+        // validar o fomulario, receber dados na request e faz validacao no metodo
         $validated = $request->validated();
 
         DB::beginTransaction();
 
         // form => name="tipo_lcto" => campo "tipo" : 1-Receita , 0-Despesa
-
         //         name="tipo"      "O" Obrigacao , "P" Provisao
-        
+        // campo valor, formatar virgula no formulario para apresentacao, e formatar ponto gravar banco        
         try {
             Movimento::create([
                 'dt' => $request->input('data'),
@@ -314,8 +383,8 @@ class MovimentoController extends Controller
                 //'valor' => $request->input('valor'),
                 'valor' => str_replace(',', '.', str_replace('.', '', $request->input('valor'))),
                 // Adicione `forma_pgto_id` se estiver usando
-                'forma_pgto_id' => $request->input('forma_pgto_id') , // ou pegue do formulário
-                'contascorrente_id' => $request->input('conta_id') // ou pegue do formulário
+                'forma_pgto_id' => $request->input('forma_pgto_id') , 
+                'contascorrente_id' => $request->input('conta_id') 
             ]);
 
             DB::commit();
@@ -326,98 +395,51 @@ class MovimentoController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             Log::error('Movimento não incluido.', [ 'error' => $e->getMessage()]);
-
+            // retorna ao form que chamou.
             return back()->withInput()->with('error', 'Movimento não cadastrado!');
         }
-
-        // Redirecionar o usuário, enviar a mensagem de sucesso
-        //return redirect()->route('movimentos.index' )->with('success', 'Movimento cadastrado com sucesso!');
-
     }
 
+    // **********************************************************************************
+    //  alterar movimentos
+    // **********************************************************************************
+    
     //public function update(Request $request){
-    //public function update(MovimentoEditRequest $request, Movimento $movimento){
     //public function update(Request $request, Movimento $movimento){
     public function update(MovimentoEditRequest $request, Movimento $movimento){
         
+        // recebe dados formulario no 'request' a ser validado, e a modal 'movimento' 
        //dd($request);
 
         //Log::info('Movimento alterar: {$movimento}', ['request' => $request ] );
 
         $validated = $request->validated();
 
-        // tipo: 1-receita , 0-despesa label => 'tipo_lcto' 
-        // tipo_lc: O-Obrigacao , P-Previsao
-        // $validated = $request->validate([
-        //     'editdt' => 'required|date',
-        //     'edittipo' => 'required|in:0,1',
-        //     'edittipo_lc' => 'required|in:O,P',
-        //     'editcategoria_id' => 'required|exists:categorias,id',
-        //     'editDescricao' => 'required|string|max:150',
-        //     'editdcto' => 'required|string|max:50',
-        //     'editValor' => 'required|numeric',
-        // ]);
-
-        // "editMovimentoId" => "8"
-        // "editdt" => "2025-09-28"
-        // "edittipo" => "1"
-        // "edittipo_lc" => "O"
-        // "editcategoria_id" => "3"
-        // "editDescricao" => "dinheiro A"
-        // "editdcto" => "d-AA"
-        // "editValor" => "18.23"
-
-
-
-//         dd( 'dt:' . $request->input('editdt') . 
-//             'tipo_lc:' . $request->input('edittipo_lc') .
-//             'tipo:' . $request->input('edittipo') .  
-//             'categoria_id:' . $request->input('editcategoria_id') . 
-//             'contascorrente_id:' . $request->input('econta_id') .
-//             'descricao:' . $request->input('editDescricao') .
-//             'dcto:' . $request->input('editdcto') .
-//             'valor:' . $request->input('editValor') .
-//             'forma_pgto_id:' . $request->input('eforma_pgto_id') 
-
-//         );
-                    //         dt:2026-02-01
-                    // tipo_lc:O
-                    // tipo:1
-                    // categoria_id:38
-                    // contascorrente_id:1
-                    // descricao:Sld Ant
-                    // dcto:0
-                    // valor:874,20
-                    // forma_pgto_id:7
-
+                    //         dd( 'dt:' . $request->input('editdt') . 
+                    //             'tipo_lc:' . $request->input('edittipo_lc') .
+                    //             'tipo:' . $request->input('edittipo') .  
+                    //             'categoria_id:' . $request->input('editcategoria_id') . 
+                    //             'contascorrente_id:' . $request->input('econta_id') .
+                    //             'descricao:' . $request->input('editDescricao') .
+                    //             'dcto:' . $request->input('editdcto') .
+                    //             'valor:' . $request->input('editValor') .
+                    //             'forma_pgto_id:' . $request->input('eforma_pgto_id') 
+                    //         );
 
         DB::beginTransaction();
         
         try {
             $movimento->update([
-                // 'dt' => $validated['editdt'],
-                // 'tipo_lc' => $validated['edittipo_lc'],
-                // 'tipo' => $validated['edittipo'],
-                // 'categoria_id' => $validated['editcategoria_id'],
-                // 'descricao' => $validated['editDescricao'],
-                // 'dcto' => $validated['editdcto'],
-                // 'valor' => str_replace(',', '.', str_replace('.', '', $request->editValor))
-
                 'dt' => $request->input('editdt'),
-                
                 'tipo_lc' => $request->input('edittipo_lc') ,     
                 'tipo' => $request->input('edittipo'),  
-
                 'categoria_id' => $request->input('editcategoria_id'),
                 'contascorrente_id' => $request->input('econta_id'),
-
                 'descricao' => $request->input('editDescricao'),
                 'dcto' => $request->input('editdcto'),
                 //'valor' => $request->input('valor'),
                 'valor' => str_replace(',', '.', str_replace('.', '', $request->input('editValor'))),
-                // Adicione `forma_pgto_id` se estiver usando
                 'forma_pgto_id' => $request->input('eforma_pgto_id') ,
-                //'contascorrente_id' => 1 // ou pegue do formulário
             ]);
             
             DB::commit();
@@ -430,17 +452,15 @@ class MovimentoController extends Controller
 
             return back()->withInput()->with('error', 'Movimento não atualizado!');
         }
-
-        //return redirect()->route('movimentos.index')->with('success', 'Movimento atualizado com sucesso!');
-
     }
 
+    // **********************************************************************
     // Excluir o Movimento do banco de dados
+    // **********************************************************************
     public function destroy(Movimento $movimento){
+        
+        // enviar ID movimento, na modal 'movimento' 
         // dd($movimento);
-
-        // dd("Excluir o categorias do banco de dados");
-
         // excluir o registro do banco de dados, no metodo 'delete' pode adiconar condicao
 
         DB::beginTransaction();
@@ -456,24 +476,15 @@ class MovimentoController extends Controller
 
             return back()->withInput()->with('error', 'Movimento não atualizado!');
         }
-
-        // redirecionar o usuario, enviar msg de sucesso
-        //return redirect()->route('movimentos.index')->with('success', 'Movimento apagado com sucesso');
     }
-
-    // ===========================================================================
-    
-    
-    // ===========================================================================
-
-    
 
     // verificar se no import trouxe o http request
     // importar arquivo ofx , recebe o path + name arquivo
     // botao importar form index
 
-    //public function import(Request $request){
-    
+    // ===========================================================================
+    // metodo rota - form
+    // ===========================================================================
     public function form(Request $request){
 
     /* 
@@ -531,6 +542,10 @@ class MovimentoController extends Controller
         //dd( file($request->file('file')) );
         //file_put_contents('C:\\Temp\\extrato.ofx', file($request->file('file')));
         
+
+        // c:\temp\extrato.ofx
+        // sempre faz o upload do arquivo escolhido, e salvar na c:\temp do windows com nome fixo
+
         // 1. Para uma pasta temporária de sistema (requer permissão)
         $pathTemp = 'C:\\Temp'; // Caminho absoluto no Windows
         $nomeArquivo = 'extrato.ofx';
@@ -540,10 +555,6 @@ class MovimentoController extends Controller
         //  conteudo em: file($request->file('file'))
         //  sempre sobrescreve o arquivo 
         File::put($caminhoCompleto, file($request->file('file')));
-
-        //dd($request);
-
-
 
         // $request->validate(
         //     ['file' => 'required|mimes:ofx!max:2048',
@@ -570,6 +581,10 @@ class MovimentoController extends Controller
             return back()->withInput()->with('error', '(C:\temp\extrato.ofx) não encontrado!');
         }
         
+        // ************************************************************************************
+        // inicio rotina, ler arquivo ofx 
+        // ************************************************************************************
+
         $ofxParser = new \OfxParser\Parser();
 
         $ofx = $ofxParser->loadFromFile( 'C:\temp\extrato.ofx' );
@@ -593,21 +608,29 @@ class MovimentoController extends Controller
         if (!empty($transacoes)) {
 
             //$categorias = Categoria::orderBy('classif', 'ASC')->get();
-            
+            // filtrar categorias ativas e que esta indicado campo lcto que recebem lctos 
             $categorias = DB::select("SELECT * FROM categorias where lcto = '1' and ativo = '1' order by classif");
-
 
             $forma_pgtos = Forma_pgto::orderBy('nome', 'ASC')->get();
 
+            // ***********************************************************************
             // buscar um id nulo, zero para carregar a model
+            // ***********************************************************************
             $movimentos = Movimento::orderBy('descricao', 'ASC')
             ->where('id', 0)
             ->get();
             
             //$primeiraTransacao = reset($transacoes);
             //dd($contaBancaria);
-            
+
+            // leu do arquivo ofx
             $agcc = $contaBancaria->accountNumber;
+
+            // ***************************************************************
+            // while dados arq carregado.
+            // ***************************************************************
+
+            // em busca dos campos necessarios do arquivo ofx
 
             $i = 0;
             foreach ($contaBancaria->statement->transactions as $ofxEntity) {
@@ -638,7 +661,12 @@ class MovimentoController extends Controller
 
                 $string = $primeiraTransacao->memo;
                 
-                
+                // *************************************************************************************
+                // executar um 'de' => 'para' na descricao do lancamento, 
+                //   e tentar localizar conforme a categoria
+                // a combo de categorias vai previamente preenchida
+                // *************************************************************************************
+
                 //if (Str::contains($string, $texto)) {
                 
                 if (strpos( strtoupper($string), "CLINIPAM") !== false) {
@@ -710,7 +738,9 @@ class MovimentoController extends Controller
                     }
                 }
                 
-
+                // *************************************************************************************
+                // criar um elemento na modal
+                // *************************************************************************************
                 $movimentos->push(new Movimento(['id' => 0, 
                                             'dt' => $dit,
                                             'descricao' => $primeiraTransacao->memo , 
@@ -749,8 +779,17 @@ class MovimentoController extends Controller
                     ]
                 */
 
+            // retorna ao formulario 'form' com a preview dos lancamentos lidos do arq ofx
+            // faz uma conferencia nos dados, e ao submit do form gerar os lancamentos lidos
+            // a busca e pelo campo 'dcto' do lancamento, que é chave.
+            // se nao localizar faz a inclusao do lcto,
+            // ou seja um arquivo de movimentos ofx pode ser lido novamente.
+            // pode ser que puxou os movimentos do dia 1 ate 15
+            // e depois puxou novamente, agora com mais movimentos a partir do dia 15, 
+            // entao os movimentos ja incluidos do dia 1-15 permanecem, e os novos a partir do dia 15
+            // serao incluidos.
+
             return view('movimentos.form', ['movimentos' => $movimentos , 'categorias' => $categorias , 'forma_pgtos' => $forma_pgtos , 'agcc' => $agcc ]  );
-            //return view('movimentos.abrirOfx');
 
             //target="_blank"
             //<a href="/sua-rota" target="_blank">Abrir em nova aba</a>
@@ -761,40 +800,26 @@ class MovimentoController extends Controller
         }
     }
 
+    // **************************************************************************************
     // form update movimentos - vindo do form - ler ofx
+    // **************************************************************************************
+    
     public function updateMovimentos(Request $request){
 
         $data = $request;
         //dd($data);
 
         // buscar do extrato a agencia e conta...
-        /*
-        $movimento_agcc = DB::select("SELECT id 
-                FROM contascorrentes 
-                where  concat( agencia , '/' , conta ) = '{$data->agcc}' 
-                ");
-
-                com Query Builder
-                Nesse caso, $id já recebe diretamente o valor do campo id.
-
-            $id = DB::table('contascorrentes')
-            ->whereRaw("CONCAT(agencia, '/', conta) = ?", [$data->agcc])
-            ->value('id');
-
-
-        */        
+        // no arq ofx a ag e conta vem concatenado
 
         $movimento_agcc = DB::select("SELECT id FROM contascorrentes 
                                       WHERE CONCAT(agencia, '/', conta) = ?
                             ", [$data->agcc]);
 
+        // ********************************************************************************************
         // o DB::select() retorna um array de objetos. Então você precisa acessar o primeiro resultado 
-
+        // ********************************************************************************************
         $idcc = $movimento_agcc[0]->id ?? null;
-
-        //dd($data->agcc);
-        //dd($idcc);
-        //exit;
 
         $falha = 0;
         $movIncluido = 0;
@@ -802,30 +827,33 @@ class MovimentoController extends Controller
         
         foreach ($data['itens'] as $item) {
 
+            // localizar movimento pelo campo "dcto" chave registro, se nao existir inclui, caso contrario ja foi inserido.
             if( empty( $item['id'] ) ){
-                
-                // localizar movimento pelo campo "dcto" chave registro, 
-                //    se nao existir inclui, caso contrario ja foi inserido.
                 
                 $dataBr = $item['dt'];
                 // Converter para formato MySQL
-                $dataMysql = \Carbon\Carbon::createFromFormat('d/m/Y', $dataBr)
-                        ->format('Y-m-d');
+                $dataMysql = \Carbon\Carbon::createFromFormat('d/m/Y', $dataBr)->format('Y-m-d');
                 
                 $movDt = $dataMysql;
                 
                 // debug
                 //DB::enableQueryLog();
                 
+                // **********************************************************************************
+                
+                // ///////////////////   importante !!!!   
+
+                // deve buscar pelo campo 'dcto' + data do movimento
+                
+                // **********************************************************************************
+                
                 $movimento_Dcto = Movimento::where('dcto', $item['dcto'])
                 ->where('dt', '=', $movDt)
                 ->get();
 
-                //if( empty($movimento_Dcto) ){
-                //if( !$movimento_Dcto ){
+                //if( empty($movimento_Dcto) ){    <<-- nao funciona 
+                //if( !$movimento_Dcto ){          <<-- nao funciona 
                 if ($movimento_Dcto->isEmpty()) {
-
-                
 
                     DB::beginTransaction();
 
@@ -892,12 +920,13 @@ class MovimentoController extends Controller
             }
         }
 
+        // *******************************************************************************
         // apresentar msg ao form que chamou !
+        // *******************************************************************************
         if( $falha == 0 ){   
 
             // Carregar a VIEW
-            //return view('categorias.index', ['categorias' => $categorias]);
-            // nao retorna a view mas ao form que chamou!
+            
             $msgmov = 'Movimentos cadastrados com sucesso: (' . $movIncluido . ') movimentos!'; 
             if( $movjaexiste ){
                 $msgmov .= ' ( ' . $movjaexiste . ' ) Movimento já existe!';
@@ -916,8 +945,15 @@ class MovimentoController extends Controller
 
     }
     
+    // ***********************************************************************************
+    // chamada metodo - rota - graficos
+    // ***********************************************************************************
+    
     public function pie(Request $request)
     {   
+
+        // receb o request com os filtros, para aplicar a consulta e montar os dados e gerar grafico
+
         // "filtro" => "Tipo=O data_de=2025-12-01 data_ate=2025-12-31"
         //  "tipo_filtro" => "O"
         //  "data_de" => "2025-12-01"
@@ -1086,6 +1122,10 @@ class MovimentoController extends Controller
         
     }
 
+    // *****************************************************************************
+    // executa a rota - relatorio
+    // enviar controller e retorna form visualizar
+    // *****************************************************************************
     public function relatorioselecao(){
         
         //$categorias = Categoria::orderBy('classif', 'ASC')->get();

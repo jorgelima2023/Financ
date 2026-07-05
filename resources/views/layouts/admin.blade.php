@@ -108,6 +108,14 @@
                             </a>
                         @endcan
 
+                        <!-- ------------------------ Movimentos gerar lcto em lote -------------------------------   -->
+                        @can('index-movimento')
+                            <a @class(['nav-link', 'active' => isset($menu) && $menu == 'movimentos em lote']) href="{{ route('movimentos.indexGerar') }}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
+                                Movimentos em lote
+                            </a>
+                        @endcan
+
                         <!-- ------------------------ Movimentos - relatório -------------------------------   -->
                          @can('index-movimento')
                             <a @class(['nav-link', 'active' => isset($menu) && $menu == 'movimentos-relatorio']) href="{{ route('movimentos.relatorioselecao') }}">

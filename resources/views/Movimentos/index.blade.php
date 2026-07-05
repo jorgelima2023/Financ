@@ -75,7 +75,8 @@
                                 <label for="categoriabusca" class="col-form-label">Categoria</label>
                             </div>
                             <div class="col-6">
-                                <!-- <input type="text" name="categoriabusca" class="form-control" id="categoriabusca" 
+                                <!-- campo texto digitar categoria! 
+                                    <input type="text" name="categoriabusca" class="form-control" id="categoriabusca" 
                                     value="{{ $categoriabusca }}" placeholder="categoria do movimento"> -->
 
                                 <select name="categoria_id" id="categoria" class="form-select">
@@ -98,7 +99,8 @@
                             </div>
                             <div class="col-5">
 
-                                @php if(  1 == 2 ){ @endphp
+                                @php // DESATIVADO !!!  campo select option busca conta corrente
+                                 if(  1 == 2 ){ @endphp
                                 <select name="contabusca" id="contabusca" class="form-select" >
                                     <option value="">Selecione uma conta</option>
 
