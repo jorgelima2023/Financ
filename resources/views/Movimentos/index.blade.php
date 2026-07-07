@@ -206,17 +206,53 @@
                     <form method="POST" action="/movimentos/form" enctype="multipart/form-data">
                         @csrf
                         <!-- <input type="file" name="file" accept=".xlsx, .xls"> -->
-                        <div class="mb-1 hstack gap-3">
+                        <div class="mb-1 hstack gap-4">
                             <input type="file" name="file" class="form-control form-control-sm" accept=".ofx" title=".ofx">
                             <button type="submit" class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" id="btnofx" name="btn" value="btnofx">
                                 OFX
                             </button>
 
-                            <input type="file" name="file" class="form-control form-control-sm" accept=".csv" title=".csv">
+                            <input type="file" name="file" class="form-control form-control-sm" accept=".csv" title=".csv" id="inputcsv">
                             <button type="submit" class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" id="btncsv" name="btn" value="btncsv">
                                 CSV
                             </button>
+
+                            <button type="button" name="btnfecha" id="btnfecha" title="voltar"
+                                        class="btn btn-outline-secondary btn-sm px-1 py-1 fs-7"
+
+                                    
+                                    <i class="fa-sharp fa-rectangle-xmark"><</i>
+                            </button>
+    
                         </div>
+
+                        <div class="mb-2 hstack gap-3">
+                            <span id="texto" style="display:none;">
+                            <div id="texto" class="d-flex align-items-center gap-2" style="display:none;">    
+                                Categoria
+                                <select name="categoria_id" id="categoria" class="form-select" required>
+                                        <option value="">Selecione uma categoria - CSV</option>
+                                            @foreach ($categorias as $categoria)
+                                                <option value="{{ $categoria->id }}"
+                                                    {{ old('categoria_id') == $categoria->id ? 'selected' : '' }}>
+                                                    {{ $categoria->nome }}
+                                                </option>
+                                            @endforeach
+                                </select>
+                                Forma Pgto
+                                <select name="forma_pgto_id" id="forma_pgto_id" class="form-select" required>
+                                        <option value="">Selecione uma Forma de Pagamento - CSV</option>
+                                            @foreach ($forma_pgtos as $forma_pgto)
+                                            <option value="{{ $forma_pgto->id }}"
+                                                {{ old('forma_pgto_id') == $forma_pgto->id ? 'selected' : '' }}>
+                                                {{ $forma_pgto->nome }}
+                                            </option>
+                                        @endforeach
+                                </select>
+                            </span>
+                    
+                        </div>
+
                     </form>
             </div>
         </div>
@@ -792,6 +828,34 @@
         });
 
     });
+
+    const btn = document.getElementById("inputcsv");
+    const texto = document.getElementById("texto");
+    const btnx = document.getElementById("btnfecha");
+    
+
+    // btn.addEventListener("mouseenter", () => {
+
+    btn.addEventListener("click", () => {
+        texto.style.display = "inline";
+    });
+
+    btnx.addEventListener("click", () => {
+        texto.style.display = "none";
+    });
+
+    /*
+    Eventos mais comuns
+        Evento     Quando acontece
+        click      Clique do mouse
+        mouseenter Mouse entra no elemento
+        mouseleave Mouse sai do elemento
+        mouseover  Mouse passa sobre o elemento
+        mouseout   Mouse sai do elemento
+        keydown    Tecla pressionada
+        submit     Envio de formulário
+    */
+
     </script>
 
 
