@@ -75,10 +75,6 @@
                                 <label for="categoriabusca" class="col-form-label">Categoria</label>
                             </div>
                             <div class="col-6">
-                                <!-- campo texto digitar categoria! 
-                                    <input type="text" name="categoriabusca" class="form-control" id="categoriabusca" 
-                                    value="{{ $categoriabusca }}" placeholder="categoria do movimento"> -->
-
                                 <select name="categoria_id" id="categoria" class="form-select">
                                     <option value="">Selecione uma categoria</option>
 
@@ -89,7 +85,6 @@
                                         </option>
                                     @endforeach
                                 </select>
-
                             </div>
                         </div>
 
@@ -129,7 +124,6 @@
                         <!-- ====================================================================================================  -->
 
                         <div class="row">
-
                             <div class="col-md-4 col-sm-12 mt-2 pt-0">
                                 <button type="submit" class="btn btn-info btn-sm">
                                     <i class="fa-solid fa-magnifying-glass"></i>Pesquisar
@@ -153,8 +147,6 @@
             </div>
         </div>
         
-     
-
         <div class="card mb-2 mt-2 pt-1 border-light shadow">
             <div class="row g-0 ">
                     <div class="col-md-6"></div>
@@ -197,6 +189,9 @@
             </div>
         </div>
         
+        @php // DESATIVADO !!!  
+        if(  1 == 2 ){ @endphp
+
         <div class="card mb-2 mt-2 pt-1 border-light shadow">
             <!-- <div class="card-body"> -->
                 <!-- <div class="row-4 col-6"> -->
@@ -256,6 +251,8 @@
                     </form>
             </div>
         </div>
+        
+        @php } @endphp
 
         <!-- Modal de cadastro -->
         <div class="modal fade" id="cadModal" tabindex="-1" aria-labelledby="cadModalLabel" aria-hidden="true">

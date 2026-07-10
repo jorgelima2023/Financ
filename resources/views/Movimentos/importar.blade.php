@@ -23,8 +23,11 @@
                 <x-alert />
                 
                 <div class="card-body fs-6">
-                    <form action="{{ route('movimentos.importar') }}">
+
+                    <!-- ----------------- importar csv  -->
+                    <form method="POST" action="/movimentos/form" enctype="multipart/form-data"> 
                         @csrf
+
                         <!-- ----------------- tipo  -->
                         <div class="row mb-2 align-items-center">
                             <div class="col-2">
@@ -93,7 +96,7 @@
                         <div class="col-5">
                             <div class="card mb-2 mt-2 pt-1 border-light shadow">
                                 <div class="mb-1 hstack gap-1">
-                                    <input type="file" name="file" class="form-control form-control-sm" accept=".csv" title=".csv" id="inputcsv">
+                                    <input type="file" name="file" class="form-control form-control-sm" accept=".csv" title=".csv">
                                     <button type="submit" class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" id="btncsv" name="btn" value="btncsv">
                                         CSV
                                     </button>
@@ -102,6 +105,7 @@
                         </div>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
@@ -109,6 +113,9 @@
         <!-- ---------------------------------------------------------------------------- -->
         <div class="card mb-2 mt-2 pt-1 border-light shadow">
                 <div class="mb-1 hstack gap-6">
+
+                    
+                    <!-- ----------------- importar ofx  -->
                     <form method="POST" action="/movimentos/form" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-1 hstack gap-4">

@@ -200,9 +200,9 @@ Route::group(['middleware' => 'auth'], function () {
         [MovimentoController::class, 'relatoriovisualizacao'] )->name('movimentos.relatoriovisualizacao')
         ->middleware('permission:index-movimento');
 
-    route::get('/importar-movimento', 
-        [MovimentoController::class, 'importar'] )->name('movimentos.importar')
-        ->middleware('permission:index-movimento');
+    route::get('/importar-movimento', [MovimentoController::class, 'importar'] )->name('movimentos.importar');
+
+    Route::post('/movimentos/form', [MovimentoController::class, 'form'])->name('movimentos.form');
     
     route::get('/indexGerar-movimento', 
         [MovimentoController::class, 'indexGerar'] )->name('movimentos.indexGerar')

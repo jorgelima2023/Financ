@@ -25,225 +25,9 @@ use Illuminate\Support\Facades\File;
 class MovimentoController extends Controller
 {
 
-    public function importar(Request $request){
+    
 
-
-        //   montar select option categorias, apenas as que estão ativas, e indicadas recebem lcto
-        $categorias = DB::select("SELECT * FROM categorias where lcto = '1' and ativo = '1' order by classif");
-        // formulario para o filtro categorias, montar select option contas correntes
-        $contascorrentes = DB::select("SELECT id, id as contascorrente_id , CONCAT_WS(' - ', nome, agencia, conta, id) as nome FROM contascorrentes");
-        // formulario para o filtro forma_pgtos, montar select option
-        $forma_pgtos = Forma_pgto::orderBy('nome', 'ASC')->get();
-
-        if( $request->btn == "btncsv" )
-        {
-            //dd('botao ' . $request->btn);
-            $request->validate(
-                ['file' => 'required|mimes:csv,txt|max:2048',
-                ],
-                ['file.required' => 'O arquivo é requerido (.csv)',
-                 'file.mimes' => 'O arquivo deve ser do tipo (.csv)',
-                 'file.max' => 'Tamanho do arquivo excedido :max Mb'
-                ]
-            );
-
-            // ao exportar planilha para csv : 
-               // 1-separador campos ";"
-               // 2-separador milhar "." 
-               // 3-retirar acentuacao do cabecalho
-               // 4-deixar a primeira linha do cabecalho
-
-            // colunas arquivo csv: 
-            // Data;Histórico;Valor (US$);Valor(R$)
-
-            // criar array colunas
-            $headers = ['Data', 'Historico', 'Valor(US$)', 'Valor(R$)'];
-
-            // Recebe o arquivo
-            // 'file' vem formulario 
-            //      input type="file" name="file"
-            $datafile = file($request->file('file'));
-
-            // validar dados arquivo, vem como string
-            // dd( file($request->file('file')) );
-
-            // 1) receber o arquivo, ler os dados e converter a string em array , usar array_map
-            $dataFile = array_map('str_getcsv', file( $request->file('file') ) );
-
-            // dd(array_map('str_getcsv', file( $request->file('file') ) ));
-
-            /*
-                     array_map
-
-            0 => array:1 [▶]
-            1 => array:1 [▶]
-            2 => array:1 [▶]
-            3 => array:1 [▶]
-
-            array:19 
-                0 => array:1 [▼
-                    0 => "Data;Historico;Valor(US$);Valor(R$)"
-                ]
-                1 => array:1 [▼
-                    0 => "25/05;SEGURO SUPERPROTEGIDO;0.00;9.99"
-                ]
-            */
-
-            // 2) percorrer as linhas do arquivo csv depois de usar o array_map
-            foreach( $dataFile as $keyData => $row ){
-                /*
-                        dd($row);
-                    com os dados do 1o. registro
-                    0 => "Data;Historico;Valor(US$);Valor(R$)"
-                */
-                /*
-                    dd($keyData);
-                    0
-                    mostra a chave 0 
-                */
-                /*    
-                    dd($row);
-                    0 => "Data;Historico;Valor(US$);Valor(R$)"
-                    mostra a chave 0 e o registro
-                */
-                /*    
-                    dd($dataFile);      $keyData 0 =>  1 => 2 =>
-                    0 => array:1 [▶]
-                    1 => array:1 [▶]
-                    2 => array:1 [▶]
-                */
-
-                /*    
-                    $row[0] ???
-
-                    0 => array:1 [▼
-                      $row[0]  0 => "Data;Historico;Valor(US$);Valor(R$)"
-                    ]
-                    1 => array:1 [▼
-                      $row[0]  0 => "25/05;SEGURO SUPERPROTEGIDO;0.00;9.99"
-                    ]
-                    2 => array:1 [▼
-                      $row[0]  0 => "20/05;Wellhub Marcia Lima;0.00;69.99"
-                    ]
-                */
-
-                // converter a linha 'row' em array
-                $values = explode(';' , $row[0]);
-
-                /*
-                    dd($values);
-                    array:4 [▼ 
-                    0 => "Data"
-                    1 => "Historico"
-                    2 => "Valor(US$)"
-                    3 => "Valor(R$)"
-                    ]
-                */
-
-                // 3) percorrer as colunas do cabecalho, independente da qtde de colunas,
-                //    se houver mais colunas, basta acresecentar no cabecalho variavel '$headers' ,
-                //    $headers = ['Data', 'Historico', 'Valor(US$)', 'Valor(R$)'];
-                //    '$key' tem os elementos colunas
-                foreach( $headers as $key => $header ){
-
-                    // 4) atribui o valor ao elemento do array
-                    // 1o. elemento chave '$keyData'
-                    //     '$key' tem os elementos colunas
-                    $arrayValues[$keyData][$header] = $values[$key];
-                }
-
-            }
-
-            // 5) array de valores
-            // dd($arrayValues);
-            /*
-                      $arrayValues   array de valores 
-            0 => array:4 [▼
-                "Data" => "Data"
-                "Historico" => "Historico"
-                "Valor(US$)" => "Valor(US$)"
-                "Valor(R$)" => "Valor(R$)"
-            ]
-            1 => array:4 [▼
-                "Data" => "25/05"
-                "Historico" => "SEGURO SUPERPROTEGIDO"
-                "Valor(US$)" => "0.00"
-                "Valor(R$)" => "9.99"
-            ]
-            */
-
-            // cadastrar registros no banco dados, caso estejam campos esteja mesma ordem colunas
-            // Movimento::insert($arrayValues);
-
-            $falha = 0;
-            $dt = \Carbon\Carbon::now()->startOfMonth();  // 1a. dia mes
-            $dt = \Carbon\Carbon::parse($dt)->addDays(7); // dia 08 do mes
-            // dd('data ' . $dt );
-
-            // 6) percorrer array de valores 
-            foreach( $arrayValues as $key => $row ){
-
-                // verificar valores
-                // echo "<br> key " . $key . ' ' . $row['Data'] . ' ' . $row['Historico'] . ' ' . $row['Valor(US$)'] . ' ' . $row['Valor(R$)'];
-                
-                // 0 eh o cabecalho...
-                if( $key > 0 ){
-
-                    // o valor ja vem com o "." ponto
-                    $vlr = $row['Valor(R$)'];
-                    // 'valor' => str_replace(',', '.', str_replace('.', '', $vlr )),
-                    
-                    DB::beginTransaction();
-
-                    try {
-
-                        Movimento::create([
-                        'dt' => $dt ,
-                        'tipo_lc' => 'P' ,     
-                        'tipo' => 0  ,   
-                        'categoria_id' => 42 ,
-                        'descricao' => $row['Data'] . ' ' . $row['Historico'] ,
-                        'dcto' => '0' ,
-                        'valor' => $vlr ,
-                        'forma_pgto_id' => 6 , 
-                        'contascorrente_id' => 2 
-                    ]);
-
-                    DB::commit();
-
-                    } catch (Exception $e) {
-                        DB::rollBack();
-                        Log::error('Movimento não incluido.', [ 'error' => $e->getMessage()]);
-                        $falha++;
-                    }
-                }
-                    
-            }
-
-            
-            if( $falha > 0 ){
-                return back()->withInput()->with('error', 'Movimento não cadastrado!');
-            }else{
-                $regs = count($arrayValues) -1;
-                return redirect()->route('movimentos.index' )->with('success', 'Movimento cadastrado com sucesso! (' . $regs. ')' );
-            }
-            
-                
-        }
-
-        return view('Movimentos.importar',
-         ['menu' => 'movimentos importar' ,
-          'categorias' => $categorias,
-          'contascorrentes' => $contascorrentes,
-          'forma_pgtos' => $forma_pgtos,
-          'descricao' => '',
-          'categoriabusca' => '',
-          'data_de' => '',
-          'tipo_filtro' => '',
-          
-         ]);
-    }
-
+    // gerar lctos automatico
     public function indexGerar(Request $request)
     {
         if( $request->indexGerarLctos ){
@@ -346,7 +130,7 @@ class MovimentoController extends Controller
           
          ]);
     }
-
+    // form index
     public function index(Request $request)
     {
 
@@ -569,7 +353,7 @@ class MovimentoController extends Controller
          ]);
 
     }
-
+    // incluir - cadastrar 
     public function store(MovimentoRequest $request){
         
         // tipo_lcto: 1-receita / 0-despesa
@@ -697,12 +481,36 @@ class MovimentoController extends Controller
             return back()->withInput()->with('error', 'Movimento não atualizado!');
         }
     }
+    // importar arq csv
+    public function importar(Request $request){
 
-    // ===========================================================================
-    // metodo rota - form
+        //dd($request);
 
-    // laravel importar excel  csv 
+        //if( !$request ){
+            //   montar select option categorias, apenas as que estão ativas, e indicadas recebem lcto
+            $categorias = DB::select("SELECT * FROM categorias where lcto = '1' and ativo = '1' order by classif");
+            // formulario para o filtro categorias, montar select option contas correntes
+            $contascorrentes = DB::select("SELECT id, id as contascorrente_id , CONCAT_WS(' - ', nome, agencia, conta, id) as nome FROM contascorrentes");
+            // formulario para o filtro forma_pgtos, montar select option
+            $forma_pgtos = Forma_pgto::orderBy('nome', 'ASC')->get();
+        //}
 
+        
+
+        return view('Movimentos.importar',
+         ['menu' => 'movimentos importar' ,
+          'categorias' => $categorias,
+          'contascorrentes' => $contascorrentes,
+          'forma_pgtos' => $forma_pgtos,
+          'descricao' => '',
+          'categoriabusca' => '',
+          'data_de' => '',
+          'tipo_filtro' => '',
+          
+         ]);
+    }
+
+    // laravel importar arq ofx - envia para rota formulario
     // ===========================================================================
     public function form(Request $request){
 
@@ -711,18 +519,22 @@ class MovimentoController extends Controller
             // botao btnofx 
             // botao btncsv
 
+        // importar csv
+        // receber dados da rota 'importar' 
+        //     processar na rota 'form' e retornar msg a rota 'importar'    
         if( $request->btn == "btncsv" )
         {
             //dd('botao ' . $request->btn);
-            $request->validate(
-                ['file' => 'required|mimes:csv,txt|max:2048',
-                ],
-                ['file.required' => 'O arquivo é requerido (.csv)',
-                 'file.mimes' => 'O arquivo deve ser do tipo (.csv)',
-                 'file.max' => 'Tamanho do arquivo excedido :max Mb'
-                ]
-            );
-
+            
+            // $request->validate(
+            //     ['file' => 'required|mimes:csv|max:2048',
+            //     ],
+            //     ['file.required' => 'O arquivo é requerido (.csv)',
+            //      'file.mimes' => 'O arquivo deve ser do tipo (.csv)',
+            //      'file.max' => 'Tamanho do arquivo excedido :max Mb'
+            //     ]
+            // );
+            
             // ao exportar planilha para csv : 
                // 1-separador campos ";"
                // 2-separador milhar "." 
@@ -851,6 +663,9 @@ class MovimentoController extends Controller
             // cadastrar registros no banco dados, caso estejam campos esteja mesma ordem colunas
             // Movimento::insert($arrayValues);
 
+            $jaexiste = 0;
+            $texto = '';
+            $regs  = 0;
             $falha = 0;
             $dt = \Carbon\Carbon::now()->startOfMonth();  // 1a. dia mes
             $dt = \Carbon\Carbon::parse($dt)->addDays(7); // dia 08 do mes
@@ -858,6 +673,11 @@ class MovimentoController extends Controller
 
             // 6) percorrer array de valores 
             foreach( $arrayValues as $key => $row ){
+
+                // **********************************************************************************
+                // deve buscar pelo campo 'descricao' + data do movimento + valor + dcto
+                //   historico eh o docto 
+                // **********************************************************************************
 
                 // verificar valores
                 // echo "<br> key " . $key . ' ' . $row['Data'] . ' ' . $row['Historico'] . ' ' . $row['Valor(US$)'] . ' ' . $row['Valor(R$)'];
@@ -868,29 +688,44 @@ class MovimentoController extends Controller
                     // o valor ja vem com o "." ponto
                     $vlr = $row['Valor(R$)'];
                     // 'valor' => str_replace(',', '.', str_replace('.', '', $vlr )),
+
+                    $movimento_Dcto = Movimento::where('descricao', $row['Historico'])
+                    ->where('dt', '=', $dt)
+                    ->where('valor', '=', $vlr)
+                    ->where('dcto', '=', $row['Data'])
+                    ->get();
                     
-                    DB::beginTransaction();
+                    if ($movimento_Dcto->isEmpty()) {
 
-                    try {
+                        DB::beginTransaction();
 
-                        Movimento::create([
-                        'dt' => $dt ,
-                        'tipo_lc' => 'P' ,     
-                        'tipo' => 0  ,   
-                        'categoria_id' => 42 ,
-                        'descricao' => $row['Data'] . ' ' . $row['Historico'] ,
-                        'dcto' => '0' ,
-                        'valor' => $vlr ,
-                        'forma_pgto_id' => 6 , 
-                        'contascorrente_id' => 2 
-                    ]);
+                        try {
 
-                    DB::commit();
+                            Movimento::create([
+                            'dt' => $dt ,
+                            'tipo_lc' => $request->tipo_filtro /*'P'*/ ,     
+                            'tipo' => 0  /* 0-despesa 1-entrada */ ,   
+                            'categoria_id' => $request->categoria_id /*42*/ ,
+                            'descricao' => $row['Historico'] ,
+                            'dcto' => $row['Data'] ,
+                            'valor' => $vlr ,
+                            'forma_pgto_id' => $request->forma_pgto_id /*6*/ , 
+                            'contascorrente_id' => $request->contabusca /*2*/  
+                        ]);
 
-                    } catch (Exception $e) {
-                        DB::rollBack();
-                        Log::error('Movimento não incluido.', [ 'error' => $e->getMessage()]);
-                        $falha++;
+                        DB::commit();
+
+                        $regs++;
+
+                        } catch (Exception $e) {
+                            DB::rollBack();
+                            Log::error('Movimento não incluido.', [ 'error' => $e->getMessage()]);
+                            $falha++;
+                        }
+
+                    }else{
+                        $texto .= $row['Data'] . ' ' . $row['Historico'] . ' ' . $vlr . $dt;
+                        $jaexiste++;
                     }
                 }
                     
@@ -900,12 +735,14 @@ class MovimentoController extends Controller
             if( $falha > 0 ){
                 return back()->withInput()->with('error', 'Movimento não cadastrado!');
             }else{
-                $regs = count($arrayValues) -1;
-                return redirect()->route('movimentos.index' )->with('success', 'Movimento cadastrado com sucesso! (' . $regs. ')' );
+                //$regs = count($arrayValues) -1;
+                return redirect()->route('movimentos.importar' )->with('success', 'Movimento cadastrado com sucesso! (' . $regs. ') , ja existe: ' . $jaexiste . ' (' . $texto . ')' );
             }
             
                 
         }
+
+        // -------------- importar ofx
 
         if( $request->btn == "btnofx" )
         {
