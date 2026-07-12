@@ -1450,95 +1450,74 @@ class MovimentoController extends Controller
             $categrel = $request->categoria_id;
         }
 
-        if( $request->has('categoria_id') && $request->categoria_id ){
+        //if( $request->has('categoria_id') && $request->categoria_id ){
 
                 // Usar DB::select para executar a consulta SQL bruta
             $resultados = DB::select("
                 SELECT *
                 FROM (
                     SELECT 
-                        tipo_lc, categorias.nome, categorias.classif,
-                        SUM(movimentos.valor) as valor
-                    FROM
-                        movimentos
-                    INNER JOIN
-                        categorias ON movimentos.categoria_id = categorias.id
+                        'despesa' as tipo_mov, movimentos.dt, movimentos.descricao, movimentos.dcto ,
+                        categorias.nome as categoria, categorias.classif , forma_pgtos.id as formapg, forma_pgtos.nome as formanome, contascorrentes.id, contascorrentes.nome as conta,
+                        0.00 as recebido, movimentos.valor as pago
+                    FROM movimentos 
+                    join categorias on categorias.id = movimentos.categoria_id
+                    join forma_pgtos on forma_pgtos.id = movimentos.forma_pgto_id
+                    join contascorrentes on contascorrentes.id = movimentos.contascorrente_id
+                        
                     WHERE
-                        tipo_lc = 'O' AND dt BETWEEN :dataInicioO AND :dataFimO
-                        and categorias.id = :catrelO
-                    GROUP BY
-                        tipo_lc, categorias.nome, categorias.classif
-
+                        movimentos.tipo_lc = 'O' AND movimentos.tipo = 0 and movimentos.dt BETWEEN :dataInicioO AND :dataFimO
+                    
                     UNION ALL
 
                     SELECT
-                        tipo_lc, categorias.nome, categorias.classif,
-                        SUM(movimentos.valor) as valor
-                    FROM
-                        movimentos
-                    INNER JOIN
-                        categorias ON movimentos.categoria_id = categorias.id
+                        'receita' as tipo_mov, movimentos.dt, movimentos.descricao, movimentos.dcto ,
+                        categorias.nome as categoria, categorias.classif, forma_pgtos.id as formapg, forma_pgtos.nome as formanome, contascorrentes.id, contascorrentes.nome as conta,
+                        movimentos.valor as recebido, 0.00 as pago
+                    FROM movimentos 
+                    join categorias on categorias.id = movimentos.categoria_id
+                    join forma_pgtos on forma_pgtos.id = movimentos.forma_pgto_id
+                    join contascorrentes on contascorrentes.id = movimentos.contascorrente_id
                     WHERE
-                        tipo_lc = 'P' AND dt BETWEEN :dataInicioP AND :dataFimP
-                        and categorias.id = :catrelP
-                    GROUP BY
-                        tipo_lc, categorias.nome, categorias.classif
+                        movimentos.tipo_lc = 'O' and movimentos.tipo = 1 AND movimentos.dt BETWEEN :dataInicioP AND :dataFimP
+                    
                 ) AS subquery_combinada
                 ORDER BY
-                    classif;
+                    5, 2;
                 ", [
                     // Passar os bindings para prevenir SQL Injection
                     'dataInicioO' => $dataInicio,
                     'dataFimO' => $dataFim,
                     'dataInicioP' => $dataInicio,
                     'dataFimP' => $dataFim,
-                    'catrelO'  => $categrel,
-                    'catrelP'  => $categrel,
+                    
                 ]);
-        }else{
-            $resultados = DB::select("
-            SELECT *
-            FROM (
-                SELECT 
-                    tipo_lc, categorias.nome, categorias.classif,
-                    SUM(movimentos.valor) as valor
-                FROM
-                    movimentos
-                INNER JOIN
-                    categorias ON movimentos.categoria_id = categorias.id
-                WHERE
-                    tipo_lc = 'O' AND dt BETWEEN :dataInicioO AND :dataFimO
-                GROUP BY
-                    tipo_lc, categorias.nome, categorias.classif
 
-                UNION ALL
-
-                SELECT
-                    tipo_lc, categorias.nome, categorias.classif,
-                    SUM(movimentos.valor) as valor
-                FROM
-                    movimentos
-                INNER JOIN
-                    categorias ON movimentos.categoria_id = categorias.id
-                WHERE
-                    tipo_lc = 'P' AND dt BETWEEN :dataInicioP AND :dataFimP
-                GROUP BY
-                    tipo_lc, categorias.nome, categorias.classif
-            ) AS subquery_combinada
-            ORDER BY
-                classif;
-            ", [
-                // Passar os bindings para prevenir SQL Injection
-                'dataInicioO' => $dataInicio,
-                'dataFimO' => $dataFim,
-                'dataInicioP' => $dataInicio,
-                'dataFimP' => $dataFim,
-            ]);
-        }
+        
 
             // order by classif, tipo_lc; 
 
         /*
+                select 'despesa' as tipo_mov, m.dt, m.descricao, m.dcto ,
+            c.nome, c.classif , fp.id as formapg, fp.nome, c2.id, c2.nome as conta,
+            0.00 as recebido, m.valor as pago
+            from movimentos m
+            join categorias c on c.id = m.categoria_id 
+            join forma_pgtos fp on fp.id = m.forma_pgto_id 
+            join contascorrentes c2 on c2.id = m.contascorrente_id 
+            where m.dt >= '2026-06-01' and m.dt <= '2026-06-30' and m.tipo_lc = 'O'  and m.tipo = 0 
+            union all 
+            select 'receita' as tipo_mov, m2.dt, m2.descricao, m2.dcto ,
+                c.nome, c.classif, fp.id as formapg, fp.nome, c2.id, c2.nome as conta,
+                m2.valor as recebido, 0.00 as pago
+            from movimentos m2
+            join categorias c on c.id = m2.categoria_id 
+            join forma_pgtos fp on fp.id = m2.forma_pgto_id 
+            join contascorrentes c2 on c2.id = m2.contascorrente_id 
+            where m2.dt >= '2026-06-01' and m2.dt <= '2026-06-30' and m2.tipo_lc = 'O'  and m2.tipo = 1
+            order by 6, 2
+
+           -- consulta anterior 
         $movimentos = Movimento::select('movimentos.*')
         ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
         ->with(['categoria', 'forma_pgto'])

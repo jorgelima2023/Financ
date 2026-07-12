@@ -19,7 +19,7 @@
     <!-- Listar -->
     <div class="card mb-4 border-light shadow">
         <div class="card-header hstack gap-2">
-            <span class="pesquisar">Listar movimentos: Obrigação x Previsão </span>
+            <span class="pesquisar">Relatório movimentos</span>
                 <x-alert />
         </div>
     </div>
@@ -30,11 +30,16 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th class="text-left">Tipo</th>
-                    <th class="text-left">Classif.</th>
-                    <th class="text-left">Nome</th>
-                    
-                    <th class="text-right">Valor</th>
+                    <th class="text-left">Tipo Mov</th>
+                    <th class="text-left">Data</th>
+                    <th class="text-left">Descrição</th>
+                    <th class="text-left">Dcto</th>
+                    <th class="text-left">Categoria</th>
+                    <th class="text-left">Classif</th>
+                    <th class="text-left">Forma</th>
+                    <th class="text-left">Conta</th>
+                    <th class="text-right">Recebido</th>
+                    <th class="text-right">Pago</th>
                 </tr>
             </thead>
             <tbody>
@@ -43,18 +48,21 @@
 
                 @forelse ($dados as $dado)
 
-<tr class="{{ ($classifAnterior !== null && $classifAnterior !== $dado->classif) ? 'table-info' : '' }}">
+<tr class="{{ ($classifAnterior !== null && $classifAnterior !== $dado->categoria) ? 'table-info' : '' }}">
 
-
-                    <td>{{ $dado->tipo_lc == 'O' ? 'Obrigação' : 'Previsão' }}</td>
+                    <td>{{ $dado->tipo_mov }}</td>
+                    <td>{{ \Carbon\Carbon::parse($dado->dt)->tz('America/Sao_Paulo')->format('d/m/Y') }}</td>
+                    <td>{{ $dado->descricao }}</td>
+                    <td>{{ $dado->dcto }}</td>
+                    <td>{{ $dado->categoria }}</td>
                     <td>{{ $dado->classif }}</td>
-                    <td>{{ $dado->nome }}</td>
-                    
-                    <td>{{ number_format($dado->valor, 2, ',', '.') }}</td>
-
+                    <td>{{ $dado->formanome }}</td>
+                    <td>{{ $dado->conta }}</td>
+                    <td>{{ number_format($dado->recebido, 2, ',', '.') }}</td>
+                    <td>{{ number_format($dado->pago, 2, ',', '.') }}</td>
                 </tr>
 
-                @php $classifAnterior = trim($dado->classif); @endphp
+                @php $classifAnterior = trim($dado->categoria); @endphp
 
                 @empty
                     <div class="alert alert-danger" role="alert">Nenhum movimento encontrado!</div>

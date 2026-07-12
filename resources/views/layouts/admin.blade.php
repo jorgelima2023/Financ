@@ -128,7 +128,7 @@
                          @can('index-movimento')
                             <a @class(['nav-link', 'active' => isset($menu) && $menu == 'movimentos-relatorio']) href="{{ route('movimentos.relatorioselecao') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
-                                Movimentos - relatório - Obrigação/Provisão
+                                Movimentos - relatório
                             </a>
                         @endcan
 
