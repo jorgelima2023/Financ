@@ -1453,6 +1453,10 @@ class MovimentoController extends Controller
         //if( $request->has('categoria_id') && $request->categoria_id ){
 
                 // Usar DB::select para executar a consulta SQL bruta
+
+             /*
+                ================ consulta atual desligada 
+
             $resultados = DB::select("
                 SELECT *
                 FROM (
@@ -1493,6 +1497,16 @@ class MovimentoController extends Controller
                     
                 ]);
 
+                 // if( $request->has('tipo_filtro') && $request->tipo_filtro ){
+        //     $sel .= $sel ? ', ' : '' ;
+        //     if( $request->tipo_filtro == 'O' ){
+        //         $sel .= " Tipo:Obrigação";
+        //     }else{
+        //         $sel .= " Tipo:Previsão";
+        //     }                    
+        // }
+
+                */
         
 
             // order by classif, tipo_lc; 
@@ -1517,26 +1531,7 @@ class MovimentoController extends Controller
             where m2.dt >= '2026-06-01' and m2.dt <= '2026-06-30' and m2.tipo_lc = 'O'  and m2.tipo = 1
             order by 6, 2
 
-           -- consulta anterior 
-        $movimentos = Movimento::select('movimentos.*')
-        ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
-        ->with(['categoria', 'forma_pgto'])
-        ->when($request->filled('descricao'), function ($q) use ($request) {
-            $q->where('descricao', 'like', '%' . $request->descricao . '%');
-        })
-        ->when($request->filled('categoriabusca'), function ($q) use ($request) {
-            $q->where('categorias.nome', '=', $request->categoriabusca );
-        })
-        ->when($request->filled('tipo_filtro'), function ($q) use ($request) {
-            $q->where('tipo_lc', $request->tipo_filtro);
-        })
-        ->whereBetween('dt', [$dataDe, $dataAte])
-        ->orderBy('movimentos.dt', 'asc')
-        ->orderBy('categorias.classif', 'asc')
-        ->get();
-        */
-
-        $sel = "";
+            $sel = "";
         if( $request->has('descricao') && $request->descricao ){
             $sel .= $sel ? ', ' : '' ;
             $sel .= " Descrição:{$request->descricao}";
@@ -1548,14 +1543,7 @@ class MovimentoController extends Controller
             $sel .= $sel ? ', ' : '' ;
             $sel .= " Categoria:{$request->categoriabusca}";
         }
-        // if( $request->has('tipo_filtro') && $request->tipo_filtro ){
-        //     $sel .= $sel ? ', ' : '' ;
-        //     if( $request->tipo_filtro == 'O' ){
-        //         $sel .= " Tipo:Obrigação";
-        //     }else{
-        //         $sel .= " Tipo:Previsão";
-        //     }                    
-        // }
+
         if ( $request->filled('data_de') && $request->data_de ){
             $sel .= $sel ? ', ' : '' ;
             $sel .= " Data de:" . \Carbon\Carbon::parse($request->data_de)->format('d-m-Y');
@@ -1565,20 +1553,85 @@ class MovimentoController extends Controller
             $sel .= " Data ate:" . \Carbon\Carbon::parse($request->data_ate)->format('d-m-Y');
         }
 
-        //$categorias = Categoria::orderBy('classif', 'ASC')
-        // teste alerta nenhum registro encontrado ->where('id', 1000)
-        //->get();
+           -- consulta anterior 
+           */
 
-        // return view('sua_view', ['dados' => $resultados]);
-        // ou return response()->json($resultados);
-        $dados = $resultados;
 
+        /*     nao usar: ->with(['categoria', 'forma_pgto']) 
+                pois a consulta e vem 
+
+                where 'categorias'.'id' in (7, 15, 17, 18, 25, 26, 27, 28, 29, 32, 33, 36, 38, 39, 40, 41, 42, 43, 45, 46, 48)
+                where 'forma_pgtos'.'id' in (1, 5, 6)
+
+                melhor declarar no join ai vem assim
+                inner join categorias on movimentos.categoria_id = categorias.id 
+
+        */
+
+                 // 1. Busca os dados trazendo o relacionamento da categoria
+
+        
+        $movimentos = Movimento::with('categoria')
+        //->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
+        //->with(['categoria', 'forma_pgto'])
+        //->when($request->filled('descricao'), function ($q) use ($request) {
+        //    $q->where('descricao', 'like', '%' . $request->descricao . '%');
+        //})
+        //->when($request->filled('categoriabusca'), function ($q) use ($request) {
+        //    $q->where('categorias.nome', '=', $request->categoriabusca );
+        //})
+        //->when($request->filled('tipo_filtro'), function ($q) use ($request) {
+        //    $q->where('tipo_lc', $request->tipo_filtro);
+        //})
+        ->whereBetween('dt', [$dataDe, $dataAte])
+        ->where('tipo_lc', 'O')
+        ->orderBy('dt', 'asc')
+        //->orderBy('categoria_id', 'asc')
+        ->get();
+   
         //dd(DB::getQueryLog()); 
 
-        return view('Movimentos.relatoriovisualizacao',
-         ['menu' => 'movimentos-relatorio',
-          'sel' => $sel,
-         'dados' => $dados]);
+        //Log::info('sql movimento', DB::getQueryLog() );
+
+
+
+        // =============================================================
+        // ----- novo relatorio agrupado por data e categoria
+
+        // 1. Busca os registros já ordenados do banco de dados
+                // $vendas 
+
+       
+        // 2. Agrupa primeiro por DATA, e dentro de cada data, agrupa por descricao
+        $movimentosAgrupados = $movimentos->groupBy([
+            function ($item) {
+                return \Carbon\Carbon::parse($item->dt)->format('Y-m-d'); // Primeiro nível: Data
+            },
+            function ($item) {
+                return $item->categoria?->nome ?? 'Sem Categoria';  // Segundo nível: descricao
+            } 
+        ]);
+
+        // 3. Total Geral de todo o períod 
+        $totalGeral = $movimentos->sum('valor');
+
+        // return view('Movimentos.relatoriovisualizacao',
+        //  ['menu' => 'movimentos-relatorio',
+        //   'sel' => $sel,
+        //  'dados' => $dados]);
+
+        $totalDespesa = 0;
+        $totalDespesa = $movimentos->filter(function ($movimento) {
+            return $movimento->tipo == 0;
+        })->sum('valor');
+
+        $totalReceita = 0;
+        $totalReceita = $movimentos->filter(function ($movimento) {
+            return $movimento->tipo == 1;
+        })->sum('valor');
+
+        return view('Movimentos.relatoriovisualizacao', compact('movimentosAgrupados', 'totalGeral', 'totalDespesa', 'totalReceita') );
+
 
     }
 }
