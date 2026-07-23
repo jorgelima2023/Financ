@@ -62,7 +62,7 @@
                         
                         <div class="row mb-2 align-items-center">
                             <div class="col-2">
-                                <label for="data_de" class="col-form-label">Cadastro de</label>
+                                <label for="data_de" class="col-form-label">Movimento de</label>
                             </div>
                             <div class="col-3">
                                 <input type="date" class="form-control" name="data_de" id="data_de" value="">
@@ -122,11 +122,26 @@
                             </div>
                         </div>
 
+                        <div class="row mb-2 align-items-center">
+                            <div class="col-2">
+                                <label for="OmitirData" class="col-form-label">Omitir data</label>
+                            </div>
+                            <div class="col-6">
+
+                                <td style="width: 10px;" align="right">
+                                    <input type="checkbox" name="OmitirData" 
+                                    value="1"
+                                    title="Omitir Data"W >
+                                </td>
+
+                            </div>
+                        </div>
+
                         <div class="row">
 
                             <div class="col-md-4 col-sm-12 mt-2 pt-0">
                                 <button type="submit" class="btn btn-info btn-sm">
-                                    <i class="fa-solid fa-magnifying-glass"></i>Pesquisar
+                                    <i class="fa-solid fa-magnifying-glass"></i>Visualizar
                                 </button>
                                 <a href="{{ route('movimentos.relatorioselecao') }}" 
                                 class="btn btn-warning btn-sm"><i class="fa-solid fa-trash"></i>Limpar</a>
