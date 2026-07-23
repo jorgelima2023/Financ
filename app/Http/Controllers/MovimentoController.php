@@ -1605,6 +1605,7 @@ class MovimentoController extends Controller
             ->get();
         }else{
 
+                // 'DB::select' o retorno é um array de objetos
             $movimentos = DB::select("
                 SELECT *
                 FROM (
