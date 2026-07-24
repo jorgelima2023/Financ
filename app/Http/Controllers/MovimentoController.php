@@ -1409,55 +1409,11 @@ class MovimentoController extends Controller
     }
 
     public function relatoriovisualizacao(Request $request){
-        //dd($request);
 
-        DB::enableQueryLog();
-
-        $dataDe  = $request->filled('data_de')
-            ? \Carbon\Carbon::parse($request->data_de)->startOfDay()
-            : \Carbon\Carbon::now()->startOfDay();
-
-        $dataAte = $request->filled('data_ate')
-            ? \Carbon\Carbon::parse($request->data_ate)->endOfDay()
-            : \Carbon\Carbon::now()->endOfDay();
-    
-        $dataInicio = $dataDe;
-        $dataFim    = $dataAte;
-        $sel = "";
-
-        if ( $request->filled('data_de') && $request->data_de ){
-            $sel .= $sel ? ', ' : '' ;
-            $sel .= " Data de:" . \Carbon\Carbon::parse($request->data_de)->format('d-m-Y');
-        }
-        if ( $request->filled('data_ate') && $request->data_ate ){
-            $sel .= $sel ? ', ' : '' ;
-            $sel .= " Data ate:" . \Carbon\Carbon::parse($request->data_ate)->format('d-m-Y');
-        }
-
-        if( $request->has('categoria_id') && $request->categoria_id ){
-            $categrel = Categoria::where('id', $request->categoria_id)->get()->first();
-            $sel .= $sel ? ', ' : '' ;
-            $sel .= " Categoria:{$categrel->nome}";
-        }
-
-        if( $request->has('OmitirData') && $request->OmitirData ){
-            $sel .= $sel ? ', ' : '' ;
-            $sel .= "Omitir data";
-            $OmitirData = "S";
-        }else{
-            $OmitirData = "N";
-        }
-        
-        if( $request->has('mesAno') && $request->mesAno ){
-            $sel .= $sel ? ', ' : '' ;
-            $sel .= "Mostrar Mês/Ano";
-            $mesAno = "S";
-        }else{
-            $mesAno = "N";
-        }
-
-             /*
+        /*
         consulta agrupada movimentos por categoria
+        ------------------------------------------------
+
         SELECT * 
         FROM ( 
         SELECT tipo_lc,categorias.nome,categorias.classif, sum(movimentos.valor) as valor 
@@ -1472,14 +1428,38 @@ class MovimentoController extends Controller
         WHERE tipo_lc = 'P' AND dt BETWEEN '2026-01-01' AND '2026-01-12' 
         GROUP BY tipo_lc,categorias.nome,categorias.classif ) AS subquery_combinada 
         ORDER BY classif, tipo_lc;
-        */
 
-        //if( $request->has('categoria_id') && $request->categoria_id ){
+        ================ consulta atual desligada 
+        
+            select 'despesa' as tipo_mov, m.dt, m.descricao, m.dcto ,
+            c.nome, c.classif , fp.id as formapg, fp.nome, c2.id, c2.nome as conta,
+            0.00 as recebido, m.valor as pago
+            from movimentos m
+            join categorias c on c.id = m.categoria_id 
+            join forma_pgtos fp on fp.id = m.forma_pgto_id 
+            join contascorrentes c2 on c2.id = m.contascorrente_id 
+            where m.dt >= '2026-06-01' and m.dt <= '2026-06-30' and m.tipo_lc = 'O'  and m.tipo = 0 
+            union all 
+            select 'receita' as tipo_mov, m2.dt, m2.descricao, m2.dcto ,
+                c.nome, c.classif, fp.id as formapg, fp.nome, c2.id, c2.nome as conta,
+                m2.valor as recebido, 0.00 as pago
+            from movimentos m2
+            join categorias c on c.id = m2.categoria_id 
+            join forma_pgtos fp on fp.id = m2.forma_pgto_id 
+            join contascorrentes c2 on c2.id = m2.contascorrente_id 
+            where m2.dt >= '2026-06-01' and m2.dt <= '2026-06-30' and m2.tipo_lc = 'O'  and m2.tipo = 1
+            order by 6, 2
+        
+            - Usar DB::select para executar a consulta SQL bruta
 
-                // Usar DB::select para executar a consulta SQL bruta
+                nao usar: ->with(['categoria', 'forma_pgto']) 
+                pois a consulta e vem 
 
-             /*
-                ================ consulta atual desligada 
+                where 'categorias'.'id' in (7, 15, 17, 18, 25, 26, 27, 28, 29, 32, 33, 36, 38, 39, 40, 41, 42, 43, 45, 46, 48)
+                where 'forma_pgtos'.'id' in (1, 5, 6)
+
+                melhor declarar no join ai vem assim
+                inner join categorias on movimentos.categoria_id = categorias.id 
 
             $resultados = DB::select("
                 SELECT *
@@ -1521,52 +1501,47 @@ class MovimentoController extends Controller
                     
                 ]);
 
-                 // if( $request->has('tipo_filtro') && $request->tipo_filtro ){
-        //     $sel .= $sel ? ', ' : '' ;
-        //     if( $request->tipo_filtro == 'O' ){
-        //         $sel .= " Tipo:Obrigação";
-        //     }else{
-        //         $sel .= " Tipo:Previsão";
-        //     }                    
-        // }
+                ==============================================================================
+                 apresentar mes ano 
 
-                */
-        
+                SELECT *
+                    FROM (
+                        SELECT 
+                            DATE_FORMAT(movimentos.dt,  '%m/%Y') AS ano_mes, 
+                            categorias.classif , categorias.nome, movimentos.tipo,
+                            sum(movimentos.valor) as valor 
+                        FROM movimentos 
+                        join categorias on categorias.id = movimentos.categoria_id
+                            
+                        WHERE
+                            movimentos.tipo_lc = 'O' and movimentos.dt BETWEEN '2026-04-01' AND '2026-07-21'
+                        group by 
+                            DATE_FORMAT(movimentos.dt,  '%m/%Y'),  
+                            categorias.classif , categorias.nome , movimentos.tipo
+                            
+                    ) AS subquery_combinada
+                    ORDER by
+                        2 , 1
 
-            // order by classif, tipo_lc; 
+        */
 
-        /*
-                select 'despesa' as tipo_mov, m.dt, m.descricao, m.dcto ,
-            c.nome, c.classif , fp.id as formapg, fp.nome, c2.id, c2.nome as conta,
-            0.00 as recebido, m.valor as pago
-            from movimentos m
-            join categorias c on c.id = m.categoria_id 
-            join forma_pgtos fp on fp.id = m.forma_pgto_id 
-            join contascorrentes c2 on c2.id = m.contascorrente_id 
-            where m.dt >= '2026-06-01' and m.dt <= '2026-06-30' and m.tipo_lc = 'O'  and m.tipo = 0 
-            union all 
-            select 'receita' as tipo_mov, m2.dt, m2.descricao, m2.dcto ,
-                c.nome, c.classif, fp.id as formapg, fp.nome, c2.id, c2.nome as conta,
-                m2.valor as recebido, 0.00 as pago
-            from movimentos m2
-            join categorias c on c.id = m2.categoria_id 
-            join forma_pgtos fp on fp.id = m2.forma_pgto_id 
-            join contascorrentes c2 on c2.id = m2.contascorrente_id 
-            where m2.dt >= '2026-06-01' and m2.dt <= '2026-06-30' and m2.tipo_lc = 'O'  and m2.tipo = 1
-            order by 6, 2
+        //dd($request);
 
-            $sel = "";
-        if( $request->has('descricao') && $request->descricao ){
-            $sel .= $sel ? ', ' : '' ;
-            $sel .= " Descrição:{$request->descricao}";
-        }
+        DB::enableQueryLog();
 
-              
+        // ====================== tratamento filtros:
+        // ============================================
+        $dataDe  = $request->filled('data_de')
+            ? \Carbon\Carbon::parse($request->data_de)->startOfDay()
+            : \Carbon\Carbon::now()->startOfDay();
 
-        if( $request->has('categoriabusca') && $request->categoriabusca ){
-            $sel .= $sel ? ', ' : '' ;
-            $sel .= " Categoria:{$request->categoriabusca}";
-        }
+        $dataAte = $request->filled('data_ate')
+            ? \Carbon\Carbon::parse($request->data_ate)->endOfDay()
+            : \Carbon\Carbon::now()->endOfDay();
+    
+        $dataInicio = $dataDe;
+        $dataFim    = $dataAte;
+        $sel = "";
 
         if ( $request->filled('data_de') && $request->data_de ){
             $sel .= $sel ? ', ' : '' ;
@@ -1576,28 +1551,36 @@ class MovimentoController extends Controller
             $sel .= $sel ? ', ' : '' ;
             $sel .= " Data ate:" . \Carbon\Carbon::parse($request->data_ate)->format('d-m-Y');
         }
+        if( $request->has('categoria_id') && $request->categoria_id ){
+            $categrel = Categoria::where('id', $request->categoria_id)->get()->first();
+            $sel .= $sel ? ', ' : '' ;
+            $sel .= " Categoria:{$categrel->nome}";
+        }
+        if( $request->has('OmitirData') && $request->OmitirData ){
+            $sel .= $sel ? ', ' : '' ;
+            $sel .= "Omitir data";
+            $OmitirData = "S";
+        }else{
+            $OmitirData = "N";
+        }        
+        if( $request->has('mesAno') && $request->mesAno ){
+            $sel .= $sel ? ', ' : '' ;
+            $sel .= "Mostrar Mês/Ano";
+            $mesAno = "S";
+        }else{
+            $mesAno = "N";
+        }
 
-           -- consulta anterior 
-           */
 
 
-        /*     nao usar: ->with(['categoria', 'forma_pgto']) 
-                pois a consulta e vem 
-
-                where 'categorias'.'id' in (7, 15, 17, 18, 25, 26, 27, 28, 29, 32, 33, 36, 38, 39, 40, 41, 42, 43, 45, 46, 48)
-                where 'forma_pgtos'.'id' in (1, 5, 6)
-
-                melhor declarar no join ai vem assim
-                inner join categorias on movimentos.categoria_id = categorias.id 
-
-        */
 
                  // 1. Busca os dados trazendo o relacionamento da categoria
 
         //$movimentos = Movimento::with('categoria')
         //->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
 
-          
+        // ====================== tratamento consultas:
+        // ============================================  
         if( $OmitirData == "N" ){   
 
             $movimentos = Movimento::select('movimentos.*', 'categorias.nome', 'categorias.classif')
@@ -1613,6 +1596,34 @@ class MovimentoController extends Controller
             ->get();
         }else{
  
+            if( $mesAno == "N" ){    
+                $movimentos = Movimento::select('movimentos.*',  'categorias.nome', 'categorias.classif')
+                ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
+                ->when($request->filled('categoria_id'), function ($q) use ($request) {
+                $q->where('movimentos.categoria_id', '=', $request->categoria_id );
+                })
+                ->whereBetween('dt', [$dataDe, $dataAte])
+                ->where('tipo_lc', 'O')
+                ->orderBy('categorias.classif', 'asc')
+                ->orderBy('dt', 'asc')
+                ->get();
+            }    
+
+            if( $mesAno == "S" ){    
+                $movimentos = Movimento::select('movimentos.*',  'categorias.nome', 'categorias.classif',  DB::raw("DATE_FORMAT(movimentos.dt, '%m/%Y') AS mes_ano") )
+                ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
+                ->when($request->filled('categoria_id'), function ($q) use ($request) {
+                $q->where('movimentos.categoria_id', '=', $request->categoria_id );
+                })
+                ->whereBetween('dt', [$dataDe, $dataAte])
+                ->where('tipo_lc', 'O')
+                ->orderBy('categorias.classif', 'asc')
+                ->orderBy('mes_ano', 'asc')
+                ->get();
+
+            }
+
+            /*
             // ============================================ NAO apresentar mes/ano : 
             if( $mesAno == "N" ){   
                 // 'DB::select' o retorno é um array de objetos
@@ -1635,40 +1646,6 @@ class MovimentoController extends Controller
                     'dataInicioO' => $dataInicio,
                     'dataFimO' => $dataFim,
                 ]);    
-
-                /*
-                apresentar mes ano 
-
-                SELECT *
-                    FROM (
-                        SELECT 
-                            DATE_FORMAT(movimentos.dt,  '%m/%Y') AS ano_mes, 
-                            categorias.classif , categorias.nome, movimentos.tipo,
-                            sum(movimentos.valor) as valor 
-                        FROM movimentos 
-                        join categorias on categorias.id = movimentos.categoria_id
-                            
-                        WHERE
-                            movimentos.tipo_lc = 'O' and movimentos.dt BETWEEN '2026-04-01' AND '2026-07-21'
-                        group by 
-                            DATE_FORMAT(movimentos.dt,  '%m/%Y'),  
-                            categorias.classif , categorias.nome , movimentos.tipo
-                            
-                    ) AS subquery_combinada
-                    ORDER by
-                        2 , 1
-                    */
-
-            // $movimentos = Movimento::select('movimentos.*', 'categorias.nome', 'categorias.classif')
-            // ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
-            // ->when($request->filled('categoria_id'), function ($q) use ($request) {
-            // $q->where('movimentos.categoria_id', '=', $request->categoria_id );
-            // })
-            // ->whereBetween('dt', [$dataDe, $dataAte])
-            // ->where('tipo_lc', 'O')
-            // ->orderBy('categorias.classif', 'asc')
-            // ->orderBy('dt', 'asc')
-            // ->get();
 
             }else{
                 // ============================================ apresentar mes/ano : 
@@ -1697,6 +1674,7 @@ class MovimentoController extends Controller
                 ]);
 
             }
+            */
         }
 
         //dd(DB::getQueryLog()); 
@@ -1706,7 +1684,7 @@ class MovimentoController extends Controller
 
 
         // =============================================================
-        // ----- novo relatorio agrupado por data e categoria
+        // ----- tratamento das consultas,  novo relatorio agrupado por data e categoria
 
         // 1. Busca os registros já ordenados do banco de dados
                 // $vendas 
@@ -1714,6 +1692,7 @@ class MovimentoController extends Controller
        
         // 2. Agrupa primeiro por DATA, e dentro de cada data, agrupa por descricao
         if( $OmitirData == "N" ){
+
             $movimentosAgrupados = $movimentos->groupBy([
                 function ($item) {
                     return \Carbon\Carbon::parse($item->dt)->format('Y-m-d'); // Primeiro nível: Data
@@ -1723,9 +1702,32 @@ class MovimentoController extends Controller
                 },
                 
             ]);
+
+        }else{
+
+            $movimentosAgrupados = $movimentos->groupBy([
+                function ($item) {
+                    return $item->categoria?->classif ?? 'Sem Categoria';  //  nível: classif
+                },
+                
+            ]);
         }
 
         // 3. Total Geral de todo o período 
+        //=======================================================================================
+        $totalDespesa = 0;
+        $totalDespesa = $movimentos->filter(function ($movimento) {
+            return $movimento->tipo == 0;
+        })->sum('valor');
+
+        $totalReceita = 0;
+        $totalReceita = $movimentos->filter(function ($movimento) {
+            return $movimento->tipo == 1;
+        })->sum('valor');
+
+        $totalGeral = $totalReceita - $totalDespesa;
+        
+        /*
         if( $OmitirData == "N" ){
             //$totalGeral = $movimentos->sum('valor');
             
@@ -1757,30 +1759,20 @@ class MovimentoController extends Controller
             $totalGeral = $totalReceita - $totalDespesa;
 
         }   
+        */
 
-        // return view('Movimentos.relatoriovisualizacao',
-        //  ['menu' => 'movimentos-relatorio',
-        //   'sel' => $sel,
-        //  'dados' => $dados]);
+       
 
-        // if( $OmitirData == "N" ){
-
-        //     $totalDespesa = 0;
-        //     $totalDespesa = $movimentos->filter(function ($movimento) {
-        //         return $movimento->tipo == 0;
-        //     })->sum('valor');
-
-        //     $totalReceita = 0;
-        //     $totalReceita = $movimentos->filter(function ($movimento) {
-        //         return $movimento->tipo == 1;
-        //     })->sum('valor');
-        // }
-
-        // 3. Total Geral de todo o período 
+        // 3. Total Geral de todo o período
+        /*
         if( $OmitirData == "S" ){
             
             $movimentosAgrupados = ""; 
         }
+        */
+
+        // ====================== tratamento retorno para view:
+        // ============================================
 
         return view('Movimentos.relatoriovisualizacao', compact('movimentosAgrupados', 'totalGeral', 'totalDespesa', 'totalReceita', 'sel', 'OmitirData', 'movimentos', 'mesAno') );
 

@@ -48,9 +48,7 @@
   .pesquisar {
     font-weight: 350; background-color: #D3D3D3
   }
-  .zebrado {
-    background-color: #D3D3D3 !important;
-  }
+  
 /* 
   .valor-despesa {
         color: red; 
@@ -66,11 +64,20 @@
     padding: 2px 8px !important; /* vertical horizontal */
     line-height: 1.1;
     font-size: 0.9rem; /* opcional */
+    border: none !important;
 }
 .movimento1 td{    /* movimentos - relatorio */
-    padding: 1px 8px !important;
+    /* padding: 1px 8px !important;  */
     line-height: 1;   /* line-height: 1; */
-    font-size: 0.9rem; /* opcional */
+    font-size: 0.9rem; /* font-size: 0.9rem; opcional */
+    border: none !important;
+}
+
+.subTotal td{    /* movimentos - relatorio */
+    /* padding: 1px 8px !important;  */
+    line-height: 1;   /* line-height: 1; */
+    font-size: 0.8rem; /* font-size: 0.9rem; opcional */
+    border: none !important;
 }
 
 /* movimentos - relatorio - congelar cabecalho !!! */

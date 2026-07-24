@@ -58,8 +58,8 @@
                 @php
                 if ($mesAno == "N") { @endphp
                     <tr style="background-color: #2c3e50; color: white;">
-                        <th style="text-align: left;">Data</th>
                         <th style="text-align: left;">Categoria</th>
+                        <th style="text-align: left;">Data</th>
                         <th style="text-align: left;">Dcto</th>
                         <th style="text-align: left;">Descrição</th>
                         <th style="text-align: right;">Recebido</th>
@@ -70,8 +70,8 @@
                 @php
                 if ($mesAno == "S") { @endphp
                     <tr style="background-color: #2c3e50; color: white;">
-                        <th style="text-align: left;">Mês/Ano</th>
                         <th style="text-align: left;">Categoria</th>
+                        <th style="text-align: left;">Mês/Ano</th>
                         <th style="text-align: right;">Recebido</th>
                         <th style="text-align: right;">Pago</th>
                         <th colspan="6"></th>
@@ -137,12 +137,63 @@
                     </tr>
 
                 @endforeach
-
             @php } @endphp
 
             @php
-            $cor = 0;
             if ($OmitirData == "S") { @endphp
+
+                @foreach($movimentosAgrupados as $classif => $listaMovimentos)
+                    
+                    @foreach($listaMovimentos as $movimento)
+                        <tr class="movimento1">
+                            <td>{{ $classif }} - {{ $listaMovimentos->first()->nome }}</td>
+
+                            @php
+                            if ($mesAno == "N") { @endphp
+                                <td>{{ \Carbon\Carbon::parse($movimento->dt)->format('d/m/Y') }}</td>
+                            @php } @endphp
+
+                            @php
+                            if ($mesAno == "S") { @endphp
+                                <td>{{ $movimento->mes_ano }}</td>
+                            @php } @endphp
+
+                            @php
+                            if ($mesAno == "N") { @endphp
+                                <td >{{ $movimento->dcto}}</td>
+                                <td >{{ $movimento->descricao ?? 'Sem descrição' }}</td>
+                            @php } @endphp
+
+                            <td style="text-align: right;">{{ $movimento->tipo == 1 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
+                            <td style="text-align: right;">{{ $movimento->tipo == 0 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
+                        </tr>
+                    @endforeach
+                    
+                    <tr class="subTotal" style="text-align: right; font-size: 0.7em; font-weight: bold;">
+                        @php
+                        if ($mesAno == "N") { @endphp
+                            <td colspan="3"></td>
+                        @php } @endphp
+
+                        @php
+                        if ($mesAno == "S") { @endphp
+                            <td colspan="1"></td>
+                        @php } @endphp
+
+                        <td style="text-align: left;">
+                            Subtotal: ( {{ $classif }} - {{ $listaMovimentos->first()->nome }} )
+                        </td>
+                        <td style="text-align: right;">{{ $movimento->tipo == 1 ? number_format($listaMovimentos->sum('valor'), 2, ',', '.') : '0,00' }}</td>
+                        <td style="text-align: right;">{{ $movimento->tipo == 0 ? number_format($listaMovimentos->sum('valor'), 2, ',', '.') : '0,00' }}</td>
+                    </tr>
+
+                    <!-- <tr class="movimento1"><td colspan="6"></td>
+                    </tr> -->
+
+                @endforeach
+
+                @php
+                if (1 == 2) { @endphp
 
                 @foreach($movimentos as $movimento)
 
@@ -191,6 +242,8 @@
                     
                 @endforeach
                 
+                @php } @endphp
+
             @php } @endphp
 
         </tbody>

@@ -15,7 +15,7 @@
 <td class="align-bottom">Bottom-aligned content</td> -->
 
 <!-- <div class="container-fluid px-4"> -->
-<div>
+<div class="table-responsive">
 <!-- <div class="mb-1 hstack gap-2"> -->
         <h4 class="mt-3">Movimento - Relatório</h2>
         
@@ -31,74 +31,240 @@
     <!-- Listar -->
     <!-- <div class="card mb-4 border-light shadow"> -->
         <!-- <div class="card-header hstack gap-2"> -->
-            <span class="pesquisar">Relatório movimentos</span>
+            <span class="pesquisar">
                 <x-alert />
+            </span>
+            
         <!-- </div> -->
     <!-- </div> -->
+</div>
 
-    <!-- <div class="card-body"> -->
-        <!-- table-striped table-hover -->
-         <!-- table-dark table-striped -->
-        <!-- <table class="table table-striped"> -->
-        <table>
-            <thead>
-                <tr>
-                    <th class="text-left">Tipo Mov</th>
-                    <th class="text-left">Data</th>
-                    <th class="text-left">Descrição</th>
-                    <th class="text-left">Dcto</th>
-                    <th class="text-left">Categoria</th>
-                    <th class="text-left">Classif</th>
-                    <th class="text-left">Forma</th>
-                    <th class="text-left">Conta</th>
-                    <th class="text-right">Recebido</th>
-                    <th class="text-right">Pago</th>
+<div class="table-responsive table-container2">
+    <table class="table table-sm" style="width: 100%;">
+
+        <thead>
+            @php
+            if ($OmitirData == "N") { @endphp
+                <tr style="background-color: #2c3e50; color: white;">
+                    <th>Dcto</th>
+                    <th>Descrição</th>
+                    <th style="text-align: right;">Recebido</th>
+                    <th style="text-align: right;">Pago</th>
                 </tr>
-            </thead>
-            <tbody>
-                
-                @php 
-                $catAnterior = null;
-                $totrecebido = 0;
-                $totpago     = 0;
-                @endphp
+            @php } @endphp
 
-                @forelse ($dados as $dado)
-
-                <!-- <tr class="{{-- {{ ($classifAnterior !== null && $classifAnterior !== $dado->categoria) --}} ? 'table-info' : '' }}"> -->
+            @php
+            if ($OmitirData == "S") { @endphp
+                @php
+                if ($mesAno == "N") { @endphp
+                    <tr style="background-color: #2c3e50; color: white;">
+                        <th style="text-align: left;">Data</th>
+                        <th style="text-align: left;">Categoria</th>
+                        <th style="text-align: left;">Dcto</th>
+                        <th style="text-align: left;">Descrição</th>
+                        <th style="text-align: right;">Recebido</th>
+                        <th style="text-align: right;">Pago</th>
+                    </tr>
+                @php } @endphp
 
                 @php
-                if( $catAnterior !== $dado->categoria){
+                if ($mesAno == "S") { @endphp
+                    <tr style="background-color: #2c3e50; color: white;">
+                        <th style="text-align: left;">Mês/Ano</th>
+                        <th style="text-align: left;">Categoria</th>
+                        <th style="text-align: right;">Recebido</th>
+                        <th style="text-align: right;">Pago</th>
+                        <th colspan="6"></th>
+                    </tr>
+                @php } @endphp
+
+            @php } @endphp
+        </thead>
+        <tbody>
+            @php
+            if ($OmitirData == "N") { @endphp
+
+                @foreach($movimentosAgrupados as $data => $categorias)
+
+                    <!-- ====== 1. LINHA DE DATA ====== -->
+                    <tr style="background-color: #e8f4f8; font-weight: bold;">
+                        <td colspan="4">📅 Data: {{ \Carbon\Carbon::parse($data)->format('d/m/Y') }}</td>
+                    </tr>
+
+                    @foreach($categorias as $nomeCategoria => $listaMovimentos)
+                        
+                        <!-- ====== 2. LINHA DE CATEGORIA ====== -->
+                        <tr style="background-color: #fcfcfc; font-style: italic; color: #2c3e50; font-weight: bold;">
+                            <td colspan="4" style="padding-left: 15px;">🏷️ Categoria: {{ $listaMovimentos->first()->classif }} - {{ $nomeCategoria }}</td>
+                        </tr>
+
+                        <!-- ====== 3. DETALHES DOS MOVIMENTOS ====== -->
+                        @foreach($listaMovimentos as $movimento)
+                            <tr class="movimento1">
+                                <td style="padding-left: 25px;">{{ $movimento->dcto ?? '-' }}</td>
+                                <td>{{ $movimento->descricao ?? 'Sem descrição' }}</td>
+                                <td style="text-align: right;">{{ $movimento->tipo == 1 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
+                                <td style="text-align: right;">{{ $movimento->tipo == 0 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
+                            </tr>
+                        @endforeach
+
+                        <!-- 💰 SUBTOTAL DA CATEGORIA (Dentro deste dia) -->
+                        <tr style="background-color: #fafafa;">
+                            <td colspan="2" style="text-align: right; font-size: 0.9em; color: #555;">
+                                Subtotal ({{ $nomeCategoria }}):
+                            </td>
+                            <!-- <td style="border-top: 1px solid #ddd; font-weight: bold;"> -->
+                            <!-- <td style="text-align: right;">     -->
+                                {{-- number_format($listaMovimentos->sum('valor'), 2, ',', '.') --}}
+                            <!-- </td> -->
+
+                            <td style="text-align: right; font-weight: bold;">{{ $movimento->tipo == 1 ? number_format($listaMovimentos->sum('valor'), 2, ',', '.') : '0,00' }}</td>
+                            <td style="text-align: right; font-weight: bold;">{{ $movimento->tipo == 0 ? number_format($listaMovimentos->sum('valor'), 2, ',', '.') : '0,00' }}</td>
+
+                        </tr>
+
+                    @endforeach
+
+                    <!-- 💵 TOTAL DO DIA (Soma de todas as categorias daquela data) -->
+                    <tr style="background-color: #dbeeff; font-weight: bold;">
+                        <td colspan="2" style="text-align: right; padding-right: 15px;">
+                            TOTAL DO DIA {{ \Carbon\Carbon::parse($data)->format('d/m/Y') }}:
+                        </td>
+                        <td>
+                            <u>{{ number_format($categorias->collapse()->sum('valor'), 2, ',', '.') }}</u>
+                        </td>
+                        
+                    </tr>
+
+                @endforeach
+
+            @php } @endphp
+
+            @php
+            $cor = 0;
+            if ($OmitirData == "S") { @endphp
+
+                @foreach($movimentos as $movimento)
+
+                    @php
+                    if ($cor == 0) { @endphp
+                                <tr class="movimento1">
+                    @php } @endphp
+
+                    @php
+                    if ($cor == 1) { @endphp
+                                <!-- <tr class="movimento1, zebrado"> -->
+                                <!-- <tr class="movimento1" style="background-color: #D3D3D3;"> -->
+                                <tr class="movimento1" style="background-color: #DDD;">    
+                    @php } @endphp
+
+                    @php
+                    if ($mesAno == "N") { @endphp
+
+                        <!-- <tr class="movimento1">     -->
+                        <td>{{ \Carbon\Carbon::parse($movimento->dt)->format('d/m/Y') }}</td>
+                        <td nowrap>{{ $movimento->classif }} - {{ $movimento->nome }}</td>
+                        <td nowrap>{{ $movimento->dcto ?? '-' }}</td>
+                        <td nowrap>{{ $movimento->descricao ?? 'Sem descrição' }}</td>
+                        <td style="text-align: right;">{{ $movimento->tipo == 1 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
+                        <td style="text-align: right;">{{ $movimento->tipo == 0 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
+                        </tr>
+                    @php } @endphp
+
+                    @php
+                    if ($mesAno == "S") { @endphp
+                        <td style="text-align: left;">{{ $movimento->ano_mes }}</td>
+                        <td style="text-align: left;">{{ trim($movimento->classif) }} - {{ trim($movimento->nome) }}</td>
+
+<!-- <td style="text-align: left; padding-left: 10px;"> -->
+
+                        <td style="text-align: right;">{{ $movimento->tipo == 1 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
+                        <td style="text-align: right;">{{ $movimento->tipo == 0 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
+                        <td colspan="6"></td>
+                        
+                        </tr>
+                    @php } @endphp
+
+                    @php
+                        $cor = $cor == 0 ? 1 : 0;
+                    @endphp
                     
-                }
-                @endphp
-                <tr class="table_td">
-                    <td>{{ $dado->tipo_mov }}</td>
-                    <td style="width: 90px;" class="text-left">{{ \Carbon\Carbon::parse($dado->dt)->tz('America/Sao_Paulo')->format('d/m/Y') }}</td>
-                    <td style="width: 200px;" class="text-left">{{ $dado->descricao }}</td>
-                    <td style="width: 60px;" class="text-left">{{ $dado->dcto }}</td>
-                    <td style="width: 70px;" class="text-left">{{ $dado->categoria }}</td>
-                    <td style="width: 70px;" class="text-left">{{ $dado->classif }}</td>
-                    <td style="width: 90px;" class="text-left" nowrap>{{ $dado->formanome }}</td>
-                    <td style="width: 90px;" class="text-right" nowrap>{{ $dado->conta }}</td>
-                    <td style="width: 90px;" class="text-right">{{ number_format($dado->recebido, 2, ',', '.') }}</td>
-                    <td style="width: 90px;" class="text-right">{{ number_format($dado->pago, 2, ',', '.') }}</td>
+                @endforeach
+                
+            @php } @endphp
+
+        </tbody>
+        <tfoot>
+
+            @php
+            if ($OmitirData == "N") { @endphp 
+
+                <!-- 💰 total receoita x despesa -->
+                <tr style="background-color: #fafafa;">
+                    <td colspan="2" style="text-align: right; font-size: 0.9em; color: #555;">
+                        <b>Total Recebido x Pago:</b>
+                    </td>
+                
+                    <td style="text-align: right; font-weight: bold;">{{ number_format($totalReceita, 2, ',', '.') }}</td>
+                    <td style="text-align: right; font-weight: bold;">{{ number_format($totalDespesa, 2, ',', '.') }}</td>
+
                 </tr>
 
-                @php 
-                $catAnterior = trim($dado->categoria);
-                $totrecebido += $dado->recebido;
-                $totpago     += $dado->pago;
+                <!-- 🏆 TOTAL GERAL -->
+                <tr style="background-color: #27ae60; color: white; font-size: 1.1em; font-weight: bold;">
+                    <td colspan="2" style="text-align: right; padding-right: 15px;">
+                        📢 TOTAL GERAL DO PERÍODO:
+                    </td>
+                    <td>
+                        R$ {{ number_format($totalGeral, 2, ',', '.') }}
+                    </td>
+                </tr>
+            @php } @endphp
 
-                @endphp
+            @php
+            if ($OmitirData == "S") { @endphp
+                
+                <tr style="background-color: #fafafa;">
+                    @php                
+                    if ($mesAno == "N") { @endphp
+                        <td colspan="4" style="text-align: right; font-size: 0.9em; color: #555;">  
+                    @php } @endphp
+                    @php                
+                    if ($mesAno == "S") { @endphp
+                        <td colspan="2" style="text-align: right; font-size: 0.9em; color: #555;">  
+                    @php } @endphp
+                    
+                    <!-- <td colspan="4" style="text-align: right; font-size: 0.9em; color: #555;"> -->
+                        <b>Total Recebido x Pago:</b>
+                    </td>
+                
+                    <td style="text-align: right; font-weight: bold;">{{ number_format($totalReceita, 2, ',', '.') }}</td>
+                    <td style="text-align: right; font-weight: bold;">{{ number_format($totalDespesa, 2, ',', '.') }}</td>
 
-                @empty
-                    <div class="alert alert-danger" role="alert">Nenhum movimento encontrado!</div>
+                </tr>
 
-                @endforelse
-            </tbody>
-        </table>
-    <!-- </div> -->
+                <tr style="background-color: #27ae60; color: white; font-size: 1.1em; font-weight: bold;">
+                    @php                
+                    if ($mesAno == "N") { @endphp
+                        <td colspan="4" style="text-align: right; padding-right: 15px;">
+                    @php } @endphp
+
+                    @php                
+                    if ($mesAno == "S") { @endphp
+                        <td colspan="3" style="text-align: right; padding-right: 15px;">
+                    @php } @endphp
+
+                        TOTAL GERAL DO PERÍODO:
+                    </td>
+                    <td>
+                        R$ {{ number_format($totalGeral, 2, ',', '.') }}
+                    </td>
+                </tr>
+            @php } @endphp
+        </tfoot>
+    </table>
 </div>
+
+
 
 @endsection
