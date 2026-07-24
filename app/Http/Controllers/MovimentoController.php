@@ -1629,6 +1629,29 @@ class MovimentoController extends Controller
                     
                 ]);    
 
+                /*
+                apresentar mes ano 
+
+                SELECT *
+                    FROM (
+                        SELECT 
+                            DATE_FORMAT(movimentos.dt,  '%m/%Y') AS ano_mes, 
+                            categorias.classif , categorias.nome, movimentos.tipo,
+                            sum(movimentos.valor) as valor 
+                        FROM movimentos 
+                        join categorias on categorias.id = movimentos.categoria_id
+                            
+                        WHERE
+                            movimentos.tipo_lc = 'O' and movimentos.dt BETWEEN '2026-04-01' AND '2026-07-21'
+                        group by 
+                            DATE_FORMAT(movimentos.dt,  '%m/%Y'),  
+                            categorias.classif , categorias.nome , movimentos.tipo
+                            
+                    ) AS subquery_combinada
+                    ORDER by
+                        2 , 1
+                    */
+
             // $movimentos = Movimento::select('movimentos.*', 'categorias.nome', 'categorias.classif')
             // ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
             // ->when($request->filled('categoria_id'), function ($q) use ($request) {

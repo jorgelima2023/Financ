@@ -131,7 +131,22 @@
                                 <td style="width: 10px;" align="right">
                                     <input type="checkbox" name="OmitirData" 
                                     value="1"
-                                    title="Omitir Data"W >
+                                    title="Omitir Data">
+                                </td>
+
+                            </div>
+                        </div>
+
+                        <div class="row mb-2 align-items-center">
+                            <div class="col-2">
+                                <label for="mesAno" class="col-form-label">Mostrar Mês/Ano</label>
+                            </div>
+                            <div class="col-6">
+
+                                <td style="width: 10px;" align="right">
+                                    <input type="checkbox" name="mesAno" 
+                                    value="1"
+                                    title="Mês/Ano">
                                 </td>
 
                             </div>
