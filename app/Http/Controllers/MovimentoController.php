@@ -1447,6 +1447,14 @@ class MovimentoController extends Controller
         }else{
             $OmitirData = "N";
         }
+        
+        if( $request->has('mesAno') && $request->mesAno ){
+            $sel .= $sel ? ', ' : '' ;
+            $sel .= "Mostrar Mês/Ano";
+            $mesAno = "S";
+        }else{
+            $mesAno = "N";
+        }
 
              /*
         consulta agrupada movimentos por categoria
@@ -1604,9 +1612,11 @@ class MovimentoController extends Controller
             ->orderBy('categorias.classif', 'asc')
             ->get();
         }else{
-
+ 
+            // ============================================ NAO apresentar mes/ano : 
+            if( $mesAno == "N" ){   
                 // 'DB::select' o retorno é um array de objetos
-            $movimentos = DB::select("
+                $movimentos = DB::select("
                 SELECT *
                 FROM (
                     SELECT 
@@ -1614,11 +1624,9 @@ class MovimentoController extends Controller
                         categorias.nome, categorias.classif , 
                         movimentos.valor 
                     FROM movimentos 
-                    join categorias on categorias.id = movimentos.categoria_id
-                        
+                        join categorias on categorias.id = movimentos.categoria_id
                     WHERE
                         movimentos.tipo_lc = 'O' and movimentos.dt BETWEEN :dataInicioO AND :dataFimO
-                    
                 ) AS subquery_combinada
                 ORDER BY
                     categorias.classif, movimentos.dt;
@@ -1626,7 +1634,6 @@ class MovimentoController extends Controller
                     // Passar os bindings para prevenir SQL Injection
                     'dataInicioO' => $dataInicio,
                     'dataFimO' => $dataFim,
-                    
                 ]);    
 
                 /*
@@ -1662,6 +1669,34 @@ class MovimentoController extends Controller
             // ->orderBy('categorias.classif', 'asc')
             // ->orderBy('dt', 'asc')
             // ->get();
+
+            }else{
+                // ============================================ apresentar mes/ano : 
+                // 'DB::select' o retorno é um array de objetos
+                $movimentos = DB::select("
+                SELECT *
+                FROM (
+                    SELECT 
+                         DATE_FORMAT(movimentos.dt,  '%m/%Y') AS ano_mes, 
+                            categorias.classif , categorias.nome, movimentos.tipo,
+                            sum(movimentos.valor) as valor 
+                    FROM movimentos 
+                        join categorias on categorias.id = movimentos.categoria_id
+                    WHERE
+                        movimentos.tipo_lc = 'O' and movimentos.dt BETWEEN :dataInicioO AND :dataFimO
+                    group by 
+                            DATE_FORMAT(movimentos.dt,  '%m/%Y'),  
+                            categorias.classif , categorias.nome , movimentos.tipo    
+                ) AS subquery_combinada
+                ORDER BY
+                     2 , 1;
+                ", [
+                    // Passar os bindings para prevenir SQL Injection
+                    'dataInicioO' => $dataInicio,
+                    'dataFimO' => $dataFim,
+                ]);
+
+            }
         }
 
         //dd(DB::getQueryLog()); 
@@ -1747,7 +1782,7 @@ class MovimentoController extends Controller
             $movimentosAgrupados = ""; 
         }
 
-        return view('Movimentos.relatoriovisualizacao', compact('movimentosAgrupados', 'totalGeral', 'totalDespesa', 'totalReceita', 'sel', 'OmitirData', 'movimentos') );
+        return view('Movimentos.relatoriovisualizacao', compact('movimentosAgrupados', 'totalGeral', 'totalDespesa', 'totalReceita', 'sel', 'OmitirData', 'movimentos', 'mesAno') );
 
 
     }

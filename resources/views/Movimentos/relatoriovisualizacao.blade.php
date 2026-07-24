@@ -55,14 +55,29 @@
 
             @php
             if ($OmitirData == "S") { @endphp
-                <tr style="background-color: #2c3e50; color: white;">
-                    <th style="text-align: left;">Data</th>
-                    <th style="text-align: left;">Categoria</th>
-                    <th style="text-align: left;">Dcto</th>
-                    <th style="text-align: left;">Descrição</th>
-                    <th style="text-align: right;">Recebido</th>
-                    <th style="text-align: right;">Pago</th>
-                </tr>
+                @php
+                if ($mesAno == "N") { @endphp
+                    <tr style="background-color: #2c3e50; color: white;">
+                        <th style="text-align: left;">Data</th>
+                        <th style="text-align: left;">Categoria</th>
+                        <th style="text-align: left;">Dcto</th>
+                        <th style="text-align: left;">Descrição</th>
+                        <th style="text-align: right;">Recebido</th>
+                        <th style="text-align: right;">Pago</th>
+                    </tr>
+                @php } @endphp
+
+                @php
+                if ($mesAno == "S") { @endphp
+                    <tr style="background-color: #2c3e50; color: white;">
+                        <th style="text-align: left;">Mês/Ano</th>
+                        <th style="text-align: left;">Categoria</th>
+                        <th style="text-align: right;">Recebido</th>
+                        <th style="text-align: right;">Pago</th>
+                        <th colspan="6"></th>
+                    </tr>
+                @php } @endphp
+
             @php } @endphp
         </thead>
         <tbody>
@@ -80,7 +95,7 @@
                         
                         <!-- ====== 2. LINHA DE CATEGORIA ====== -->
                         <tr style="background-color: #fcfcfc; font-style: italic; color: #2c3e50; font-weight: bold;">
-                            <td colspan="4" style="padding-left: 15px;">🏷️ Categoria: {{ $nomeCategoria }} - {{ $listaMovimentos->first()->classif }} </td>
+                            <td colspan="4" style="padding-left: 15px;">🏷️ Categoria: {{ $listaMovimentos->first()->classif }} - {{ $nomeCategoria }}</td>
                         </tr>
 
                         <!-- ====== 3. DETALHES DOS MOVIMENTOS ====== -->
@@ -139,17 +154,37 @@
                     @php
                     if ($cor == 1) { @endphp
                                 <!-- <tr class="movimento1, zebrado"> -->
-                                <tr class="movimento1" style="background-color: #D3D3D3;">
+                                <!-- <tr class="movimento1" style="background-color: #D3D3D3;"> -->
+                                <tr class="movimento1" style="background-color: #DDD;">    
                     @php } @endphp
 
-                    <!-- <tr class="movimento1">     -->
-                    <td>{{ \Carbon\Carbon::parse($movimento->dt)->format('d/m/Y') }}</td>
-                    <td nowrap>{{ $movimento->nome }} - {{ $movimento->classif }} </td>
-                    <td nowrap>{{ $movimento->dcto ?? '-' }}</td>
-                    <td nowrap>{{ $movimento->descricao ?? 'Sem descrição' }}</td>
-                    <td style="text-align: right;">{{ $movimento->tipo == 1 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
-                    <td style="text-align: right;">{{ $movimento->tipo == 0 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
-                    </tr>
+                    @php
+                    if ($mesAno == "N") { @endphp
+
+                        <!-- <tr class="movimento1">     -->
+                        <td>{{ \Carbon\Carbon::parse($movimento->dt)->format('d/m/Y') }}</td>
+                        <td nowrap>{{ $movimento->classif }} - {{ $movimento->nome }}</td>
+                        <td nowrap>{{ $movimento->dcto ?? '-' }}</td>
+                        <td nowrap>{{ $movimento->descricao ?? 'Sem descrição' }}</td>
+                        <td style="text-align: right;">{{ $movimento->tipo == 1 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
+                        <td style="text-align: right;">{{ $movimento->tipo == 0 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
+                        </tr>
+                    @php } @endphp
+
+                    @php
+                    if ($mesAno == "S") { @endphp
+                        <td style="text-align: left;">{{ $movimento->ano_mes }}</td>
+                        <td style="text-align: left;">{{ trim($movimento->classif) }} - {{ trim($movimento->nome) }}</td>
+
+<!-- <td style="text-align: left; padding-left: 10px;"> -->
+
+                        <td style="text-align: right;">{{ $movimento->tipo == 1 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
+                        <td style="text-align: right;">{{ $movimento->tipo == 0 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
+                        <td colspan="6"></td>
+                        
+                        </tr>
+                    @php } @endphp
+
                     @php
                         $cor = $cor == 0 ? 1 : 0;
                     @endphp
@@ -188,8 +223,18 @@
 
             @php
             if ($OmitirData == "S") { @endphp
+                
                 <tr style="background-color: #fafafa;">
-                    <td colspan="4" style="text-align: right; font-size: 0.9em; color: #555;">
+                    @php                
+                    if ($mesAno == "N") { @endphp
+                        <td colspan="4" style="text-align: right; font-size: 0.9em; color: #555;">  
+                    @php } @endphp
+                    @php                
+                    if ($mesAno == "S") { @endphp
+                        <td colspan="2" style="text-align: right; font-size: 0.9em; color: #555;">  
+                    @php } @endphp
+                    
+                    <!-- <td colspan="4" style="text-align: right; font-size: 0.9em; color: #555;"> -->
                         <b>Total Recebido x Pago:</b>
                     </td>
                 
@@ -199,7 +244,16 @@
                 </tr>
 
                 <tr style="background-color: #27ae60; color: white; font-size: 1.1em; font-weight: bold;">
-                    <td colspan="4" style="text-align: right; padding-right: 15px;">
+                    @php                
+                    if ($mesAno == "N") { @endphp
+                        <td colspan="4" style="text-align: right; padding-right: 15px;">
+                    @php } @endphp
+
+                    @php                
+                    if ($mesAno == "S") { @endphp
+                        <td colspan="3" style="text-align: right; padding-right: 15px;">
+                    @php } @endphp
+
                         TOTAL GERAL DO PERÍODO:
                     </td>
                     <td>
@@ -209,7 +263,7 @@
             @php } @endphp
         </tfoot>
     </table>
-<!-- </div> -->
+</div>
 
 
 
