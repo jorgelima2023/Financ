@@ -7,10 +7,19 @@
         <div class="mb-1 hstack gap-3">
 
             <!-- Button trigger modal -->
-            <button type="button" class="btn-outline-secondary btn-sm px-1 py-0 fs-7" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <!-- <button background-color: #D3D3D3 type="button" class="btn-outline-secondary btn-sm px-1 py-0 fs-7" data-bs-toggle="modal" data-bs-target="#exampleModal"> -->
+
+            <button type="button" class="btn btn-info btn-sm px-1 py-0 fs-7" data-bs-toggle="modal" data-bs-target="#exampleModal">
             
-            <i class="fa fa-trash" aria-hidden="true"></i>
+            <i class="fa-solid fa-question"></i>
+            <!-- <i class="fa-solid fa-person-circle-question"></i> -->
+            <!-- <i class="fa-solid fa-clipboard-question"></i> -->
+
             </button>
+
+            <!-- <button type="submit" class="btn btn-info btn-sm">
+                <i class="fa-solid fa-magnifying-glass"></i>ajuda
+            </button> -->
 
 
             <h4 class="mt-3">Relatório seleção</h4>
@@ -133,6 +142,18 @@
 
                         <div class="row mb-2 align-items-center">
                             <div class="col-2">
+                                <label for="tipo_filtro" class="col-form-label">Tipo</label>
+                            </div>
+                            <div class="col-3">
+                                <input class="form-check-input" type="radio" name="tipo_filtro" id="tipo_filtroO" value="O" checked>
+                                <label class="form-check-label" for="tipo_filtro">Obrigação</label>
+                                <input class="form-check-input" type="radio" name="tipo_filtro" id="tipo_filtroP" value="P">
+                                <label class="form-check-label" for="tipo_filtro">Previsão</label>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2 align-items-center">
+                            <div class="col-2">
                                 <label for="OmitirData" class="col-form-label">Sintético</label>
                             </div>
                             <div class="col-6">
@@ -182,13 +203,22 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Ajuda</h5>
+                        <h5 class="modal-title" id="exampleModalLabel" style="color: #3fb4b8;">Ajuda</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div>Relatório:</div>
-                        <div>Sintético - omitir agrupamento por datas, apresentando por categorias x datas os movimentos.</div>
-                        <div>Agrupar Mês/Ano - Apresentar dados agrupados por mês e ano.</div>
+                        <!-- <div style="color: #3fb4b8;">Relatório:</div> -->
+
+                        <div class="pesquisar">Relatório:</div>
+                       
+                        <div>🏷️ Movimentos de / até - apresentar os movimentos do períodoo escolhido.</div>
+                        <div>🏷️ Categoria - apresentar os movimentos da categoria.</div>
+                        <div>🏷️ Tipo - apresentar os movimentos do tipo.</div>
+                        <div>🏷️ Analítico - apresentar os movimentos sem agrupar.</div>
+                        <div>🏷️ Sintético - omitir agrupamento por datas, apresentando por categorias x datas os movimentos.</div>
+                        <div>🏷️ Agrupar Mês/Ano - Apresentar movimentos agrupados por mês e ano.</div>
+                        <div>🏷️ Visualizar - Faz a pesquisa dos movimentos com os filtros escolhidos.</div>
+                        <div>🏷️ Limpar - Limpar os campos preenchidos.</div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>

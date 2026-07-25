@@ -1551,26 +1551,39 @@ class MovimentoController extends Controller
             $sel .= $sel ? ', ' : '' ;
             $sel .= " Data ate:" . \Carbon\Carbon::parse($request->data_ate)->format('d-m-Y');
         }
+
+        $categoria_id = null;
         if( $request->has('categoria_id') && $request->categoria_id ){
             $categrel = Categoria::where('id', $request->categoria_id)->get()->first();
             $sel .= $sel ? ', ' : '' ;
             $sel .= " Categoria:{$categrel->nome}";
+            $categoria_id = $categrel->id;
 
             //dd('categoria:' . $categrel->id);
         }
+
         if( $request->has('OmitirData') && $request->OmitirData ){
             $sel .= $sel ? ', ' : '' ;
-            $sel .= "Omitir data";
+            $sel .= "Sintético";
             $OmitirData = "S";
         }else{
             $OmitirData = "N";
         }        
         if( $request->has('mesAno') && $request->mesAno ){
             $sel .= $sel ? ', ' : '' ;
-            $sel .= "Mostrar Mês/Ano";
+            $sel .= "Agrupar por Mês/Ano";
             $mesAno = "S";
         }else{
             $mesAno = "N";
+        }
+
+        if( $request->has('tipo_filtro') && $request->tipo_filtro ){
+            $sel .= $sel ? ', ' : '' ;
+            if( $request->tipo_filtro == 'O' ){
+                $sel .= " Tipo:Obrigação";
+            }else{
+                $sel .= " Tipo:Previsão";
+            }                    
         }
 
 
@@ -1585,13 +1598,17 @@ class MovimentoController extends Controller
         // ============================================  
         if( $OmitirData == "N" ){   
 
-            $movimentos = Movimento::select('movimentos.*', 'categorias.nome', 'categorias.classif')
-            ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
+            $movimentos = Movimento::select('movimentos.*', 'categorias.nome', 'categorias.classif', 'movimentos.categoria_id')
+            ->leftJoin('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
             ->when($request->filled('categoria_id'), function ($q) use ($request) {
             $q->where('movimentos.categoria_id', '=', $request->categoria_id );
             })
             ->whereBetween('dt', [$dataDe, $dataAte])
-            ->where('tipo_lc', 'O')
+            //->where('tipo_lc', 'O')
+            ->when($categoria_id !== null, function ($query) use ($categoria_id) {
+                $query->where('movimentos.categoria_id', $categoria_id);
+            })
+            ->where('tipo_lc', $request->tipo_filtro)
             ->orderBy('dt', 'asc')
             //->orderBy('categoria_id', 'asc')
             ->orderBy('categorias.classif', 'asc')
@@ -1599,13 +1616,21 @@ class MovimentoController extends Controller
         }else{
  
             if( $mesAno == "N" ){    
-                $movimentos = Movimento::select('movimentos.*',  'categorias.nome', 'categorias.classif')
-                ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
+                $movimentos = Movimento::select('movimentos.*',  'categorias.nome', 'categorias.classif',
+                    DB::raw("YEAR(movimentos.dt) AS ano"),
+                    DB::raw("MONTH(movimentos.dt) AS mes"),
+                    DB::raw(" concat( categorias.classif, '-', concat( YEAR(movimentos.dt) , '/', MONTH(movimentos.dt) ) ) AS ano"),
+                )
+                ->leftJoin('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
                 ->when($request->filled('categoria_id'), function ($q) use ($request) {
                 $q->where('movimentos.categoria_id', '=', $request->categoria_id );
                 })
                 ->whereBetween('dt', [$dataDe, $dataAte])
-                ->where('tipo_lc', 'O')
+                //->where('tipo_lc', 'O')
+                ->when($categoria_id !== null, function ($query) use ($categoria_id) {
+                    $query->where('movimentos.categoria_id', $categoria_id);
+                })
+                ->where('tipo_lc', $request->tipo_filtro)
                 ->orderBy('categorias.classif', 'asc')
                 ->orderBy('dt', 'asc')
                 ->get();
@@ -1629,9 +1654,11 @@ class MovimentoController extends Controller
                     //'m.dt',
                     DB::raw("SUM(m.valor) AS valor")
                 )
-                ->where('m.tipo_lc', 'O')
+                ->where('m.tipo_lc', $request->tipo_filtro)
                 ->whereBetween('m.dt', [$dataInicio, $dataFim])
-                ->where('m.categoria_id', $categrel->id)
+                ->when($categoria_id !== null, function ($query) use ($categoria_id) {
+                    $query->where('m.categoria_id', $categoria_id);
+                })
                 ->groupBy(
                     DB::raw("YEAR(m.dt)"),
                     DB::raw("MONTH(m.dt)"),
@@ -1643,104 +1670,7 @@ class MovimentoController extends Controller
                 ->orderBy('ano')
                 ->orderBy('mes')
                 ->get();                
-
-                
-                /*
-                ==================================== anterior:  ============
-                $movimentos = DB::select("
-                SELECT *
-                FROM (
-                    SELECT 
-                         DATE_FORMAT(movimentos.dt,  '%m/%Y') AS ano_mes, 
-                            categorias.classif , categorias.nome, movimentos.tipo,
-                            sum(movimentos.valor) as valor 
-                    FROM movimentos 
-                        join categorias on categorias.id = movimentos.categoria_id
-                    WHERE
-                        movimentos.tipo_lc = 'O' and movimentos.dt BETWEEN :dataInicioO AND :dataFimO
-                        and ( case when :cat is null then 1=1 else movimentos.categoria_id = :cat end )  
-                    group by 
-                            DATE_FORMAT(movimentos.dt,  '%m/%Y'),  
-                            categorias.classif , categorias.nome , movimentos.tipo    
-                ) AS subquery_combinada
-                ORDER BY
-                     2 , 1;
-                ", [
-                    // Passar os bindings para prevenir SQL Injection
-                    'dataInicioO' => $dataInicio,
-                    'dataFimO' => $dataFim,
-                    'cat' => $categrel,
-                ]);
-                */
-                
-                /*
-                ==================================== anterior:  ====================================================================
-
-                $movimentos = Movimento::select('movimentos.*',  'categorias.nome', 'categorias.classif',  DB::raw("DATE_FORMAT(movimentos.dt, '%m/%Y') AS mes_ano") )
-                ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
-                ->when($request->filled('categoria_id'), function ($q) use ($request) {
-                $q->where('movimentos.categoria_id', '=', $request->categoria_id );
-                })
-                ->whereBetween('dt', [$dataDe, $dataAte])
-                ->where('tipo_lc', 'O')
-                ->orderBy('categorias.classif', 'asc')
-                ->orderBy('mes_ano', 'asc')
-                ->get();
-                */
             }
-
-            /*
-            // ============================================ NAO apresentar mes/ano : 
-            if( $mesAno == "N" ){   
-                // 'DB::select' o retorno é um array de objetos
-                $movimentos = DB::select("
-                SELECT *
-                FROM (
-                    SELECT 
-                        movimentos.dt, movimentos.descricao, movimentos.dcto , movimentos.tipo,
-                        categorias.nome, categorias.classif , 
-                        movimentos.valor 
-                    FROM movimentos 
-                        join categorias on categorias.id = movimentos.categoria_id
-                    WHERE
-                        movimentos.tipo_lc = 'O' and movimentos.dt BETWEEN :dataInicioO AND :dataFimO
-                ) AS subquery_combinada
-                ORDER BY
-                    categorias.classif, movimentos.dt;
-                ", [
-                    // Passar os bindings para prevenir SQL Injection
-                    'dataInicioO' => $dataInicio,
-                    'dataFimO' => $dataFim,
-                ]);    
-
-            }else{
-                // ============================================ apresentar mes/ano : 
-                // 'DB::select' o retorno é um array de objetos
-                $movimentos = DB::select("
-                SELECT *
-                FROM (
-                    SELECT 
-                         DATE_FORMAT(movimentos.dt,  '%m/%Y') AS ano_mes, 
-                            categorias.classif , categorias.nome, movimentos.tipo,
-                            sum(movimentos.valor) as valor 
-                    FROM movimentos 
-                        join categorias on categorias.id = movimentos.categoria_id
-                    WHERE
-                        movimentos.tipo_lc = 'O' and movimentos.dt BETWEEN :dataInicioO AND :dataFimO
-                    group by 
-                            DATE_FORMAT(movimentos.dt,  '%m/%Y'),  
-                            categorias.classif , categorias.nome , movimentos.tipo    
-                ) AS subquery_combinada
-                ORDER BY
-                     2 , 1;
-                ", [
-                    // Passar os bindings para prevenir SQL Injection
-                    'dataInicioO' => $dataInicio,
-                    'dataFimO' => $dataFim,
-                ]);
-
-            }
-            */
         }
 
         //dd(DB::getQueryLog()); 
@@ -1774,7 +1704,9 @@ class MovimentoController extends Controller
             if( $mesAno == "N" ){
                 $movimentosAgrupados = $movimentos->groupBy([
                     function ($item) {
-                        return $item->categoria?->classif ?? 'Sem Categoria';  //  nível: classif
+                       // return $item->categoria?->classif ?? 'Sem Categoria';  //  nível: classif
+
+                        return $item->ano ;  //  nível: classif
                     },
                     
                 ]);

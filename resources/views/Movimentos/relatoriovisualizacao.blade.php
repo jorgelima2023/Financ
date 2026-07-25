@@ -182,9 +182,14 @@
                                 <td colspan="1"></td>
                             @php } @endphp
 
-                            <td style="text-align: left;">
+                            <!-- <td style="text-align: left;">
                                 Subtotal: ( {{ $classif }} - {{ $listaMovimentos->first()->nome }} )
+                            </td> -->
+
+                            <td style="text-align: left;">
+                                Subtotal: ( {{ $listaMovimentos->first()->ano }} )
                             </td>
+                            
                             <td style="text-align: right;">{{ $movimento->tipo == 1 ? number_format($listaMovimentos->sum('valor'), 2, ',', '.') : '0,00' }}</td>
                             <td style="text-align: right;">{{ $movimento->tipo == 0 ? number_format($listaMovimentos->sum('valor'), 2, ',', '.') : '0,00' }}</td>
                         </tr>

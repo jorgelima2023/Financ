@@ -2,7 +2,7 @@
 
 @section('content')
     
-{{-- dd($dados) --}}
+
 
 <!-- Horizontal Alignment 
 <td class="text-left">Left-aligned content</td>
@@ -81,6 +81,9 @@
             @php } @endphp
         </thead>
         <tbody>
+
+        
+
             @php
             if ($OmitirData == "N") { @endphp
 
