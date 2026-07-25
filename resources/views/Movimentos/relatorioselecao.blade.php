@@ -4,7 +4,15 @@
     
     <div class="container-fluid px-4">
 
-        <div class="mb-1 hstack gap-2">
+        <div class="mb-1 hstack gap-3">
+
+            <!-- Button trigger modal -->
+            <button type="button" class="btn-outline-secondary btn-sm px-1 py-0 fs-7" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            
+            <i class="fa fa-trash" aria-hidden="true"></i>
+            </button>
+
+
             <h4 class="mt-3">Relatório seleção</h4>
             <ol class="breadcrumb mb-3 mt-3 ms-auto">
                 <li class="breadcrumb-item">
@@ -12,6 +20,7 @@
                 </li>
                 <li class="breadcrumb-item active">Movimentos Relatório - Seleção</li>
             </ol>
+
         </div>
 
         <!-- pesquisar -->
@@ -124,7 +133,7 @@
 
                         <div class="row mb-2 align-items-center">
                             <div class="col-2">
-                                <label for="OmitirData" class="col-form-label">Omitir data</label>
+                                <label for="OmitirData" class="col-form-label">Sintético</label>
                             </div>
                             <div class="col-6">
 
@@ -139,7 +148,7 @@
 
                         <div class="row mb-2 align-items-center">
                             <div class="col-2">
-                                <label for="mesAno" class="col-form-label">Mostrar Mês/Ano</label>
+                                <label for="mesAno" class="col-form-label">Agrupar Mês/Ano</label>
                             </div>
                             <div class="col-6">
 
@@ -164,6 +173,27 @@
 
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Ajuda</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div>Relatório:</div>
+                        <div>Sintético - omitir agrupamento por datas, apresentando por categorias x datas os movimentos.</div>
+                        <div>Agrupar Mês/Ano - Apresentar dados agrupados por mês e ano.</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                    </div>
                 </div>
             </div>
         </div>

@@ -1555,6 +1555,8 @@ class MovimentoController extends Controller
             $categrel = Categoria::where('id', $request->categoria_id)->get()->first();
             $sel .= $sel ? ', ' : '' ;
             $sel .= " Categoria:{$categrel->nome}";
+
+            //dd('categoria:' . $categrel->id);
         }
         if( $request->has('OmitirData') && $request->OmitirData ){
             $sel .= $sel ? ', ' : '' ;
@@ -1609,7 +1611,71 @@ class MovimentoController extends Controller
                 ->get();
             }    
 
-            if( $mesAno == "S" ){    
+            if( $mesAno == "S" ){ 
+            
+                // O Query Builder e o Eloquent são mais legíveis, facilitam a manutenção e já fazem o binding dos parâmetros
+                // No DB::table() você deve usar DB::raw() para funções do MySQL
+
+                // 'DB::select' o retorno é um array de objetos
+                $movimentos = DB::table('movimentos as m')
+                ->leftJoin('categorias as c', 'm.categoria_id', '=', 'c.id')
+                ->select(
+                    DB::raw("YEAR(m.dt) AS ano"),
+                    DB::raw("MONTH(m.dt) AS mes"),
+                    //DB::raw("DATE_FORMAT(m.dt, '%m/%Y') AS ano_mes"),
+                    'c.classif',
+                    'c.nome',
+                    'm.tipo',
+                    //'m.dt',
+                    DB::raw("SUM(m.valor) AS valor")
+                )
+                ->where('m.tipo_lc', 'O')
+                ->whereBetween('m.dt', [$dataInicio, $dataFim])
+                ->where('m.categoria_id', $categrel->id)
+                ->groupBy(
+                    DB::raw("YEAR(m.dt)"),
+                    DB::raw("MONTH(m.dt)"),
+                    'c.classif',
+                    'c.nome',
+                    'm.tipo'
+                )
+                ->orderBy('c.classif')
+                ->orderBy('ano')
+                ->orderBy('mes')
+                ->get();                
+
+                
+                /*
+                ==================================== anterior:  ============
+                $movimentos = DB::select("
+                SELECT *
+                FROM (
+                    SELECT 
+                         DATE_FORMAT(movimentos.dt,  '%m/%Y') AS ano_mes, 
+                            categorias.classif , categorias.nome, movimentos.tipo,
+                            sum(movimentos.valor) as valor 
+                    FROM movimentos 
+                        join categorias on categorias.id = movimentos.categoria_id
+                    WHERE
+                        movimentos.tipo_lc = 'O' and movimentos.dt BETWEEN :dataInicioO AND :dataFimO
+                        and ( case when :cat is null then 1=1 else movimentos.categoria_id = :cat end )  
+                    group by 
+                            DATE_FORMAT(movimentos.dt,  '%m/%Y'),  
+                            categorias.classif , categorias.nome , movimentos.tipo    
+                ) AS subquery_combinada
+                ORDER BY
+                     2 , 1;
+                ", [
+                    // Passar os bindings para prevenir SQL Injection
+                    'dataInicioO' => $dataInicio,
+                    'dataFimO' => $dataFim,
+                    'cat' => $categrel,
+                ]);
+                */
+                
+                /*
+                ==================================== anterior:  ====================================================================
+
                 $movimentos = Movimento::select('movimentos.*',  'categorias.nome', 'categorias.classif',  DB::raw("DATE_FORMAT(movimentos.dt, '%m/%Y') AS mes_ano") )
                 ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
                 ->when($request->filled('categoria_id'), function ($q) use ($request) {
@@ -1620,7 +1686,7 @@ class MovimentoController extends Controller
                 ->orderBy('categorias.classif', 'asc')
                 ->orderBy('mes_ano', 'asc')
                 ->get();
-
+                */
             }
 
             /*
@@ -1704,17 +1770,22 @@ class MovimentoController extends Controller
             ]);
 
         }else{
-
-            $movimentosAgrupados = $movimentos->groupBy([
-                function ($item) {
-                    return $item->categoria?->classif ?? 'Sem Categoria';  //  nível: classif
-                },
-                
-            ]);
+            
+            if( $mesAno == "N" ){
+                $movimentosAgrupados = $movimentos->groupBy([
+                    function ($item) {
+                        return $item->categoria?->classif ?? 'Sem Categoria';  //  nível: classif
+                    },
+                    
+                ]);
+            }
+            
         }
 
         // 3. Total Geral de todo o período 
         //=======================================================================================
+
+        /*
         $totalDespesa = 0;
         $totalDespesa = $movimentos->filter(function ($movimento) {
             return $movimento->tipo == 0;
@@ -1726,10 +1797,10 @@ class MovimentoController extends Controller
         })->sum('valor');
 
         $totalGeral = $totalReceita - $totalDespesa;
+        */
         
-        /*
+        
         if( $OmitirData == "N" ){
-            //$totalGeral = $movimentos->sum('valor');
             
             $totalDespesa = 0;
             $totalDespesa = $movimentos->filter(function ($movimento) {
@@ -1759,17 +1830,18 @@ class MovimentoController extends Controller
             $totalGeral = $totalReceita - $totalDespesa;
 
         }   
-        */
+        
 
        
 
         // 3. Total Geral de todo o período
-        /*
-        if( $OmitirData == "S" ){
+        //=======================================================================================
+        
+        if( $mesAno == "S" ){
             
             $movimentosAgrupados = ""; 
         }
-        */
+        
 
         // ====================== tratamento retorno para view:
         // ============================================

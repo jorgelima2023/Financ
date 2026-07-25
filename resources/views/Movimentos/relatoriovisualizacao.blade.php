@@ -141,106 +141,108 @@
 
             @php
             if ($OmitirData == "S") { @endphp
+                
+                @php                
+                if ($mesAno == "N") { @endphp
+                    @foreach($movimentosAgrupados as $classif => $listaMovimentos)
+                        
+                        @foreach($listaMovimentos as $movimento)
+                            <tr class="movimento1">
+                                <td>{{ $classif }} - {{ $listaMovimentos->first()->nome }}</td>
 
-                @foreach($movimentosAgrupados as $classif => $listaMovimentos)
-                    
-                    @foreach($listaMovimentos as $movimento)
-                        <tr class="movimento1">
-                            <td>{{ $classif }} - {{ $listaMovimentos->first()->nome }}</td>
+                                @php
+                                if ($mesAno == "N") { @endphp
+                                    <td>{{ \Carbon\Carbon::parse($movimento->dt)->format('d/m/Y') }}</td>
+                                @php } @endphp
 
+                                @php
+                                if ($mesAno == "S") { @endphp
+                                    <td>{{ $movimento->mes_ano }}</td>
+                                @php } @endphp
+
+                                @php
+                                if ($mesAno == "N") { @endphp
+                                    <td >{{ $movimento->dcto}}</td>
+                                    <td >{{ $movimento->descricao ?? 'Sem descrição' }}</td>
+                                @php } @endphp
+
+                                <td style="text-align: right;">{{ $movimento->tipo == 1 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
+                                <td style="text-align: right;">{{ $movimento->tipo == 0 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
+                            </tr>
+                        @endforeach
+                        
+                        <tr class="subTotal" style="text-align: right; font-size: 0.7em; font-weight: bold;">
                             @php
                             if ($mesAno == "N") { @endphp
-                                <td>{{ \Carbon\Carbon::parse($movimento->dt)->format('d/m/Y') }}</td>
+                                <td colspan="3"></td>
                             @php } @endphp
 
                             @php
                             if ($mesAno == "S") { @endphp
-                                <td>{{ $movimento->mes_ano }}</td>
+                                <td colspan="1"></td>
                             @php } @endphp
 
-                            @php
-                            if ($mesAno == "N") { @endphp
-                                <td >{{ $movimento->dcto}}</td>
-                                <td >{{ $movimento->descricao ?? 'Sem descrição' }}</td>
-                            @php } @endphp
-
-                            <td style="text-align: right;">{{ $movimento->tipo == 1 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
-                            <td style="text-align: right;">{{ $movimento->tipo == 0 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
+                            <td style="text-align: left;">
+                                Subtotal: ( {{ $classif }} - {{ $listaMovimentos->first()->nome }} )
+                            </td>
+                            <td style="text-align: right;">{{ $movimento->tipo == 1 ? number_format($listaMovimentos->sum('valor'), 2, ',', '.') : '0,00' }}</td>
+                            <td style="text-align: right;">{{ $movimento->tipo == 0 ? number_format($listaMovimentos->sum('valor'), 2, ',', '.') : '0,00' }}</td>
                         </tr>
+
+                        <!-- <tr class="movimento1"><td colspan="6"></td>
+                        </tr> -->
+
                     @endforeach
+                @php } @endphp
+
+                @php
+                if ($mesAno == "S") { $cor = 0; @endphp
                     
-                    <tr class="subTotal" style="text-align: right; font-size: 0.7em; font-weight: bold;">
+
+                    @foreach($movimentos as $movimento)
+
+                        @php
+                        if ($cor == 0) { @endphp
+                                    <tr class="movimento1">
+                        @php } @endphp
+
+                        @php
+                        if ($cor == 1) { @endphp
+                                    <!-- <tr class="movimento1, zebrado"> -->
+                                    <!-- <tr class="movimento1" style="background-color: #D3D3D3;"> -->
+                                    <tr class="movimento1" style="background-color: #DDD;">    
+                        @php } @endphp
+
                         @php
                         if ($mesAno == "N") { @endphp
-                            <td colspan="3"></td>
+
+                            <!-- <tr class="movimento1">     -->
+                            
+                            <td>{{ $movimento->classif }} - {{ $movimento->nome }}</td>
+                            <td>{{ \Carbon\Carbon::parse($movimento->dt)->format('d/m/Y') }}</td>
+                            <td>{{ $movimento->dcto ?? '-' }}</td>
+                            <td>{{ $movimento->descricao ?? 'Sem descrição' }}</td>
+                            <td style="text-align: right;">{{ $movimento->tipo == 1 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
+                            <td style="text-align: right;">{{ $movimento->tipo == 0 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
+                            </tr>
                         @php } @endphp
 
                         @php
                         if ($mesAno == "S") { @endphp
-                            <td colspan="1"></td>
+                            <td style="text-align: left;">{{ trim($movimento->classif) }} - {{ trim($movimento->nome) }}</td>
+                            <td style="text-align: left;">{{ $movimento->mes }}/{{ $movimento->ano }}</td>
+                            <td style="text-align: right;">{{ $movimento->tipo == 1 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
+                            <td style="text-align: right;">{{ $movimento->tipo == 0 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
+                            <td colspan="6"></td>
+                            
+                            </tr>
                         @php } @endphp
 
-                        <td style="text-align: left;">
-                            Subtotal: ( {{ $classif }} - {{ $listaMovimentos->first()->nome }} )
-                        </td>
-                        <td style="text-align: right;">{{ $movimento->tipo == 1 ? number_format($listaMovimentos->sum('valor'), 2, ',', '.') : '0,00' }}</td>
-                        <td style="text-align: right;">{{ $movimento->tipo == 0 ? number_format($listaMovimentos->sum('valor'), 2, ',', '.') : '0,00' }}</td>
-                    </tr>
-
-                    <!-- <tr class="movimento1"><td colspan="6"></td>
-                    </tr> -->
-
-                @endforeach
-
-                @php
-                if (1 == 2) { @endphp
-
-                @foreach($movimentos as $movimento)
-
-                    @php
-                    if ($cor == 0) { @endphp
-                                <tr class="movimento1">
-                    @php } @endphp
-
-                    @php
-                    if ($cor == 1) { @endphp
-                                <!-- <tr class="movimento1, zebrado"> -->
-                                <!-- <tr class="movimento1" style="background-color: #D3D3D3;"> -->
-                                <tr class="movimento1" style="background-color: #DDD;">    
-                    @php } @endphp
-
-                    @php
-                    if ($mesAno == "N") { @endphp
-
-                        <!-- <tr class="movimento1">     -->
-                        <td>{{ \Carbon\Carbon::parse($movimento->dt)->format('d/m/Y') }}</td>
-                        <td nowrap>{{ $movimento->classif }} - {{ $movimento->nome }}</td>
-                        <td nowrap>{{ $movimento->dcto ?? '-' }}</td>
-                        <td nowrap>{{ $movimento->descricao ?? 'Sem descrição' }}</td>
-                        <td style="text-align: right;">{{ $movimento->tipo == 1 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
-                        <td style="text-align: right;">{{ $movimento->tipo == 0 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
-                        </tr>
-                    @php } @endphp
-
-                    @php
-                    if ($mesAno == "S") { @endphp
-                        <td style="text-align: left;">{{ $movimento->ano_mes }}</td>
-                        <td style="text-align: left;">{{ trim($movimento->classif) }} - {{ trim($movimento->nome) }}</td>
-
-<!-- <td style="text-align: left; padding-left: 10px;"> -->
-
-                        <td style="text-align: right;">{{ $movimento->tipo == 1 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
-                        <td style="text-align: right;">{{ $movimento->tipo == 0 ? number_format($movimento->valor, 2, ',', '.') : '0,00' }}</td>
-                        <td colspan="6"></td>
+                        @php
+                            $cor = $cor == 0 ? 1 : 0;
+                        @endphp
                         
-                        </tr>
-                    @php } @endphp
-
-                    @php
-                        $cor = $cor == 0 ? 1 : 0;
-                    @endphp
-                    
-                @endforeach
+                    @endforeach
                 
                 @php } @endphp
 
