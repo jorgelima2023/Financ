@@ -9,6 +9,8 @@
     <title>Financeiro</title>
 </head>
 
+{{-- file:///C:/xampp/htdocs/celk2/startbootstrap-sb-admin-gh-pages/index.html --}}
+
 <body class="sb-nav-fixed">
 
     <!-- <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark"> -->
@@ -53,56 +55,131 @@
                             Dashboard
                         </a>
 
-                        <!-- ------------------------ usuarios -------------------------------   -->
-                        @can('index-user')
-                            <a @class(['nav-link', 'active' => isset($menu) && $menu == 'users']) href="{{ route('user.index') }}">
-                                <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
-                                Usuários
+                        <!-- ------------------------ Menu cadastros -------------------------------   
+                        ---------------------------------------------------------------------------- 
+                        -->
+
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts" title='Cadastros básicos'>
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                cadastros
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
-                        @endcan
 
-                        <!-- ------------------------ Papéis -------------------------------   -->
-                        @can('index-role')
-                            <a @class(['nav-link', 'active' => isset($menu) && $menu == 'roles']) href="{{ route('role.index') }}">
-                                <div class="sb-nav-link-icon"><i class="fa-solid fa-network-wired"></i></div>
-                                Papéis
-                            </a>
-                        @endcan
+                            <!-- ------------------------ sub menus - cadastros -------------------------------   
+                             ----------------------------------------------------------------------------------
+                            -->
+                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <!-- <a class="nav-link" href="layout-static.html">Static Navigation</a> -->
+                                    <!-- <a class="nav-link" href="layout-sidenav-light.html">Light Sidenav</a> -->
 
-                        {{-- ============== categorias desativado item de menu =========================== --}}
-                        {{-- @can('index-categoria') --}}
-                            <!-- <a class="nav-link" href="{{ route('categorias.index') }}">
-                                <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
-                                Categorias
-                            </a> -->
-                        {{-- @endcan --}}
+                                    <!-- ------------------------ usuarios -------------------------------   -->
+                                    @can('index-user')
+                                        <a @class(['nav-link', 'active' => isset($menu) && $menu == 'users']) href="{{ route('user.index') }}">
+                                            <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
+                                            Usuários
+                                        </a>
+                                    @endcan
 
-                        {{-- ============== categorias formulario =========================== --}}
-                        <!-- ------------------------ Categorias-formulario -------------------------------   -->
-                        @can('form-categoria')
-                            <a class="nav-link" href="{{ route('categorias.form') }}">
-                                <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
-                                Categorias
-                            </a>
-                        @endcan
+                                    <!-- ------------------------ Papéis -------------------------------   -->
+                                    @can('index-role')
+                                        <a @class(['nav-link', 'active' => isset($menu) && $menu == 'roles']) href="{{ route('role.index') }}">
+                                            <div class="sb-nav-link-icon"><i class="fa-solid fa-network-wired"></i></div>
+                                            Papéis
+                                        </a>
+                                    @endcan
 
-                        {{-- ============== Formas Pagamento formulario =========================== --}}
-                        <!-- ------------------------ Formas Pagamento-formulario -------------------------------   -->
-                        @can('form-forma_pgto')
-                            <a class="nav-link" href="{{ route('formaPagamentos.form') }}">
-                                <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
-                                Formas Pagamento
-                            </a>
-                        @endcan
+                                    <!-- ------------------------ Categorias-formulario -------------------------------   -->
+                                    @can('form-categoria')
+                                        <a class="nav-link" href="{{ route('categorias.form') }}">
+                                            <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                                            Categorias
+                                        </a>
+                                    @endcan
 
-                        <a class="nav-link" href="{{ route('contaCorrente.form') }}">
+                                    <!-- ------------------------ Formas Pagamento-formulario -------------------------------   -->
+                                    @can('form-forma_pgto')
+                                        <a class="nav-link" href="{{ route('formaPagamentos.form') }}">
+                                            <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                                            Formas Pagamento
+                                        </a>
+                                    @endcan
+
+                                    <!-- ------------------------ Contas correntes  -------------------------------   -->
+                                     @can('form-forma_pgto')
+                                    <a class="nav-link" href="{{ route('contaCorrente.form') }}">
+                                        <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                                        Conta Corrente
+                                    </a>
+                                    @endcan
+
+                                </nav>
+                            </div>
+
+                        <!-- ------------------------ menus desativados -------------------------------   
+                        -- ---------------------------------------------------------------------------- 
+                        -->
+                        @php                
+                        if (1 == 2) { @endphp
+                            <!-- ------------------------ usuarios -------------------------------   -->
+                            @can('index-user')
+                                <a @class(['nav-link', 'active' => isset($menu) && $menu == 'users']) href="{{ route('user.index') }}">
+                                    <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
+                                    Usuários
+                                </a>
+                            @endcan
+
+                            <!-- ------------------------ Papéis -------------------------------   -->
+                            @can('index-role')
+                                <a @class(['nav-link', 'active' => isset($menu) && $menu == 'roles']) href="{{ route('role.index') }}">
+                                    <div class="sb-nav-link-icon"><i class="fa-solid fa-network-wired"></i></div>
+                                    Papéis
+                                </a>
+                            @endcan
+                        
+
+                            {{-- ============== categorias desativado item de menu =========================== --}}
+                            {{-- @can('index-categoria') --}}
+                                <!-- <a class="nav-link" href="{{ route('categorias.index') }}">
+                                    <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                                    Categorias
+                                </a> -->
+                            {{-- @endcan --}}
+
+                            {{-- ============== categorias formulario =========================== --}}
+                            <!-- ------------------------ Categorias-formulario -------------------------------   -->
+                            @can('form-categoria')
+                                <a class="nav-link" href="{{ route('categorias.form') }}">
+                                    <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                                    Categorias
+                                </a>
+                            @endcan
+
+                            {{-- ============== Formas Pagamento formulario =========================== --}}
+                            <!-- ------------------------ Formas Pagamento-formulario -------------------------------   -->
+                            @can('form-forma_pgto')
+                                <a class="nav-link" href="{{ route('formaPagamentos.form') }}">
+                                    <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                                    Formas Pagamento
+                                </a>
+                            @endcan
+
+                            <a class="nav-link" href="{{ route('contaCorrente.form') }}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
                                 Conta Corrente
                             </a>
 
-                        <!-- ------------------------ Movimentos -------------------------------   -->
+                            
+                        @php } @endphp
+
+                        
+                        
+                        <!-- ------------------------ menu - Movimentos -------------------------------  
+                        ------------------------------------------------------------------------
+                        ------------------------------------------------------------------------ 
+                        -->
                         @can('index-movimento')
-                            <a @class(['nav-link', 'active' => isset($menu) && $menu == 'movimentos']) href="{{ route('movimentos.index') }}">
+                            <a @class(['nav-link', 'active' => isset($menu) && $menu == 'movimentos']) href="{{ route('movimentos.index') }}" title='Lançamentos de movimentos'>
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
                                 Movimentos
                             </a>
@@ -110,7 +187,7 @@
 
                         <!-- ------------------------ Movimentos gerar lcto em lote -------------------------------   -->
                         @can('index-movimento')
-                            <a @class(['nav-link', 'active' => isset($menu) && $menu == 'movimentos em lote']) href="{{ route('movimentos.indexGerar') }}">
+                            <a @class(['nav-link', 'active' => isset($menu) && $menu == 'movimentos em lote']) href="{{ route('movimentos.indexGerar') }}" title='Lançamentos em lote de movimentos'>
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
                                 Movimentos em lote
                             </a>
@@ -118,7 +195,7 @@
 
                         <!-- ------------------------ Movimentos importar -------------------------------   -->
                         @can('index-movimento')
-                            <a @class(['nav-link', 'active' => isset($menu) && $menu == 'movimentos importar']) href="{{ route('movimentos.importar') }}">
+                            <a @class(['nav-link', 'active' => isset($menu) && $menu == 'movimentos importar']) href="{{ route('movimentos.importar') }}" title='Importar movimentos (ofx, csv)'>
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
                                 Movimentos importar
                             </a>
@@ -126,13 +203,13 @@
 
                         <!-- ------------------------ Movimentos - relatório -------------------------------   -->
                          @can('index-movimento')
-                            <a @class(['nav-link', 'active' => isset($menu) && $menu == 'movimentos-relatorio']) href="{{ route('movimentos.relatorioselecao') }}">
+                            <a @class(['nav-link', 'active' => isset($menu) && $menu == 'movimentos-relatorio']) href="{{ route('movimentos.relatorioselecao') }}" title='Relatório de movimentos, analítico/sintético'>
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
                                 Movimentos - relatório
                             </a>
                         @endcan
 
-                        <a class="nav-link" href="{{ route('login.destroy') }}">
+                        <a class="nav-link" href="{{ route('login.destroy') }}" title='Efetuar logout'>
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
                             Sair
                         </a>
@@ -142,7 +219,7 @@
                     <div class="small">Logado:
                         @if ( auth()->check() )
                             {{ auth()->user()->name }} 
-                            <br />{{ auth()->user()->roles[0]->name }}        
+                            <br />Perfil:{{ auth()->user()->roles[0]->name }}        
                         @endif
                     </div>
                 </div>
