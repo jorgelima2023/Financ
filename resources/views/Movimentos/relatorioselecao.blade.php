@@ -42,42 +42,6 @@
                     
                     <form action="{{ route('movimentos.relatoriovisualizacao') }}" target="_blank">
 
-                        <!-- <div class="row">
-                            <div class="col-8 mb-1 d-flex align-items-center">
-                                <label for="descricao" class="form-label me-2 mb-0">Descrição</label>
-                                <input type="text" name="descricao" class="form-control" id="descricao" 
-                                value=""
-                                placeholder="Descricao do movimento">
-                            </div>*Qualquer posição
-                        </div>     -->
-
-                        <!-- ******************************************************************************************* -->
-                        
-                        <!-- <div class="row mb-2 align-items-center">  
-                            <div class="col-2">
-                                <label for="descricao" class="col-form-label">Descrição</label>
-                            </div>
-                            <div class="col-6">
-                                <input type="text" class="form-control flex-grow-1" placeholder="Descricao do movimento (*Qualquer posição)"
-                                    name="descricao" id="descricao" value="" >
-                            </div>                            
-                        </div> -->
-
-                        <!-- <div class="row">    
-                            <div class="col-3 mb-1 d-flex align-items-center">
-                                    <label for="data_de" class="form-label">Cadastro de</label>
-                                    <input type="date" name="data_de" class="form-control" 
-                                    id="data_de" value=""> 
-                            </div>
-                            <div class="col-3 mb-1 d-flex align-items-center"> 
-                                    <label for="data_ate" class="form-label">ate</label>
-                                    <input type="date" name="data_ate" class="form-control" 
-                                    id="data_ate" value="">
-                            </div>
-                        </div> -->
-
-                        <!-- ********************************************************************** -->
-                        
                         <div class="row mb-2 align-items-center">
                             <div class="col-2">
                                 <label for="data_de" class="col-form-label">Movimento de</label>
@@ -90,35 +54,6 @@
                                 <input type="date" class="form-control" name="data_ate" id="data_de" value="">
                             </div>
                         </div>
-
-                        <!-- <div class="row">
-
-                            <div class="col-8 mb-1 d-flex align-items-center">
-                                <label class="form-label me-2 mb-0">Tipo</label>
-                                <div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="tipo_filtro" id="tipo_filtroO" value="O">
-                                        <label class="form-check-label" for="tipo_filtro">Obrigação</label>
-                                    </div>
-
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="tipo_filtro" id="tipo_filtroP" value="P">
-                                        <label class="form-check-label" for="tipo_filtro">Previsão</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
-
-                        <!-- <div class="row">
-                            <div class="col-8 mb-1 d-flex align-items-center">
-                                <label for="categoriabusca" class="form-label me-2 mb-0">Categoria</label>
-                                <input type="text" name="categoriabusca" class="form-control" id="categoriabusca" 
-                                value=""
-                                placeholder="categoria do movimento">
-                            </div>
-                        </div> -->
-                 
-                         <!-- *************************************************************************************** -->
 
                         <div class="row mb-2 align-items-center">
                             <div class="col-2">

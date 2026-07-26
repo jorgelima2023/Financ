@@ -13,7 +13,12 @@
 
     <div class="container-fluid px-4">
 
-        <div class="mb-1 hstack gap-2">
+        <div class="mb-1 hstack gap-3">
+
+            <button type="button" class="btn btn-info btn-sm px-1 py-0 fs-7" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <i class="fa-solid fa-question"></i>
+            </button>
+
             <h2 class="mt-3">Movimento</h2>
             <ol class="breadcrumb mb-3 mt-3 ms-auto">
                 <li class="breadcrumb-item">
@@ -63,7 +68,7 @@
                                 <label for="tipo_filtro" class="col-form-label">Tipo</label>
                             </div>
                             <div class="col-3">
-                                <input class="form-check-input" type="radio" name="tipo_filtro" id="tipo_filtroO" value="O">
+                                <input class="form-check-input" type="radio" name="tipo_filtro" id="tipo_filtroO" value="O" checked>
                                 <label class="form-check-label" for="tipo_filtro">Obrigação</label>
                                 <input class="form-check-input" type="radio" name="tipo_filtro" id="tipo_filtroP" value="P">
                                 <label class="form-check-label" for="tipo_filtro">Previsão</label>
@@ -92,7 +97,7 @@
                             <div class="col-2">
                                 <label for="contabusca" class="col-form-label">Conta</label>
                             </div>
-                            <div class="col-5">
+                            <div class="col-5" title="selecione uma ou mais contas, ctrl+click mouse.">
 
                                 @php // DESATIVADO !!!  campo select option busca conta corrente
                                  if(  1 == 2 ){ @endphp
@@ -723,6 +728,37 @@
 
             </div>
         </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel" style="color: #3fb4b8;">Ajuda</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- <div style="color: #3fb4b8;">Relatório:</div> -->
+
+                        <div class="pesquisar">Movimento:</div>
+                       
+                        <div>🏷️ Pesquisar filtros - campos de seleção, acionar botão pesquisar os movimentos.</div>
+                        <div>🏷️ Limpar - Limpar os campos preenchidos.</div>
+                        <div>🏷️ Cadastrar - abre formulário para cadastrar um movimento.</div>
+                        <div>🏷️ Gráficos - Gerar gráficos conforme a seleção movimentos.</div>
+                        <div>🏷️ Area listar - apresentar os movimentos, padrão: data inicial e final mês.</div>
+                        <div>🏷️ Excl. - excluir um movimento.</div>
+                        <div>🏷️ Edit. - editar um movimento.</div>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>

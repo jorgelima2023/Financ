@@ -4,7 +4,12 @@
 
     <div class="container-fluid px-4">
 
-        <div class="mb-1 hstack gap-2">
+        <div class="mb-1 hstack gap-3">
+
+            <button type="button" class="btn btn-info btn-sm px-1 py-0 fs-7" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <i class="fa-solid fa-question"></i>
+            </button>
+
             <h2 class="mt-3">Lançamentos em lote</h2>
             <ol class="breadcrumb mb-3 mt-3 ms-auto">
                 <li class="breadcrumb-item">
@@ -33,7 +38,7 @@
                                 <label for="descricao" class="col-form-label">Descrição</label>
                             </div>
                             <div class="col-6">
-                                <input type="text" class="form-control flex-grow-1" placeholder="Descricao do movimento (*Qualquer posição)"
+                                <input type="text" class="form-control flex-grow-1" placeholder="Descricao do movimento"
                                     name="descricao" id="descricao" value="" required>
                             </div>                            
                         </div>
@@ -43,7 +48,7 @@
                                 <label for="data_de" class="col-form-label">Vencimento inicial</label>
                             </div>
                             <div class="col-3">                  
-                                <input type="date" class="form-control" name="data_de" id="data_de" value="">
+                                <input type="date" class="form-control" name="data_de" id="data_de" value="" required>
                             </div>
                             
                         </div>
@@ -53,7 +58,7 @@
                                 <label for="tipo_filtro" class="col-form-label">Tipo</label>
                             </div>
                             <div class="col-3">
-                                <input class="form-check-input" type="radio" name="tipo_filtro" id="tipo_filtroO" value="O">
+                                <input class="form-check-input" type="radio" name="tipo_filtro" id="tipo_filtroO" value="O" checked>
                                 <label class="form-check-label" for="tipo_filtro">Obrigação</label>
                                 <input class="form-check-input" type="radio" name="tipo_filtro" id="tipo_filtroP" value="P">
                                 <label class="form-check-label" for="tipo_filtro">Previsão</label>
@@ -67,7 +72,7 @@
                             <div class="col-3">
                                 <input class="form-check-input" type="radio" name="tipo_lcto" id="tipo_lcto_receita" value="1" {{ old('tipo') == '1' ? 'checked' : '' }} required>
                                 <label class="form-check-label" for="tipo_lcto">Receita</label>
-                                <input class="form-check-input" type="radio" name="tipo_lcto" id="tipo_lcto_despesa" value="0" {{ old('tipo') == '0' ? 'checked' : '' }} required>
+                                <input class="form-check-input" type="radio" name="tipo_lcto" id="tipo_lcto_despesa" value="0" {{ old('tipo') == '0' ? 'checked' : '' }} required checked>
                                 <label class="form-check-label" for="tipo_lcto">Despesa</label>
                             </div>
                         </div>
@@ -79,7 +84,7 @@
                             <div class="col-6">
                                 
 
-                                <select name="categoria_id" id="categoria" class="form-select">
+                                <select name="categoria_id" id="categoria" class="form-select" required>
                                     <option value="">Selecione uma categoria</option>
 
                                     @foreach ($categorias as $categoria)
@@ -99,7 +104,7 @@
                             </div>
                             <div class="col-5">
 
-                                <select name="contabusca" id="contabusca" class="form-select" >
+                                <select name="contabusca" id="contabusca" class="form-select" required>
                                     <option value="">Selecione uma conta</option>
 
                                     @foreach ($contascorrentes as $contascorrente)
@@ -164,6 +169,35 @@
                         </div>
                         
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel" style="color: #3fb4b8;">Ajuda</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- <div style="color: #3fb4b8;">Lançamentos em lote:</div> -->
+
+                    <div class="pesquisar">Lançamentos em lote:</div>
+                    
+                    <div>🏷️ Seleção - Preencher os campos:</div>
+                    <div>🏷️ Descrição - a descrição do lançamento.</div>
+                    <div>🏷️ Vencimemto inicial - Data inicial de vencimento do primeiro lançamento.</div>
+                    <div>🏷️ Valor parcela - informar o valor da parcela a ser gerada.</div>
+                    <div>🏷️ Quantidade Parc. - Quantidade parcelas a ser gerada.</div>
+                    <div>🏷️ Gerar - Faz a geração dos movimentos conforme a quantidade e valor de parcelas.</div>
+                    <div>🏷️ Limpar - Limpar os campos preenchidos.</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
                 </div>
             </div>
         </div>

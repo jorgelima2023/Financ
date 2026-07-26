@@ -5,7 +5,12 @@
 
     <div class="container-fluid px-4">
 
-        <div class="mb-1 hstack gap-2">
+        <div class="mb-1 hstack gap-3">
+
+            <button type="button" class="btn btn-info btn-sm px-1 py-0 fs-7" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <i class="fa-solid fa-question"></i>
+            </button>
+
             <h2 class="mt-3">Movimento importar</h2>
             <ol class="breadcrumb mb-3 mt-3 ms-auto">
                 <li class="breadcrumb-item">
@@ -125,6 +130,41 @@
                             </button>
                         </div>
                     </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel" style="color: #3fb4b8;">Ajuda</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- <div style="color: #3fb4b8;">Movimentos importar extrato/arquivo:</div> -->
+
+                    <div class="pesquisar">Movimentos importar extrato/arquivo (.csv , .ofx):</div>
+                    
+                    <div>📢 CSV - arquivo do tipo (.csv) -  Filtros CSV - Preencher os campos</div>
+                    <div> Tipo - tipo do lançamento.</div>
+                    <div> Categoria - informar uma categoria.</div>
+                    <div> Conta corrrente - informar uma conta.</div>
+                    <div> Forma Pgto - informar uma forma.</div>
+                    
+                    <div>🏷️ Escolher arquivo - download do arquivo (.csv)  Botão CSV - faz a importação</div>
+                    <div>   campos do arquivo CSV: Data;Historico;Valor(US$);Valor(R$)</div>
+                    <div>  24/06;SEGURO SUPERPROTEGIDO;0.00;9.99</div>
+                    <div>🏷️  os registros serão validados por data + histórico + valor</div>
+                    <div>📢 Escolher arquivo - download do arquivo (.ofx)</div>
+                    <div> Botão OFX - Faz a importação e abre um pre-form de confirmação. </div>
+                    <div>🏷️  os registros serão validados pelo campo documento no arquivo.</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                </div>
             </div>
         </div>
     </div>
