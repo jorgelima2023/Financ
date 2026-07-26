@@ -15,12 +15,20 @@ class Categoriascontroller extends Controller
 {
     // form categoria
     public function form(){
+
+        // DB::enableQueryLog();
+
         // Recuperar os registros do banco dados
         // $courses = Course::where('id', 1000)->get();
         // $courses = Course::paginate(10);
-        $categorias = Categoria::orderBy('classif', 'ASC')
+        $categorias = Categoria::orderBy('classif')
         // teste alerta nenhum registro encontrado ->where('id', 1000)
         ->get();
+
+        //         $categorias = Categoria::orderBy('classif', 'ASC')
+
+
+        //Log::info('sql Categoria', DB::getQueryLog() );
 
         //$categorias[] = "";
         //$categorias->new_field = null; 
