@@ -96,6 +96,16 @@
                                 </select>
                             </div>    
                         </div>
+                        <!-- ----------------- data lcto  -->
+                        <div class="row mb-2 align-items-center">
+                            <div class="col-2">
+                                <label for="data_de" class="col-form-label">Data lançamento Movimento</label>
+                            </div>
+                            <div class="col-3">
+                                <input type="date" class="form-control" name="data_de" id="data_de" value="">
+                            </div>
+                        </div>
+
                         <!-- ----------------- arq  -->
                         <div class="row mb-2 align-items-center">
                         <div class="col-5">
@@ -136,7 +146,12 @@
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        
+        <!-- <div class="modal-dialog modal-xl">...</div>  extra large modal
+        <div class="modal-dialog modal-lg">...</div>       large modal 
+        <div class="modal-dialog modal-sm">...</div>       small modal
+     -->
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel" style="color: #3fb4b8;">Ajuda</h5>
@@ -145,18 +160,20 @@
                 <div class="modal-body">
                     <!-- <div style="color: #3fb4b8;">Movimentos importar extrato/arquivo:</div> -->
 
-                    <div class="pesquisar">Movimentos importar extrato/arquivo (.csv , .ofx):</div>
+                    <div class="pesquisar">Movimentos importar extrato/arquivo (.csv):</div>
                     
-                    <div>📢 CSV - arquivo do tipo (.csv) -  Filtros CSV - Preencher os campos</div>
-                    <div> Tipo - tipo do lançamento.</div>
-                    <div> Categoria - informar uma categoria.</div>
-                    <div> Conta corrrente - informar uma conta.</div>
-                    <div> Forma Pgto - informar uma forma.</div>
-                    
-                    <div>🏷️ Escolher arquivo - download do arquivo (.csv)  Botão CSV - faz a importação</div>
-                    <div>   campos do arquivo CSV: Data;Historico;Valor(US$);Valor(R$)</div>
+                    <div>📢 Arquivo do tipo (.csv) -  Filtros CSV - Preencher os campos</div>
+                    <div>        Tipo - tipo do lançamento.</div>
+                    <div>        Categoria - informar uma categoria.</div>
+                    <div>        Conta corrrente - informar uma conta.</div>
+                    <div>        Forma Pgto - informar uma forma.</div>
+                    <div>          Deve exportar arq formato excel, e salvar formato csv</div>
+                    <div>          delimitador(;) decimal(.) separador campos nenhum</div>
+                    <div>🏷️ Escolher arquivo (.csv) - download e clicar Botão CSV importar, exemplo:</div>
+                    <div>   cabeçalho:campos do arquivo CSV: Data;Historico;Valor(US$);Valor(R$)</div>
                     <div>  24/06;SEGURO SUPERPROTEGIDO;0.00;9.99</div>
                     <div>🏷️  os registros serão validados por data + histórico + valor</div>
+                    <div class="pesquisar">Movimentos importar extrato/arquivo (.ofx):</div>
                     <div>📢 Escolher arquivo - download do arquivo (.ofx)</div>
                     <div> Botão OFX - Faz a importação e abre um pre-form de confirmação. </div>
                     <div>🏷️  os registros serão validados pelo campo documento no arquivo.</div>

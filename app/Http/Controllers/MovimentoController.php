@@ -514,7 +514,15 @@ class MovimentoController extends Controller
     // ===========================================================================
     public function form(Request $request){
 
-        //dd($request);    no form colocado nome no botao para separar o tipo arq
+        //dd($request);    // no form colocado nome no botao para separar o tipo arq
+        /* "tipo_filtro" => "P"
+            "categoria_id" => "42"
+            "contabusca" => "2"
+            "forma_pgto_id" => "6"
+            "data_de" => "2026-08-08"
+            "btn" => "btncsv"
+        */
+
         // dd('botao ' . $request->btn);
             // botao btnofx 
             // botao btncsv
@@ -576,6 +584,8 @@ class MovimentoController extends Controller
                     0 => "25/05;SEGURO SUPERPROTEGIDO;0.00;9.99"
                 ]
             */
+
+                //dd($dataFile);
 
             // 2) percorrer as linhas do arquivo csv depois de usar o array_map
             foreach( $dataFile as $keyData => $row ){
@@ -667,9 +677,17 @@ class MovimentoController extends Controller
             $texto = '';
             $regs  = 0;
             $falha = 0;
-            $dt = \Carbon\Carbon::now()->startOfMonth();  // 1a. dia mes
-            $dt = \Carbon\Carbon::parse($dt)->addDays(7); // dia 08 do mes
+            //$dt = \Carbon\Carbon::now()->startOfMonth();  // 1a. dia mes
+            //$dt = \Carbon\Carbon::parse($dt)->addDays(7); // dia 08 do mes
             // dd('data ' . $dt );
+
+            // data de lancamento request
+            // if ($request->filled('data_de') && $request->filled('data_ate')) {
+            //     $dt = $request->data_de; 
+            // }
+
+            // dd('dt:' . $request->data_de);
+            $dt = $request->data_de;
 
             // 6) percorrer array de valores 
             foreach( $arrayValues as $key => $row ){
@@ -695,9 +713,12 @@ class MovimentoController extends Controller
                     ->where('dcto', '=', $row['Data'])
                     ->get();
                     
+                    //dd(' mov dcto:' . $movimento_Dcto);
+
                     if ($movimento_Dcto->isEmpty()) {
 
                         DB::beginTransaction();
+
 
                         try {
 
@@ -712,6 +733,7 @@ class MovimentoController extends Controller
                             'forma_pgto_id' => $request->forma_pgto_id /*6*/ , 
                             'contascorrente_id' => $request->contabusca /*2*/  
                         ]);
+
 
                         DB::commit();
 

@@ -73,6 +73,13 @@
     border: none !important;
 }
 
+.movimento2 td{    /* movimentos - relatorio */
+    /* padding: 1px 8px !important;  */
+    line-height: 0.9  !important; /* line-height: 1; */
+    font-size: 0.7rem !important;/* font-size: 0.9rem; opcional */
+    border: none !important;
+}
+
 .subTotal td{    /* movimentos - relatorio */
     /* padding: 1px 8px !important;  */
     line-height: 1;   /* line-height: 1; */

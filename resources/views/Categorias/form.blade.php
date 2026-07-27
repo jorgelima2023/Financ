@@ -48,7 +48,7 @@
 
                         @forelse ($categorias as $categoria)
                         
-                        <tr class="linha-item {{ old("itens.$i.excluir") ? 'linha-excluir' : '' }}">
+                        <tr class=" movimento2 linha-item {{ old("itens.$i.excluir") ? 'linha-excluir' : '' }}">
 
                             {{-- enviar o campo id para controle se incluir ou editar --}}
                             <td>
