@@ -1804,4 +1804,56 @@ class MovimentoController extends Controller
 
 
     }
+
+    // *****************************************************************************
+    // executa a rota - relatorio balancete selecao
+    // enviar controller e retorna form visualizar
+    // *****************************************************************************
+    public function relatorioBalanceteselecao(){
+        
+        return view('Movimentos.relatorioBalanceteselecao', 
+         ['menu' => 'movimentos-relatorio Balancete']);
+    }
+
+    public function relatorioBalancetevisualizacao(Request $request){
+                //dd('balancete relatorio visualizacao');
+                //dd($request);
+
+        $dataInicio = "2026-07-01"; 
+        $dataFim = "2026-07-29";
+
+        $resultados = DB::select("
+            SELECT *
+            FROM (
+                SELECT 
+                    p1.classif, 
+                    p1.nome,
+                    COALESCE(SUM(m.valor),0) AS total
+                FROM  categorias p1 
+                LEFT JOIN categorias p2 ON p2.classif  LIKE CONCAT(p1.classif , '%')
+                LEFT JOIN movimentos m ON m.categoria_id = p2.id
+                    
+                WHERE
+                    m.tipo_lc = 'O' 
+                    and m.dt BETWEEN :dataInicioO AND :dataFimO
+                GROUP BY
+                    p1.classif,
+                    p1.nome
+            ) AS subquery_combinada
+            ORDER BY
+                1;
+            ", [
+                // Passar os bindings para prevenir SQL Injection
+                'dataInicioO' => $dataInicio,
+                'dataFimO' => $dataFim,
+                
+            ]);
+            
+            //dd($resultados);
+
+            echo "<pre>";
+            print_r($resultados);
+            echo "</pre>";
+
+    }
 }

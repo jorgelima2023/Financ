@@ -192,6 +192,14 @@ Route::group(['middleware' => 'auth'], function () {
 
     // ------------------------------ movimentos
 
+    route::get('/movimentoRelatorioBalanceteSelecao', 
+        [MovimentoController::class, 'relatorioBalanceteselecao'] )->name('movimentos.relatorioBalanceteselecao')
+    ->middleware('permission:index-movimento');
+
+    route::get('/movimentoRelatorioBalanceteVisualizacao', 
+        [MovimentoController::class, 'relatorioBalancetevisualizacao'] )->name('movimentos.relatorioBalancetevisualizacao')
+    ->middleware('permission:index-movimento');
+
     route::get('/movimentoRelatorioSelecao', 
         [MovimentoController::class, 'relatorioselecao'] )->name('movimentos.relatorioselecao')
         ->middleware('permission:index-movimento');
@@ -200,10 +208,12 @@ Route::group(['middleware' => 'auth'], function () {
         [MovimentoController::class, 'relatoriovisualizacao'] )->name('movimentos.relatoriovisualizacao')
         ->middleware('permission:index-movimento');
 
-    route::get('/importar-movimento', [MovimentoController::class, 'importar'] )->name('movimentos.importar');
+    route::get('/importar-movimento', [MovimentoController::class, 'importar'] )->name('movimentos.importar')
+        ->middleware('permission:index-movimento');
 
-    Route::post('/movimentos/form', [MovimentoController::class, 'form'])->name('movimentos.form');
-    
+    Route::post('/movimentos/form', [MovimentoController::class, 'form'])->name('movimentos.form')
+        ->middleware('permission:index-movimento');
+
     route::get('/indexGerar-movimento', 
         [MovimentoController::class, 'indexGerar'] )->name('movimentos.indexGerar')
         ->middleware('permission:index-movimento');

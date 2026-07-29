@@ -209,6 +209,14 @@
                             </a>
                         @endcan
 
+                        <!-- ------------------------ Movimentos - relatório -------------------------------   -->
+                         @can('index-movimento')
+                            <a @class(['nav-link', 'active' => isset($menu) && $menu == 'movimentos-relatorio Balancete']) href="{{ route('movimentos.relatorioBalanceteselecao') }}" title='Relatório movimentos balancete'>
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
+                                Movimentos - relatório Balancete
+                            </a>
+                        @endcan
+
                         <a class="nav-link" href="{{ route('login.destroy') }}" title='Efetuar logout'>
                             <div class="sb-nav-link-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
                             Sair
