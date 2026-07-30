@@ -1819,10 +1819,22 @@ class MovimentoController extends Controller
                 //dd('balancete relatorio visualizacao');
                 //dd($request);
 
-        $dataInicio = "2026-07-01"; 
-        $dataFim = "2026-07-29";
+        $sel = "";
+        if ( $request->filled('data_de') && $request->data_de ){
+            $sel .= $sel ? ', ' : '' ;
+            $sel .= " Data de:" . \Carbon\Carbon::parse($request->data_de)->format('d-m-Y');
+            $dataInicio = $request->data_de;
+        }
+        if ( $request->filled('data_ate') && $request->data_ate ){
+            $sel .= $sel ? ', ' : '' ;
+            $sel .= " Data ate:" . \Carbon\Carbon::parse($request->data_ate)->format('d-m-Y');
+            $dataFim = $request->data_ate;
+        }
 
-        $resultados = DB::select("
+        //$dataInicio = "2026-07-01"; 
+        //$dataFim = "2026-07-29";
+
+        $movimentos = DB::select("
             SELECT *
             FROM (
                 SELECT 
@@ -1851,9 +1863,15 @@ class MovimentoController extends Controller
             
             //dd($resultados);
 
-            echo "<pre>";
-            print_r($resultados);
-            echo "</pre>";
+            // echo "<pre>";
+            // print_r($resultados);
+            // echo "</pre>";
+
+        // ====================== tratamento retorno para view:
+        // ============================================
+
+        return view('Movimentos.relatorioBalancetevisualizacao', compact('movimentos', 'sel') );
+
 
     }
 }
