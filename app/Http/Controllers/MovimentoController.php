@@ -135,7 +135,7 @@ class MovimentoController extends Controller
     {
 
 
-        //DB::enableQueryLog();   <<-- ativar debug mostrar consulta
+        //DB::enableQueryLog();   // <<-- ativar debug mostrar consulta
         
         // ===================================================================================
         
@@ -201,6 +201,8 @@ class MovimentoController extends Controller
             ->orderBy('categorias.classif', 'asc')
             ->get();  // get vai retornar uma collection 
             //->firstOrFail();
+
+            //Log::info('sql movimento_index', DB::getQueryLog() );
 
         // dd(DB::getQueryLog());   <<-- ativar debug mostrar consulta 
 
@@ -1549,7 +1551,7 @@ class MovimentoController extends Controller
 
         //dd($request);
 
-        DB::enableQueryLog();
+        //DB::enableQueryLog();
 
         // ====================== tratamento filtros:
         // ============================================
@@ -1697,7 +1699,7 @@ class MovimentoController extends Controller
 
         //dd(DB::getQueryLog()); 
 
-        Log::info('sql movimento', DB::getQueryLog() );
+        //Log::info('sql movimento', DB::getQueryLog() );
 
 
 
@@ -1834,26 +1836,27 @@ class MovimentoController extends Controller
         //$dataInicio = "2026-07-01"; 
         //$dataFim = "2026-07-29";
 
+        //DB::enableQueryLog();
+
         $movimentos = DB::select("
-            SELECT *
+            SELECT r2.classif, r2.nome, sum(r2.total) as total
             FROM (
-                SELECT 
-                    p1.classif, 
-                    p1.nome,
-                    COALESCE(SUM(m.valor),0) AS total
+                SELECT p1.classif, p1.nome, COALESCE(SUM(m.valor),0) AS total
                 FROM  categorias p1 
                 LEFT JOIN categorias p2 ON p2.classif  LIKE CONCAT(p1.classif , '%')
                 LEFT JOIN movimentos m ON m.categoria_id = p2.id
-                    
                 WHERE
-                    m.tipo_lc = 'O' 
-                    and m.dt BETWEEN :dataInicioO AND :dataFimO
-                GROUP BY
-                    p1.classif,
-                    p1.nome
-            ) AS subquery_combinada
+                    m.tipo_lc = 'O' and m.dt BETWEEN :dataInicioO AND :dataFimO
+                GROUP BY p1.classif, p1.nome
+                union
+                select p1.classif, p1.nome, COALESCE(SUM(0.00),0) AS total
+                FROM  categorias p1 
+                LEFT JOIN categorias p2 ON p2.classif  LIKE CONCAT(p1.classif , '%')
+                GROUP by p1.classif, p1.nome 
+            ) AS r2
+              group by r2.classif, r2.nome
             ORDER BY
-                1;
+                r2.classif;
             ", [
                 // Passar os bindings para prevenir SQL Injection
                 'dataInicioO' => $dataInicio,
@@ -1861,6 +1864,8 @@ class MovimentoController extends Controller
                 
             ]);
             
+            //Log::info('sql movimento_rel_balancete', DB::getQueryLog() );
+
             //dd($resultados);
 
             // echo "<pre>";
