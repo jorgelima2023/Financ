@@ -134,6 +134,20 @@ Route::group(['middleware' => 'auth'], function () {
     /*
     ===============================================================================================
     rotas restritas - middleware:
+    form descricao categorias - formulario edicao, inclusao, exclusao, visualizar/listar
+    ===============================================================================================
+    */
+    route::get('/form-descricaocategoria', 
+        [Categoriascontroller::class, 'descricaocategoriaform'] )->name('descricaocategoria.form')
+        ->middleware('permission:form-categoria');
+
+    Route::put('/update-descricaocategoria-form', 
+        [Categoriascontroller::class, 'updatedescricaoCategoria'])->name('descricaocategoria.form.update')
+        ->middleware('permission:edit-categoria'); // receber dados form
+
+    /*
+    ===============================================================================================
+    rotas restritas - middleware:
     form contas correntes - formulario edicao, inclusao, exclusao, visualizar/listar
     ===============================================================================================
     */
