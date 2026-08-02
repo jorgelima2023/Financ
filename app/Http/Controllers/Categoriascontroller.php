@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoriaRequest;
 use App\Models\Categoria;
+use App\Models\descricaoCategoria;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -13,8 +14,67 @@ use Nette\Utils\Arrays;
 
 class Categoriascontroller extends Controller
 {
+
+    function updatedescricaoCategoria(Request $request){
+        dd($request);
+
+    }
+
+
+    // descricaocategoriaform
+    public function descricaocategoriaform(){
+        $categorias = descricaoCategoria::orderBy('descricao_categoria')->get();
+
+        $categorias->push(new descricaoCategoria(['id' => 0,  
+                                         'descricao_categoria' => '' , 
+                                         'categoria_id' => '' ]));
+
+        $categorias->push(new descricaoCategoria(['id' => 0, 
+                                         'descricao_categoria' => '' , 
+                                         'categoria_id' => '' ]));
+                                
+        $categorias->push(new descricaoCategoria(['id' => 0, 
+                                         'descricao_categoria' => '' , 
+                                         'categoria_id' => '' ]));
+
+        $categorias->push(new descricaoCategoria(['id' => 0, 
+                                         'descricao_categoria' => '' , 
+                                         'categoria_id' => '' ]));
+
+        $categorias->push(new descricaoCategoria(['id' => 0, 
+                                         'descricao_categoria' => '' , 
+                                         'categoria_id' => '' ]));
+
+        $categorias->push(new descricaoCategoria(['id' => 0, 
+                                         'descricao_categoria' => '' , 
+                                         'categoria_id' => '' ]));
+
+        $categorias->push(new descricaoCategoria(['id' => 0, 
+                                         'descricao_categoria' => '' , 
+                                         'categoria_id' => '' ]));
+
+        $categorias->push(new descricaoCategoria(['id' => 0, 
+                                         'descricao_categoria' => '' , 
+                                         'categoria_id' => '' ]));
+
+
+        $categorias->push(new descricaoCategoria(['id' => 0, 
+                                         'descricao_categoria' => '' , 
+                                         'categoria_id' => '' ]));
+
+
+        $categoriassel = Categoria::orderBy('classif')->get();
+        
+        // Carregar a VIEW
+        return view('categorias.descricaocategoria', ['categorias' => $categorias , 'categoriassel' => $categoriassel]);
+
+        //return view('categorias.form', ['categorias' => $categorias]);
+    }
+
     // form categoria
     public function form(){
+
+        
 
         // DB::enableQueryLog();
 
@@ -171,6 +231,9 @@ class Categoriascontroller extends Controller
     // receber os dados formulario via 'request'
     // e na model 'Categoria' receber o id do categoria
     public function updateCategorias(Request $request){
+
+    dd($request);
+    
         //$categorias = $request->categorias; // Isso será um array
         //dd($categorias);
         //dd($request->categoria);

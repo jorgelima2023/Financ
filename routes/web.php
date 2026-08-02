@@ -96,68 +96,6 @@ Route::group(['middleware' => 'auth'], function () {
     
     Route::get('/generate-csv-user', [UserController::class, 'generateCsv'])
     ->name('user.generate-Csv');
-    
-        /*
-    ===============================================================================================
-    rotas restritas - middleware:
-    form-categoria
-    ===============================================================================================
-    */
-
-    // ---------- categorias formulario edicao, inclusao, exclusao, visualizar/listar
-    
-    // formulario que faz o index, retorna array ao form edicao/inclusao
-    route::get('/form-categoria', 
-        [Categoriascontroller::class, 'form'] )->name('categorias.form')
-        ->middleware('permission:form-categoria');
-
-    Route::put('/update-categoria-form', 
-        [Categoriascontroller::class, 'updateCategorias'])->name('categorias.form.update')
-        ->middleware('permission:edit-categoria'); // receber dados form
-
-    /*
-    ===============================================================================================
-    rotas restritas - middleware:
-    form-forma pagamento - formulario edicao, inclusao, exclusao, visualizar/listar
-    ===============================================================================================
-    */
-
-    // formulario que faz o index, retorna array ao form edicao/inclusao
-    route::get('/form-forma_pgto', 
-        [formaPagamentoscontroller::class, 'form'] )->name('formaPagamentos.form')
-        ->middleware('permission:form-forma_pgto');    
-
-    Route::put('/update-forma_pgto-form', 
-        [formaPagamentoscontroller::class, 'updateFormaPgto'])->name('forma_pgto.form.update')
-        ->middleware('permission:form-forma_pgto'); // receber dados form
-
-    /*
-    ===============================================================================================
-    rotas restritas - middleware:
-    form descricao categorias - formulario edicao, inclusao, exclusao, visualizar/listar
-    ===============================================================================================
-    */
-    route::get('/form-descricaocategoria', 
-        [Categoriascontroller::class, 'descricaocategoriaform'] )->name('descricaocategoria.form')
-        ->middleware('permission:form-categoria');
-
-    Route::put('/update-descricaocategoria-form', 
-        [Categoriascontroller::class, 'updatedescricaoCategoria'])->name('descricaocategoria.form.update')
-        ->middleware('permission:edit-categoria'); // receber dados form
-
-    /*
-    ===============================================================================================
-    rotas restritas - middleware:
-    form contas correntes - formulario edicao, inclusao, exclusao, visualizar/listar
-    ===============================================================================================
-    */
-    route::get('/form-contaCorrente', 
-        [contaCorrenteController::class, 'form'] )->name('contaCorrente.form');
-        //->middleware('permission:form-forma_pgto');    
-
-    Route::put('/update-contaCorrente-form', 
-        [contaCorrenteController::class, 'updateContaCorrente'])->name('contaCorrente.form.update');
-        //->middleware('permission:form-forma_pgto'); // receber dados form
 
 
         /*
@@ -194,6 +132,70 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/destroy-categoria/{categoria}', 
         [Categoriascontroller::class, 'destroy'])->name('categorias.destroy')
         ->middleware('permission:destroy-categoria');
+
+        /*
+    ===============================================================================================
+    rotas restritas - middleware:
+    form-categoria
+    ===============================================================================================
+    */
+
+    // ---------- categorias formulario edicao, inclusao, exclusao, visualizar/listar
+    
+    // formulario que faz o index, retorna array ao form edicao/inclusao
+    route::get('/form-categoria', 
+        [Categoriascontroller::class, 'form'] )->name('categorias.form')
+        ->middleware('permission:form-categoria');
+
+    Route::put('/update-categoria-form', 
+        [Categoriascontroller::class, 'updateCategorias'])->name('categorias.form.update')
+        ->middleware('permission:edit-categoria'); // receber dados form
+
+        /*
+    ===============================================================================================
+    rotas restritas - middleware:
+    form descricao categorias - formulario edicao, inclusao, exclusao, visualizar/listar
+    ===============================================================================================
+    */
+    route::get('/form-descricaocategoria', 
+        [Categoriascontroller::class, 'descricaocategoriaform'] )->name('categorias.descricaocategoria')
+        ->middleware('permission:form-categoria');
+
+    // Route::put('/update-descricaocategoria-form', 
+    //     [Categoriascontroller::class, 'updatedescricaoCategoria'])->name('categorias.descricaocategoria.update')
+    //     ->middleware('permission:edit-categoria'); // receber dados form
+
+    /*
+    ===============================================================================================
+    rotas restritas - middleware:
+    form-forma pagamento - formulario edicao, inclusao, exclusao, visualizar/listar
+    ===============================================================================================
+    */
+
+    // formulario que faz o index, retorna array ao form edicao/inclusao
+    route::get('/form-forma_pgto', 
+        [formaPagamentoscontroller::class, 'form'] )->name('formaPagamentos.form')
+        ->middleware('permission:form-forma_pgto');    
+
+    Route::put('/update-forma_pgto-form', 
+        [formaPagamentoscontroller::class, 'updateFormaPgto'])->name('forma_pgto.form.update')
+        ->middleware('permission:form-forma_pgto'); // receber dados form
+
+
+    /*
+    ===============================================================================================
+    rotas restritas - middleware:
+    form contas correntes - formulario edicao, inclusao, exclusao, visualizar/listar
+    ===============================================================================================
+    */
+    route::get('/form-contaCorrente', 
+        [contaCorrenteController::class, 'form'] )->name('contaCorrente.form');
+        //->middleware('permission:form-forma_pgto');    
+
+    Route::put('/update-contaCorrente-form', 
+        [contaCorrenteController::class, 'updateContaCorrente'])->name('contaCorrente.form.update');
+        //->middleware('permission:form-forma_pgto'); // receber dados form
+
 
 
         /*

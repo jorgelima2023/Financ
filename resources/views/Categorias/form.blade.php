@@ -26,6 +26,9 @@
             <form class="row g-3" action="{{ route('categorias.form.update', ['categorias' => $categorias ] ) }}" method="POST">
                 @csrf
                 @method('PUT')
+
+                <input type="hidden" name="formcategoria" id="formcategoria" value="form">
+
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>

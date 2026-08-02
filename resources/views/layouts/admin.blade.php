@@ -97,6 +97,14 @@
                                         </a>
                                     @endcan
 
+                                    <!-- ------------------------ descricao categoria formulario  -------------------------------   -->
+                                    @can('form-categoria')
+                                        <a class="nav-link" href="{{ route('categorias.descricaocategoria') }}">
+                                            <div class="sb-nav-link-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                                            Descrição categorias de/para
+                                        </a>
+                                    @endcan
+
                                     <!-- ------------------------ Formas Pagamento-formulario -------------------------------   -->
                                     @can('form-forma_pgto')
                                         <a class="nav-link" href="{{ route('formaPagamentos.form') }}">
@@ -113,6 +121,7 @@
                                     </a>
                                     @endcan
 
+                                     
                                 </nav>
                             </div>
 
