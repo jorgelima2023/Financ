@@ -483,22 +483,18 @@ class MovimentoController extends Controller
             return back()->withInput()->with('error', 'Movimento não atualizado!');
         }
     }
+
     // importar arq csv
     public function importar(Request $request){
 
-        //dd($request);
+        //   montar select option categorias, apenas as que estão ativas, e indicadas recebem lcto
+        $categorias = DB::select("SELECT * FROM categorias where lcto = '1' and ativo = '1' order by classif");
+        // formulario para o filtro categorias, montar select option contas correntes
+        $contascorrentes = DB::select("SELECT id, id as contascorrente_id , CONCAT_WS(' - ', nome, agencia, conta, id) as nome FROM contascorrentes");
+        // formulario para o filtro forma_pgtos, montar select option
+        $forma_pgtos = Forma_pgto::orderBy('nome', 'ASC')->get();
 
-        //if( !$request ){
-            //   montar select option categorias, apenas as que estão ativas, e indicadas recebem lcto
-            $categorias = DB::select("SELECT * FROM categorias where lcto = '1' and ativo = '1' order by classif");
-            // formulario para o filtro categorias, montar select option contas correntes
-            $contascorrentes = DB::select("SELECT id, id as contascorrente_id , CONCAT_WS(' - ', nome, agencia, conta, id) as nome FROM contascorrentes");
-            // formulario para o filtro forma_pgtos, montar select option
-            $forma_pgtos = Forma_pgto::orderBy('nome', 'ASC')->get();
-        //}
-
-        
-
+        // chamar a view e essa faz a chamada do form request
         return view('Movimentos.importar',
          ['menu' => 'movimentos importar' ,
           'categorias' => $categorias,
@@ -508,7 +504,6 @@ class MovimentoController extends Controller
           'categoriabusca' => '',
           'data_de' => '',
           'tipo_filtro' => '',
-          
          ]);
     }
 
@@ -516,128 +511,60 @@ class MovimentoController extends Controller
     // ===========================================================================
     public function form(Request $request){
 
-        //dd($request);    // no form colocado nome no botao para separar o tipo arq
-        /* "tipo_filtro" => "P"
-            "categoria_id" => "42"
-            "contabusca" => "2"
-            "forma_pgto_id" => "6"
-            "data_de" => "2026-08-08"
-            "btn" => "btncsv"
-        */
-
-        // dd('botao ' . $request->btn);
-            // botao btnofx 
-            // botao btncsv
-
-        // importar csv
-        // receber dados da rota 'importar' 
-        //     processar na rota 'form' e retornar msg a rota 'importar'    
-        if( $request->btn == "btncsv" )
-        {
-            //dd('botao ' . $request->btn);
-            
-            // $request->validate(
-            //     ['file' => 'required|mimes:csv|max:2048',
-            //     ],
-            //     ['file.required' => 'O arquivo é requerido (.csv)',
-            //      'file.mimes' => 'O arquivo deve ser do tipo (.csv)',
-            //      'file.max' => 'Tamanho do arquivo excedido :max Mb'
-            //     ]
-            // );
-            
-            // ao exportar planilha para csv : 
-               // 1-separador campos ";"
-               // 2-separador milhar "." 
-               // 3-retirar acentuacao do cabecalho
+        //dd($request);      //dd('botao ' . $request->btn);
+        // => no form colocado nome no botao para separar o tipo arq:  "btn" => "btncsv" ou "btn" => "btnofx" 
+        //    receber dados da rota 'importar' faz request rota 'form' e processar controller 'form' e 
+        //    retornar msg a rota 'importar' 
+        // => ao exportar planilha para csv - cabecalho: Data;Histórico;Valor (US$);Valor(R$)
+               // 1-separador campos ";"  2-separador milhar "."  3-retirar acentuacao do cabecalho 
                // 4-deixar a primeira linha do cabecalho
 
-            // colunas arquivo csv: 
-            // Data;Histórico;Valor (US$);Valor(R$)
+        if( $request->btn == "btncsv" )
+        {   /*
+            $request->validate(
+                ['file' => 'required|mimes:csv|max:2048', ], ['file.required' => 'O arquivo é requerido (.csv)', 
+                 'file.mimes' => 'O arquivo deve ser do tipo (.csv)', 'file.max' => 'Tamanho do arquivo excedido :max Mb'
+                ]
+            ); */
 
             // criar array colunas
             $headers = ['Data', 'Historico', 'Valor(US$)', 'Valor(R$)'];
 
-            // Recebe o arquivo
-            // 'file' vem formulario 
-            //      input type="file" name="file"
+            // Recebe o arquivo 'file' vem name formulario  input type="file" name="file"
             $datafile = file($request->file('file'));
 
             // validar dados arquivo, vem como string
             // dd( file($request->file('file')) );
 
             // 1) receber o arquivo, ler os dados e converter a string em array , usar array_map
+            //    dd(array_map('str_getcsv', file( $request->file('file') ) ));
             $dataFile = array_map('str_getcsv', file( $request->file('file') ) );
 
-            // dd(array_map('str_getcsv', file( $request->file('file') ) ));
-
-            /*
-                     array_map
-
-            0 => array:1 [▶]
-            1 => array:1 [▶]
-            2 => array:1 [▶]
-            3 => array:1 [▶]
-
-            array:19 
-                0 => array:1 [▼
-                    0 => "Data;Historico;Valor(US$);Valor(R$)"
-                ]
-                1 => array:1 [▼
-                    0 => "25/05;SEGURO SUPERPROTEGIDO;0.00;9.99"
-                ]
+            /*  //dd($dataFile);
+            array_map 0 => array:1 [▶]  1 => array:1 [▶]  2 => array:1 [▶]   3 => array:1 [▶]
+            array:19    0 => array:1 [▼] 0 => "Data;Historico;Valor(US$);Valor(R$)" ]
+                        1 => array:1 [▼] 0 => "25/05;SEGURO SUPERPROTEGIDO;0.00;9.99" ]
             */
-
-                //dd($dataFile);
-
-            // 2) percorrer as linhas do arquivo csv depois de usar o array_map
-            foreach( $dataFile as $keyData => $row ){
-                /*
-                        dd($row);
-                    com os dados do 1o. registro
-                    0 => "Data;Historico;Valor(US$);Valor(R$)"
-                */
-                /*
-                    dd($keyData);
-                    0
-                    mostra a chave 0 
-                */
-                /*    
-                    dd($row);
-                    0 => "Data;Historico;Valor(US$);Valor(R$)"
-                    mostra a chave 0 e o registro
-                */
-                /*    
+                        /*    
                     dd($dataFile);      $keyData 0 =>  1 => 2 =>
+                    $keyData
                     0 => array:1 [▶]
                     1 => array:1 [▶]
                     2 => array:1 [▶]
                 */
 
-                /*    
-                    $row[0] ???
-
-                    0 => array:1 [▼
-                      $row[0]  0 => "Data;Historico;Valor(US$);Valor(R$)"
-                    ]
-                    1 => array:1 [▼
-                      $row[0]  0 => "25/05;SEGURO SUPERPROTEGIDO;0.00;9.99"
-                    ]
-                    2 => array:1 [▼
-                      $row[0]  0 => "20/05;Wellhub Marcia Lima;0.00;69.99"
-                    ]
+            // 2) percorrer as linhas do arquivo csv depois de usar o array_map
+            foreach( $dataFile as $keyData => $row ){
+                /*  dd($row);  com os dados do 1o. registro  
+                    0 => array:1 $row[0]  0 => "Data;Historico;Valor(US$);Valor(R$)"
+                    1 => array:1 [▼] $row[0]  0 => "25/05;SEGURO SUPERPROTEGIDO;0.00;9.99"
                 */
 
                 // converter a linha 'row' em array
                 $values = explode(';' , $row[0]);
 
-                /*
-                    dd($values);
-                    array:4 [▼ 
-                    0 => "Data"
-                    1 => "Historico"
-                    2 => "Valor(US$)"
-                    3 => "Valor(R$)"
-                    ]
+                /* dd($values);
+                    array:4 [▼] 0 => "Data" 1 => "Historico" 2 => "Valor(US$)" 3 => "Valor(R$)" ]
                 */
 
                 // 3) percorrer as colunas do cabecalho, independente da qtde de colunas,
@@ -655,21 +582,11 @@ class MovimentoController extends Controller
             }
 
             // 5) array de valores
-            // dd($arrayValues);
-            /*
-                      $arrayValues   array de valores 
-            0 => array:4 [▼
-                "Data" => "Data"
-                "Historico" => "Historico"
-                "Valor(US$)" => "Valor(US$)"
-                "Valor(R$)" => "Valor(R$)"
-            ]
-            1 => array:4 [▼
-                "Data" => "25/05"
-                "Historico" => "SEGURO SUPERPROTEGIDO"
-                "Valor(US$)" => "0.00"
-                "Valor(R$)" => "9.99"
-            ]
+            /*  dd($arrayValues);
+                0 => array:4 [▼] "Data" => "Data" "Historico" => "Historico" "Valor(US$)" => "Valor(US$)" "Valor(R$)" => "Valor(R$)"
+                ]
+                1 => array:4 [▼] "Data" => "25/05"  "Historico" => "SEGURO SUPERPROTEGIDO" "Valor(US$)" => "0.00" "Valor(R$)" => "9.99"
+                ]
             */
 
             // cadastrar registros no banco dados, caso estejam campos esteja mesma ordem colunas
@@ -679,11 +596,12 @@ class MovimentoController extends Controller
             $texto = '';
             $regs  = 0;
             $falha = 0;
+            //     para pegar dia '8' do mes atual:
             //$dt = \Carbon\Carbon::now()->startOfMonth();  // 1a. dia mes
-            //$dt = \Carbon\Carbon::parse($dt)->addDays(7); // dia 08 do mes
+            //$dt = \Carbon\Carbon::parse($dt)->addDays(7); // soma mais 7 dias , e dia 08 do mes
             // dd('data ' . $dt );
 
-            // data de lancamento request
+            // data de lancamento request do formulario:
             // if ($request->filled('data_de') && $request->filled('data_ate')) {
             //     $dt = $request->data_de; 
             // }
@@ -708,7 +626,7 @@ class MovimentoController extends Controller
                     // o valor ja vem com o "." ponto
                     $vlr = $row['Valor(R$)'];
                     // 'valor' => str_replace(',', '.', str_replace('.', '', $vlr )),
-
+                    // verificar pelo campo: historico + dt + valor + data se ja nao esta cadastrado!!!
                     $movimento_Dcto = Movimento::where('descricao', $row['Historico'])
                     ->where('dt', '=', $dt)
                     ->where('valor', '=', $vlr)
@@ -720,10 +638,7 @@ class MovimentoController extends Controller
                     if ($movimento_Dcto->isEmpty()) {
 
                         DB::beginTransaction();
-
-
                         try {
-
                             Movimento::create([
                             'dt' => $dt ,
                             'tipo_lc' => $request->tipo_filtro /*'P'*/ ,     
@@ -734,12 +649,9 @@ class MovimentoController extends Controller
                             'valor' => $vlr ,
                             'forma_pgto_id' => $request->forma_pgto_id /*6*/ , 
                             'contascorrente_id' => $request->contabusca /*2*/  
-                        ]);
-
-
-                        DB::commit();
-
-                        $regs++;
+                            ]);
+                            DB::commit();
+                            $regs++;
 
                         } catch (Exception $e) {
                             DB::rollBack();
@@ -751,32 +663,24 @@ class MovimentoController extends Controller
                         $texto .= $row['Data'] . ' ' . $row['Historico'] . ' ' . $vlr . $dt;
                         $jaexiste++;
                     }
-                }
-                    
+                }   
             }
-
             
             if( $falha > 0 ){
                 return back()->withInput()->with('error', 'Movimento não cadastrado!');
             }else{
                 //$regs = count($arrayValues) -1;
                 return redirect()->route('movimentos.importar' )->with('success', 'Movimento cadastrado com sucesso! (' . $regs. ') , ja existe: ' . $jaexiste . ' (' . $texto . ')' );
-            }
-            
-                
+            }       
         }
 
         // -------------- importar ofx
+        // verificar se no import trouxe o http request
+            // importar arquivo ofx , recebe o path + name arquivo
 
         if( $request->btn == "btnofx" )
         {
-
-            // verificar se no import trouxe o http request
-            // importar arquivo ofx , recebe o path + name arquivo
-            // botao importar form index
-
             /* 
-
             chatgpt: laravel salvar arquivo no c:\temp do windows
             ==================================================================================================
             use Illuminate\Support\Facades\Storage;
@@ -848,19 +752,14 @@ class MovimentoController extends Controller
             File::put($caminhoCompleto, file($request->file('file')));
 
             // $request->validate(
-            //     ['file' => 'required|mimes:ofx!max:2048',
-            //     ],
-            //     ['file.required' => 'arq requerido',
-            //      'file.mimes' => 'arq deve ser do tipo ofx',
-            //      'file.max' => 'tamanho arq excedido :max Mb'
+            //     ['file' => 'required|mimes:ofx!max:2048',],
+            //     ['file.required' => 'arq requerido', 'file.mimes' => 'arq deve ser do tipo ofx', 'file.max' => 'tamanho arq excedido :max Mb'
             //     ]
             // );
 
             // $request->validate(
-            //     ['file' => 'required|max:2048',
-            //     ],
-            //     ['file.required' => 'O arquivo não foi informado!',
-            //      'file.max' => 'Tamanho arquivo excedido, tamanho :max Mb'
+            //     ['file' => 'required|max:2048', ],
+            //     ['file.required' => 'O arquivo não foi informado!', 'file.max' => 'Tamanho arquivo excedido, tamanho :max Mb'
             //     ]
             // );
             
@@ -1089,9 +988,7 @@ class MovimentoController extends Controller
             }else{
                 return back()->withInput()->with('error', 'Nenhuma transação encontrada!');
             }
-
         }
-
     }
 
     // **************************************************************************************
@@ -1113,6 +1010,7 @@ class MovimentoController extends Controller
         // ********************************************************************************************
         // o DB::select() retorna um array de objetos. Então você precisa acessar o primeiro resultado 
         // ********************************************************************************************
+        // seleionando id conta corrente
         $idcc = $movimento_agcc[0]->id ?? null;
 
         $falha = 0;
@@ -1234,9 +1132,7 @@ class MovimentoController extends Controller
             }
 
             return back()->withInput()->with('error', $msgmov );
-
         }
-
     }
     
     // ***********************************************************************************
