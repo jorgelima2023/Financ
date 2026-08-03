@@ -65,10 +65,10 @@
                                     class="form-select">
                                     <option value="">Selecione a categoria</option>
 
-                                    @foreach ($categoriassel as $categoria)
-                                        <option value="{{ $categoria->categoria_id == $categoria->id ? $categoria->categoria_id : $categoria->id }}"
-                                            {{ $categoria->categoria_id == $categoria->id ? 'selected' : '' }}>
-                                            {{ $categoria->nome }}
+                                    @foreach ($categoriassel as $categoriasel)
+                                        <option value="{{ $categoria->categoria_id == $categoriasel->id ? $categoria->categoria_id : $categoriasel->id }}"
+                                            {{ $categoria->categoria_id == $categoriasel->id ? 'selected' : '' }}>
+                                            {{ $categoriasel->nome }}
                                         </option>
                                     @endforeach
                                 </select>

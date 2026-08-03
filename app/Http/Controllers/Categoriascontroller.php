@@ -24,7 +24,7 @@ class Categoriascontroller extends Controller
     // descricaocategoriaform
     public function descricaocategoriaform(){
         $categorias = descricaoCategoria::orderBy('descricao_categoria')->get();
-
+            //dd($categorias);
         $categorias->push(new descricaoCategoria(['id' => 0,  
                                          'descricao_categoria' => '' , 
                                          'categoria_id' => '' ]));
@@ -232,8 +232,10 @@ class Categoriascontroller extends Controller
     // e na model 'Categoria' receber o id do categoria
     public function updateCategorias(Request $request){
 
-    dd($request);
-    
+        // dd($request);
+        // "formcategoria" => "form"
+        // "formcategoria" => "descricaoform"
+
         //$categorias = $request->categorias; // Isso será um array
         //dd($categorias);
         //dd($request->categoria);
@@ -264,101 +266,201 @@ class Categoriascontroller extends Controller
 
         $falha = 0;
 
-        foreach ($data['itens'] as $item) {
-           
-            //dd($item['id'] . ' ' . $item['nome'] . ' ' . $item['classif'] . ' ' . $item['soma'] );
-           // id vazio eh incluir o registro
-           if( empty( $item['id'] ) ){
-                //echo "id vazio ";
-                
-                if( ( !empty( $item['nome'] ) ) && ( !empty( $item['classif'] ) ) )
-                {
-                
-                    DB::beginTransaction();
+        if( $request->formcategoria == "form" )
+        {
 
-                    try {
-
-                        $categoria = Categoria::create([
-                            'nome' => $item['nome'] , 
-                            'classif' =>  $item['classif'] , 
-                            'soma' => isset($item['soma']) ? 1 : 0 ,
-                            'lcto' => isset($item['lcto']) ? 1 : 0 ,
-                            'ativo' => isset($item['ativo']) ? 1 : 0
-                        ]);
-
-                        // Operação é concluída com êxito, conseguiu cadastrar sem erros
-                        DB::commit();
-
-                        Log::info('Categoria incluida: {id}', ['id' => $categoria]);
-
-                    } catch (Exception $e) {
-
-                        $falha = 1;
+            foreach ($data['itens'] as $item) {
+            
+                //dd($item['id'] . ' ' . $item['nome'] . ' ' . $item['classif'] . ' ' . $item['soma'] );
+                // id vazio eh incluir o registro
+                if( empty( $item['id'] ) ){
+                        //echo "id vazio ";
                         
-                        // Operação não é concluída com êxito
-                        DB::rollBack();
-                        Log::error('Categoria não incluida.', [ 'error' => $e->getMessage()]);
-                    }
+                        if( ( !empty( $item['nome'] ) ) && ( !empty( $item['classif'] ) ) )
+                        {
+                        
+                            DB::beginTransaction();
+
+                            try {
+
+                                $categoria = Categoria::create([
+                                    'nome' => $item['nome'] , 
+                                    'classif' =>  $item['classif'] , 
+                                    'soma' => isset($item['soma']) ? 1 : 0 ,
+                                    'lcto' => isset($item['lcto']) ? 1 : 0 ,
+                                    'ativo' => isset($item['ativo']) ? 1 : 0
+                                ]);
+
+                                // Operação é concluída com êxito, conseguiu cadastrar sem erros
+                                DB::commit();
+
+                                Log::info('Categoria incluida: {id}', ['id' => $categoria]);
+
+                            } catch (Exception $e) {
+
+                                $falha = 1;
+                                
+                                // Operação não é concluída com êxito
+                                DB::rollBack();
+                                Log::error('Categoria não incluida.', [ 'error' => $e->getMessage()]);
+                            }
+                        }
+
+                }else{
+                        
+                        // localizar registro no banco de dados.
+                        $categoria = Categoria::where('id', $item['id'])->first();
+
+                        DB::beginTransaction();
+                        
+                        try {
+
+                            //echo "<br>nome=" . $item['nome'] . " classif=" . $item['classif'] . " soma=" . $item['soma'];
+
+                            // registro nao foi marcado para excluir
+                            if( isset($item['excluir']) == 0 ){
+
+                                $categoria->update([
+                                    'nome' => $item['nome'],
+                                    'classif' => $item['classif'],
+                                    'soma' => isset($item['soma']) ? 1 : 0 ,
+                                    'lcto' => isset($item['lcto']) ? 1 : 0 ,
+                                    'ativo' => isset($item['ativo']) ? 1 : 0
+                                ]);
+                            }else{
+
+                                $categoria->delete();
+                            }
+
+                            DB::commit();
+
+                        //     Log::info('Categoria alterada: {id}', ['id' => $item['id']]);
+
+                        } catch (Exception $e) {
+                            
+                            $falha = 1;
+
+                            DB::rollBack();
+                            Log::error('Categoria não alterada.', [ 'error' => $e->getMessage()]);
+                        }
+
                 }
 
-           }else{
-                
-                // localizar registro no banco de dados.
-                $categoria = Categoria::where('id', $item['id'])->first();
+                // debug - mostrar valores , omitir return acima.
+                // echo 'id=' . $item['id'] . ' nome=' . $item['nome'] . ' c=' . $item['classif'] . ' soma=' . $item['soma'] . '<br>';
+            
+            
+            }
 
-                DB::beginTransaction();
-                   
-                try {
+            
+            if( $falha == 0 ){   
+                //$categorias = Categoria::orderBy('nome', 'ASC')->get();
 
-                    //echo "<br>nome=" . $item['nome'] . " classif=" . $item['classif'] . " soma=" . $item['soma'];
+                // Carregar a VIEW
+                //return view('categorias.index', ['categorias' => $categorias]);
 
-                    // registro nao foi marcado para excluir
-                    if( isset($item['excluir']) == 0 ){
+                return redirect()->route('categorias.form')->with('success', 'Categoria cadastrada com sucesso!');
 
-                        $categoria->update([
-                            'nome' => $item['nome'],
-                            'classif' => $item['classif'],
-                            'soma' => isset($item['soma']) ? 1 : 0 ,
-                            'lcto' => isset($item['lcto']) ? 1 : 0 ,
-                            'ativo' => isset($item['ativo']) ? 1 : 0
-                        ]);
-                    }else{
+            }else{
+                return back()->withInput()->with('error', 'Categoria não cadastrada!');
 
-                        $categoria->delete();
-                    }
+            }
 
-                    DB::commit();
-
-                //     Log::info('Categoria alterada: {id}', ['id' => $item['id']]);
-
-                } catch (Exception $e) {
-                    
-                    $falha = 1;
-
-                    DB::rollBack();
-                    Log::error('Categoria não alterada.', [ 'error' => $e->getMessage()]);
-                }
-
-           }
-
-            // debug - mostrar valores , omitir return acima.
-            // echo 'id=' . $item['id'] . ' nome=' . $item['nome'] . ' c=' . $item['classif'] . ' soma=' . $item['soma'] . '<br>';
-           
-           
         }
 
-        
-        if( $falha == 0 ){   
-            //$categorias = Categoria::orderBy('nome', 'ASC')->get();
+        if( $request->formcategoria == "descricaoform" )
+        {
 
-            // Carregar a VIEW
-            //return view('categorias.index', ['categorias' => $categorias]);
+            foreach ($data['itens'] as $item) {
+            
+                //dd($item['id'] . ' ' . $item['nome'] . ' ' . $item['classif'] . ' ' . $item['soma'] );
+                // id vazio eh incluir o registro
+                if( empty( $item['id'] ) ){
+                        //echo "id vazio ";
+                        
+                        if( ( !empty( $item['descricao_categoria'] ) ) && ( !empty( $item['categoria_id'] ) ) )
+                        {
+                        
+                            DB::beginTransaction();
 
-            return redirect()->route('categorias.form')->with('success', 'Categoria cadastrada com sucesso!');
+                            try {
 
-        }else{
-            return back()->withInput()->with('error', 'Categoria não cadastrada!');
+                                $categoria = descricaoCategoria::create([
+                                    'descricao_categoria' => $item['descricao_categoria'] , 
+                                    'categoria_id' =>  $item['categoria_id']
+                                ]);
 
+                                // Operação é concluída com êxito, conseguiu cadastrar sem erros
+                                DB::commit();
+
+                                Log::info('Descrição categoria incluida: {id}', ['id' => $categoria]);
+
+                            } catch (Exception $e) {
+
+                                $falha = 1;
+                                
+                                // Operação não é concluída com êxito
+                                DB::rollBack();
+                                Log::error('Descrição Categoria não incluida.', [ 'error' => $e->getMessage()]);
+                            }
+                        }
+
+                }else{
+                        
+                        // localizar registro no banco de dados.
+                        $categoria = descricaoCategoria::where('id', $item['id'])->first();
+
+                        DB::beginTransaction();
+                        
+                        try {
+
+                            //echo "<br>nome=" . $item['nome'] . " classif=" . $item['classif'] . " soma=" . $item['soma'];
+
+                            // registro nao foi marcado para excluir
+                            if( isset($item['excluir']) == 0 ){
+
+                                $categoria->update([
+                                    'descricao_categoria' => $item['descricao_categoria'],
+                                    'categoria_id' => $item['categoria_id']
+                                ]);
+                            }else{
+
+                                $categoria->delete();
+                            }
+
+                            DB::commit();
+
+                        //     Log::info('Categoria alterada: {id}', ['id' => $item['id']]);
+
+                        } catch (Exception $e) {
+                            
+                            $falha = 1;
+
+                            DB::rollBack();
+                            Log::error('Descrição categoria não alterada.', [ 'error' => $e->getMessage()]);
+                        }
+
+                }
+
+                // debug - mostrar valores , omitir return acima.
+                // echo 'id=' . $item['id'] . ' nome=' . $item['nome'] . ' c=' . $item['classif'] . ' soma=' . $item['soma'] . '<br>';
+            
+            
+            }
+
+            
+            if( $falha == 0 ){   
+                //$categorias = Categoria::orderBy('nome', 'ASC')->get();
+
+                // Carregar a VIEW
+                //return view('categorias.index', ['categorias' => $categorias]);
+
+                return redirect()->route('categorias.descricaocategoria')->with('success', 'Descricao categoria cadastrada com sucesso!');
+
+            }else{
+                return back()->withInput()->with('error', 'Descricao categoria não cadastrada!');
+
+            }
         }
 
         // validar o fomulario
