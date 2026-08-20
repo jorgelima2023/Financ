@@ -6,6 +6,7 @@ use App\Http\Requests\MovimentoEditRequest;
 use App\Http\Requests\MovimentoRequest;
 use App\Models\Categoria;
 use App\Models\ContasCorrente;
+use App\Models\descricaoCategoria;
 use App\Models\Forma_pgto;
 use App\Models\Movimento;
 use Exception;
@@ -822,6 +823,12 @@ class MovimentoController extends Controller
 
                 // em busca dos campos necessarios do arquivo ofx
 
+                //DB::enableQueryLog();
+
+                $descricaoCategorias = descricaoCategoria::all();
+
+                //Log::info('sql descricaoCategoria', DB::getQueryLog() );
+
                 $i = 0;
                 foreach ($contaBancaria->statement->transactions as $ofxEntity) {
                     $i++;
@@ -859,6 +866,37 @@ class MovimentoController extends Controller
 
                     //if (Str::contains($string, $texto)) {
                     
+                    //DB::enableQueryLog();
+
+                    // $id_categoria = $descr_categoria->firstWhere('descricao_categoria', $string )?->categoria_id;
+
+                    //$id_categoria = $descr_categoria[$string]->categoria_id ?? null;
+
+
+                    //$descricaoCategorias = descricaoCategoria::all();
+                    $nome = $string;
+                    $descrCateg = $descricaoCategorias->first(function ($item) use ($nome) {
+                        return str_contains(
+                            strtolower($nome),
+                            strtolower($item->descricao_categoria)
+                        );
+                    });
+                    $categoria_id = $descrCateg?->categoria_id;
+                    $id_categoria = $categoria_id;
+
+                   
+                    Log::info('string:', ['string' => $string ] );
+                    Log::info('string:', ['id_categoria' => $id_categoria ] );
+                    
+
+                    if( $id_categoria ){
+                        $cat = $id_categoria;
+                    }else{
+                        $cat = 33;
+                    }
+
+                    
+                    /*
                     if (strpos( strtoupper($string), "CLINIPAM") !== false) {
                         $cat = 11;
                     }
@@ -927,6 +965,8 @@ class MovimentoController extends Controller
                             $cat = 9;
                         }
                     }
+                    */
+
                     
                     // *************************************************************************************
                     // criar um elemento na modal
