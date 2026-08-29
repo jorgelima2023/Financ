@@ -125,6 +125,23 @@
 
                             </div>
                         </div>
+                        <!-- ----------------- forma  -->
+                        <div class="row mb-2 align-items-center">
+                            <div class="col-2">
+                                <label for="contabusca" class="col-form-label">Forma Pgto</label>
+                            </div>
+                            <div class="col-5">
+                                <select name="forma_pgto_id" id="forma_pgto_id" class="form-select">
+                                        <option value="">Selecione uma Forma de Pagamento</option>
+                                            @foreach ($forma_pgtos as $forma_pgto)
+                                            <option value="{{ $forma_pgto->id }}"
+                                                {{ old('forma_pgto_id') == $forma_pgto->id ? 'selected' : '' }}>
+                                                {{ $forma_pgto->nome }}
+                                            </option>
+                                        @endforeach
+                                </select>
+                            </div>    
+                        </div>
 
                         <!-- ====================================================================================================  -->
 

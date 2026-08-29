@@ -183,6 +183,11 @@ class MovimentoController extends Controller
                 $q->where('categorias.id', '=', $request->categoria_id );
             })
 
+            /*  formulario campo select option, forma pgto   */
+            ->when($request->filled('forma_pgto_id'), function ($q) use ($request) {
+                $q->where('forma_pgtos.id', '=', $request->forma_pgto_id );
+            })
+
             /*  formulario campo conta corrente select option, busca contas 
             ->when($request->filled('contabusca'), function ($q) use ($request) {
                 $q->where('movimentos.contascorrente_id', '=', $request->contabusca );
@@ -215,10 +220,19 @@ class MovimentoController extends Controller
             $sel .= $sel ? ', ' : '' ;
             $sel .= " Descrição:{$request->descricao}";
         }
-        if( $request->has('categoriabusca') && $request->categoriabusca ){
+        
+        if( $request->has('categoria_id') && $request->categoria_id ){
+            $categ = Categoria::where('id', $request->categoria_id)->get()->first();
             $sel .= $sel ? ', ' : '' ;
-            $sel .= " Categoria:{$request->categoriabusca}";
+            $sel .= " Categoria:{$categ->nome}";
         }
+
+        if( $request->has('forma_pgto_id') && $request->forma_pgto_id ){
+            $forma = Forma_pgto::where('id', $request->forma_pgto_id)->get()->first();
+            $sel .= $sel ? ', ' : '' ;
+            $sel .= " Categoria:{$forma->nome}";
+        }
+
         if( $request->has('contabusca') && $request->contabusca ){
 
             // DESATIVADO !!! formulario campo select option contas correntes
@@ -885,8 +899,8 @@ class MovimentoController extends Controller
                     $id_categoria = $categoria_id;
 
                    
-                    Log::info('string:', ['string' => $string ] );
-                    Log::info('string:', ['id_categoria' => $id_categoria ] );
+                    //Log::info('string:', ['string' => $string ] );
+                    //Log::info('string:', ['id_categoria' => $id_categoria ] );
                     
 
                     if( $id_categoria ){
