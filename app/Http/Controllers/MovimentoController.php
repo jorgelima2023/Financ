@@ -277,8 +277,10 @@ class MovimentoController extends Controller
 
         // formulario para o filtro categorias, 
         //   montar select option categorias, apenas as que estão ativas, e indicadas recebem lcto
+        
         $categorias = DB::select("SELECT * FROM categorias where lcto = '1' and ativo = '1' order by classif");
         // formulario para o filtro categorias, montar select option contas correntes
+        
         $contascorrentes = DB::select("SELECT id, id as contascorrente_id , CONCAT_WS(' - ', nome, agencia, conta, id) as nome FROM contascorrentes");
         // formulario para o filtro forma_pgtos, montar select option
         $forma_pgtos = Forma_pgto::orderBy('nome', 'ASC')->get();

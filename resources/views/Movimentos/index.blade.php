@@ -10,14 +10,13 @@
    // }
     
  @endphp
-
- @props([
+  @props([
                             'name' => 'categoria_id',
                             'id' => 'categoria_id',
                             'categorias' => [],
                             'selected' => null
                         ])
-                        
+                       
     <div class="container-fluid px-4">
 
         <div class="mb-1 hstack gap-3">
@@ -345,6 +344,7 @@
                                     <label for="categoria" class="col-form-label">Categoria</label>
                                 </div>
                                 <div class="col-6">
+
                                     <select name="categoria_id" id="categoria" class="form-select" required>
                                     <option value="">Selecione uma categoria</option>
                                         @foreach ($categorias as $categoria)
@@ -484,6 +484,7 @@
                                     <label for="editcategoria_id" class="col-form-label">Categoria</label>
                                 </div>
                                 <div class="col-6">
+                                    
                                     <select name="editcategoria_id" id="editcategoria_id" class="form-select" required>
                                         <option value="">Selecione uma categoria</option>
                                         @foreach ($categorias as $categoria)
@@ -493,6 +494,7 @@
                                             </option>
                                         @endforeach
                                     </select>
+                                    
                                 </div>
                             </div>
 
@@ -836,6 +838,14 @@
             var dt = button.getAttribute('data-dt');
             var tipo = button.getAttribute('data-tipo');
             var tipo_lc = button.getAttribute('data-tipo_lc');
+                // add
+            const categoriaId = button.getAttribute('data-categoria_id');
+                // add
+            const selectCategoria = modalEditar.querySelector(
+                '[name="categoria_id"]'
+            );
+                // add
+            selectCategoria.value = categoriaId;
 
             document.getElementById('editMovimentoId').value = id;
             document.getElementById('editDescricao').value = descricao;
