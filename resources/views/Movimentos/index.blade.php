@@ -11,6 +11,13 @@
     
  @endphp
 
+ @props([
+                            'name' => 'categoria_id',
+                            'id' => 'categoria_id',
+                            'categorias' => [],
+                            'selected' => null
+                        ])
+                        
     <div class="container-fluid px-4">
 
         <div class="mb-1 hstack gap-3">
@@ -80,6 +87,16 @@
                                 <label for="categoriabusca" class="col-form-label">Categoria</label>
                             </div>
                             <div class="col-6">
+
+                                <x-select-categoria 
+                                    name="categoria_id"
+                                    id="categoria"
+                                    :categorias="$categorias"
+                                />
+
+                                @php // DESATIVADO !!!
+                                if(  1 == 2 ){ @endphp
+
                                 <select name="categoria_id" id="categoria" class="form-select">
                                     <option value="">Selecione uma categoria</option>
 
@@ -90,6 +107,9 @@
                                         </option>
                                     @endforeach
                                 </select>
+
+                                @php } @endphp
+
                             </div>
                         </div>
 
