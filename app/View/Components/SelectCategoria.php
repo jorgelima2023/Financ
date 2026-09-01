@@ -2,24 +2,20 @@
 
 namespace App\View\Components;
 
-use Closure;
-use Illuminate\Contracts\View\View;
+use App\Models\Categoria;
 use Illuminate\View\Component;
+use Illuminate\View\View;
 
 class SelectCategoria extends Component
 {
-    /**
-     * Create a new component instance.
-     */
+    public $categorias;
+
     public function __construct()
     {
-        //
+        $this->categorias = Categoria::orderBy('nome')->get();
     }
 
-    /**
-     * Get the view / contents that represent the component.
-     */
-    public function render(): View|Closure|string
+    public function render(): View
     {
         return view('components.select-categoria');
     }

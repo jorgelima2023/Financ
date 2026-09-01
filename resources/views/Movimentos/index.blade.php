@@ -10,13 +10,22 @@
    // }
     
  @endphp
-  @props([
-                            'name' => 'categoria_id',
-                            'id' => 'categoria_id',
-                            'categorias' => [],
-                            'selected' => null
-                        ])
-                       
+
+<!-- 
+ fluxo - select categoria:
+Botão Editar
+     ↓
+data-categoria-id="5"
+     ↓
+JavaScript pega o valor 5
+     ↓
+selectCategoria.value = 5
+     ↓
+<option value="5"> fica selecionado
+
+Dessa forma, o componente fica reutilizável em qualquer página e o modal consegue alterar a categoria selecionada via JavaScript.
+
+-->
     <div class="container-fluid px-4">
 
         <div class="mb-1 hstack gap-3">
@@ -484,7 +493,11 @@
                                     <label for="editcategoria_id" class="col-form-label">Categoria</label>
                                 </div>
                                 <div class="col-6">
-                                    
+                                    <!-- selectCategoria.value = categoriaId; -->
+                                    <x-select-categoria />
+
+                                    @php // DESATIVADO !!!  
+                                    if(  1 == 2 ){ @endphp
                                     <select name="editcategoria_id" id="editcategoria_id" class="form-select" required>
                                         <option value="">Selecione uma categoria</option>
                                         @foreach ($categorias as $categoria)
@@ -494,7 +507,7 @@
                                             </option>
                                         @endforeach
                                     </select>
-                                    
+                                    @php } @endphp
                                 </div>
                             </div>
 
@@ -841,7 +854,7 @@
                 // add
             const categoriaId = button.getAttribute('data-categoria_id');
                 // add
-            const selectCategoria = modalEditar.querySelector(
+            const selectCategoria = modal.querySelector(
                 '[name="categoria_id"]'
             );
                 // add
