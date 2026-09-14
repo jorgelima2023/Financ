@@ -2,30 +2,6 @@
 
 @section('content')
 
-
-
- @php 
-   // foreach ($movimentos as $value) {
-   // echo 'id=' . $value->id . ' descr=' . $value->descricao . ' conta=' . $value->contascorrente_id . "<br>";
-   // }
-    
- @endphp
-
-<!-- 
- fluxo - select categoria:
-Botão Editar
-     ↓
-data-categoria-id="5"
-     ↓
-JavaScript pega o valor 5
-     ↓
-selectCategoria.value = 5
-     ↓
-<option value="5"> fica selecionado
-
-Dessa forma, o componente fica reutilizável em qualquer página e o modal consegue alterar a categoria selecionada via JavaScript.
-
--->
     <div class="container-fluid px-4">
 
         <div class="mb-1 hstack gap-3">
@@ -95,16 +71,6 @@ Dessa forma, o componente fica reutilizável em qualquer página e o modal conse
                                 <label for="categoriabusca" class="col-form-label">Categoria</label>
                             </div>
                             <div class="col-6">
-
-                                <x-select-categoria 
-                                    name="categoria_id"
-                                    id="categoria"
-                                    :categorias="$categorias"
-                                />
-
-                                @php // DESATIVADO !!!
-                                if(  1 == 2 ){ @endphp
-
                                 <select name="categoria_id" id="categoria" class="form-select">
                                     <option value="">Selecione uma categoria</option>
 
@@ -115,9 +81,6 @@ Dessa forma, o componente fica reutilizável em qualquer página e o modal conse
                                         </option>
                                     @endforeach
                                 </select>
-
-                                @php } @endphp
-
                             </div>
                         </div>
 
@@ -493,11 +456,6 @@ Dessa forma, o componente fica reutilizável em qualquer página e o modal conse
                                     <label for="editcategoria_id" class="col-form-label">Categoria</label>
                                 </div>
                                 <div class="col-6">
-                                    <!-- selectCategoria.value = categoriaId; -->
-                                    <x-select-categoria />
-
-                                    @php // DESATIVADO !!!  
-                                    if(  1 == 2 ){ @endphp
                                     <select name="editcategoria_id" id="editcategoria_id" class="form-select" required>
                                         <option value="">Selecione uma categoria</option>
                                         @foreach ($categorias as $categoria)
@@ -507,7 +465,6 @@ Dessa forma, o componente fica reutilizável em qualquer página e o modal conse
                                             </option>
                                         @endforeach
                                     </select>
-                                    @php } @endphp
                                 </div>
                             </div>
 
@@ -857,9 +814,7 @@ Dessa forma, o componente fica reutilizável em qualquer página e o modal conse
             const selectCategoria = modal.querySelector(
                 '[name="categoria_id"]'
             );
-                // add
-            selectCategoria.value = categoriaId;
-
+            
             document.getElementById('editMovimentoId').value = id;
             document.getElementById('editDescricao').value = descricao;
             document.getElementById('editValor').value = valor;
