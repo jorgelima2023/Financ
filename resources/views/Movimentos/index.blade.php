@@ -134,6 +134,22 @@
                             </div>    
                         </div>
 
+                        <!--
+                        <div class="row mb-2 align-items-center">
+                            <div class="col-2">
+                                <label for="grafico" class="col-form-label"></label>
+                            </div>
+                            <div class="col-5">Gráfico:
+                                <input class="form-check-input" type="radio" name="grafico" id="graficoB" value="B">
+                                <label class="form-check-label" for="grafico">Bar-chart</label>
+                                <input class="form-check-input" type="radio" name="grafico" id="graficoP" value="P">
+                                <label class="form-check-label" for="grafico">Pie-chart</label>
+                                <input class="form-check-input" type="radio" name="grafico" id="graficoX" value="X" checked>
+                                <label class="form-check-label" for="grafico">Nenhum</label>
+                            </div>
+                        </div>
+                        -->
+                        
                         <!-- ====================================================================================================  -->
 
                         <div class="row">
@@ -168,11 +184,13 @@
                                 title="Clique aqui para gerar - Bar-Chart"> 
                                 <a href="{{ route('Movimentos.pie' , 
                                             [ 'descricao' => $descricao , 
-                                            'tipo_filtro' => $tipo_filtro ,
-                                            'data_de' => $data_de ,
-                                            'data_ate' => $data_ate,
-                                            'grafico' => 'bar',
-                                            'contabusca' => 1
+                                              'data_de' => $data_de ,
+                                              'data_ate' => $data_ate,
+                                              'tipo_filtro' => $tipo_filtro ,
+                                              'categoria_id' => 1 ,
+                                              'contabusca' => 1 ,
+                                              'forma_pgto_id' => 1 , 
+                                              'grafico' => 'bar'
                                             ] ) }}" 
                                         target="_blank">
                                     <i class="fa-solid fa-pie"></i>Bar-Chart
@@ -181,7 +199,18 @@
                     </div>
                     
                     <div class="col-md-1">
-                        <button type="button" class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" 
+                        
+
+                        <button type="button"
+                                class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7"
+                                title="Clique aqui para gerar - Pie chart"
+                                onclick="abrirPieChart()">
+
+                            <i class="fa-solid fa-pie"></i> Pie-Chart
+
+                        </button>
+
+                        <!-- <button type="button" class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" 
                                 title="Clique aqui para gerar - Pie chart"> 
                                 <a href="{{ route('Movimentos.pie' , 
                                             [ 'descricao' => $descricao , 
@@ -194,7 +223,8 @@
                                         target="_blank">
                                     <i class="fa-solid fa-pie"></i>Pie-Chart
                                 </a>
-                        </button>
+                        </button> -->
+
                     </div>
 
                     <div class="col-md-4">Gráficos</div>
@@ -771,6 +801,30 @@
     </div>
 
     <script>
+        function abrirPieChart() {
+            alert('1');
+            // pega o valor selecionado no combo
+            let categoria_id = document.getElementById('categoria').value;
+            alert('cat:' + categoria_id);
+
+            // monta a rota Laravel
+            let url = "{{ route('Movimentos.pie') }}";
+
+            url += "?descricao=" + encodeURIComponent("{{ $descricao }}");
+            url += "&tipo_filtro=" + encodeURIComponent("{{ $tipo_filtro }}");
+            url += "&categoria_id=" + encodeURIComponent(categoria_id);
+            url += "&data_de=" + encodeURIComponent("{{ $data_de }}");
+            url += "&data_ate=" + encodeURIComponent("{{ $data_ate }}");
+            url += "&grafico=doughnut";
+            //url += "&contabusca=1";
+            alert('aqui url:' + url);
+            // abre em nova aba
+            window.open(url, '_blank');
+        }
+    </script>
+
+    <script>
+
     document.addEventListener('DOMContentLoaded', function () {
         /*
         const linhas = document.querySelectorAll("table tbody tr");

@@ -134,7 +134,7 @@ class MovimentoController extends Controller
     // form index
     public function index(Request $request)
     {
-
+        //dd($request);
 
         //DB::enableQueryLog();   // <<-- ativar debug mostrar consulta
         
@@ -215,45 +215,59 @@ class MovimentoController extends Controller
         // ************************************************
         // montar selecao a ser apresentada no formulario
         // ************************************************
-        $sel = "";
+        
+        $sel = "";   // montar selecao a ser apresentada no formulario
+        
+                // $sel .= $sel ? ', ' : '' ;
+                // $sel .= " grafico:{$request->grafico}";
+
+                // if( $request->has('grafico') && $request->grafico != 'X' ){
+                //     $this->pie( $request );
+                //     exit;
+                // }
+
+        // *********************** descricao  ***********************************************
         if( $request->has('descricao') && $request->descricao ){
             $sel .= $sel ? ', ' : '' ;
             $sel .= " Descrição:{$request->descricao}";
         }
         
+        // *********************** categoria_id  ********************************************
         if( $request->has('categoria_id') && $request->categoria_id ){
             $categ = Categoria::where('id', $request->categoria_id)->get()->first();
             $sel .= $sel ? ', ' : '' ;
             $sel .= " Categoria:{$categ->nome}";
         }
 
+        // *********************** forma_pgto_id  *******************************************
         if( $request->has('forma_pgto_id') && $request->forma_pgto_id ){
             $forma = Forma_pgto::where('id', $request->forma_pgto_id)->get()->first();
             $sel .= $sel ? ', ' : '' ;
-            $sel .= " Categoria:{$forma->nome}";
+            $sel .= " Forma Pgto:{$forma->nome}";
         }
 
+        // DESATIVADO !!! formulario campo select option contas correntes
+        /*
         if( $request->has('contabusca') && $request->contabusca ){
+            $cc = ContasCorrente::where('id', $request->contabusca)->first();
+            $q->whereIn('movimentos.contascorrente_id', $selectedContabuscaIds )->get();
+            $sel .= " Conta corrente:{$request->contabusca} {$cc->nome} - {$cc->agencia} - {$cc->conta}";
+            $sel .= " Conta corrente: {$cc->nome} - {$cc->agencia} - {$cc->conta}";
+        }
+        */
 
-            // DESATIVADO !!! formulario campo select option contas correntes
-            //$cc = ContasCorrente::where('id', $request->contabusca)->first();
-            
-            // formulario campo multi select option contas correntes
+        // *********************** contabusca  *******************************************
+        // formulario campo multi select option contas correntes
+        if( $request->has('contabusca') && $request->contabusca ){
             $selectedContabuscaIds = $request->input('contabusca');
-                //$q->whereIn('movimentos.contascorrente_id', $selectedContabuscaIds )->get();
             
             $cc = ContasCorrente::whereIn('id', $selectedContabuscaIds)->get();
             $ccNomes = $cc->pluck('nome')->implode(', '); 
-            //dd($nomes = $cc->pluck('nome')->toArray() );
             $sel .= $sel ? ', ' : '' ;
             $sel .= "Contas:" . $ccNomes;
-
-            // DESATIVADO !!! formulario mostrar conta select option
-            //$sel .= " Conta corrente:{$request->contabusca} {$cc->nome} - {$cc->agencia} - {$cc->conta}";
-            //$sel .= " Conta corrente: {$cc->nome} - {$cc->agencia} - {$cc->conta}";
-
         }
 
+        // *********************** tipo_filtro  *******************************************
         if( $request->has('tipo_filtro') && $request->tipo_filtro ){
             $sel .= $sel ? ', ' : '' ;
             if( $request->tipo_filtro == 'O' ){
@@ -262,6 +276,8 @@ class MovimentoController extends Controller
                 $sel .= " Tipo:Previsão";
             }                    
         }
+
+        // *********************** data_de  / data_ate *************************************
         if ( $request->filled('data_de') && $request->data_de ){
             $sel .= $sel ? ', ' : '' ;
             $sel .= " Data de:" . \Carbon\Carbon::parse($request->data_de)->format('d-m-Y');
@@ -276,6 +292,8 @@ class MovimentoController extends Controller
         // anterior ... $categorias = Categoria::orderBy('classif', 'ASC')->get();
 
         // formulario para o filtro categorias, 
+        // ====================================
+
         //   montar select option categorias, apenas as que estão ativas, e indicadas recebem lcto
         
         $categorias = DB::select("SELECT * FROM categorias where lcto = '1' and ativo = '1' order by classif");
@@ -1197,6 +1215,31 @@ class MovimentoController extends Controller
     
     public function pie(Request $request)
     {   
+        //dd($request);
+
+      /*    chamada  botao pie-chart
+        #parameters: array:5 [▼
+      "tipo_filtro" => "O"   "data_de" => "2026-09-01"   "data_ate" => "2026-09-23"
+      "grafico" => "doughnut"     "contabusca" => "1"
+         ]
+
+        chamada botao pesquisar 
+                #parameters: array:8 [▼
+            "descricao" => null  "data_de" => "2026-09-01"  "data_ate" => "2026-09-23"
+            "tipo_filtro" => "O"  "categoria_id" => "33" 
+            "contabusca" => array:2 [▶]  1 , 2 
+            "forma_pgto_id" => "1"
+            "grafico" => "B"    "grafico" => "P"
+            ]
+        chamada botao pesquisar
+               #parameters: array:8 [▼
+            "descricao" => null  "data_de" => "2026-09-01"  "data_ate" => "2026-09-23"
+            "tipo_filtro" => "P"  "categoria_id" => "33" 
+            "contabusca" => array:2 [▶]  1 , 2 
+            "forma_pgto_id" => "1"
+            "grafico" => "B"
+            ]
+        */        
 
         // receb o request com os filtros, para aplicar a consulta e montar os dados e gerar grafico
 
@@ -1210,7 +1253,7 @@ class MovimentoController extends Controller
 
         // ----------------------  debug query
         
-        //DB::enableQueryLog();
+        DB::enableQueryLog();
         
         /*
         $query = DB::table('movimentos');
@@ -1268,13 +1311,24 @@ class MovimentoController extends Controller
             ->get();
             */
 
-
+        // ================================================================================
+        // considerar apenas as categorias - indicadas para soma valor lctos  no where
+        // ================================================================================
         $query = DB::table('movimentos')
             ->join('categorias', 'movimentos.categoria_id', '=', 'categorias.id')
             ->where('categorias.soma', '1');
 
+        // ===================  where  =====================================================
+        
+        // ===================  descricao  =================================================
         if ($request->filled('descricao')) {
             $query->where('descricao', 'like', "%{$request->descricao}%");
+        }
+
+        // ===================  categoria_id  ==============================================
+        if ($request->filled('categoria_id')) {
+                $query->where('categoria_id', $request->categoria_id);
+                //dd('categ:' . $request->categoria_id);
         }
 
         if ($request->filled('tipo_filtro')) {
@@ -1320,7 +1374,9 @@ class MovimentoController extends Controller
             
         }
 
-         //dd(DB::getQueryLog());
+        //dd(DB::getQueryLog());
+        Log::info('pie movimento', DB::getQueryLog() );
+
             /*
         select `categorias`.`nome`, SUM(movimentos.valor) as total 
         from `movimentos` 
@@ -1349,18 +1405,20 @@ class MovimentoController extends Controller
         */
         
         //dd($request->grafico);
-        
+        // $request->grafico
+
         // -------- versao 1
         return view('Movimentos.pie', [
             'descricao'    => $request->descricao,
             'data_de'      => $request->data_de,
             'data_ate'     => $request->data_ate,
             'tipo_filtro'  => $request->tipo_filtro,
+            'categoria_id' => $request->categoria_id, 
             'labels'       => $dados->pluck('nome'),
             'values'       => $dados->pluck('total'),
             'dados'        => $dados,
             'totalDespesa' => $totalDespesa,
-            'grafico'      => $request->grafico
+            'grafico'      => $request->grafico 
         ]);
         
        
