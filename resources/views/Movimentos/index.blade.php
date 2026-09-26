@@ -119,7 +119,7 @@
                         <!-- ----------------- forma  -->
                         <div class="row mb-2 align-items-center">
                             <div class="col-2">
-                                <label for="contabusca" class="col-form-label">Forma Pgto</label>
+                                <label for="forma_pgto_id" class="col-form-label">Forma Pgto</label>
                             </div>
                             <div class="col-5">
                                 <select name="forma_pgto_id" id="forma_pgto_id" class="form-select">
@@ -180,6 +180,7 @@
             <div class="row g-0 ">
                     <div class="col-md-6"></div>
                     <div class="col-md-1">
+                        <!--
                         <button type="button" class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" 
                                 title="Clique aqui para gerar - Bar-Chart"> 
                                 <a href="{{ route('Movimentos.pie' , 
@@ -187,27 +188,27 @@
                                               'data_de' => $data_de ,
                                               'data_ate' => $data_ate,
                                               'tipo_filtro' => $tipo_filtro ,
-                                              'categoria_id' => 1 ,
-                                              'contabusca' => 1 ,
-                                              'forma_pgto_id' => 1 , 
                                               'grafico' => 'bar'
                                             ] ) }}" 
                                         target="_blank">
                                     <i class="fa-solid fa-pie"></i>Bar-Chart
                                 </a>
                         </button>
+                        -->
+                        <button type="button"
+                                class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7"
+                                title="Clique aqui para gerar - Bar chart"
+                                onclick="abrirPieChart('bar')">
+                            <i class="fa-solid fa-pie"></i> Bar-Chart
+                        </button>
                     </div>
                     
                     <div class="col-md-1">
-                        
-
                         <button type="button"
                                 class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7"
                                 title="Clique aqui para gerar - Pie chart"
-                                onclick="abrirPieChart()">
-
+                                onclick="abrirPieChart('doughnut')">
                             <i class="fa-solid fa-pie"></i> Pie-Chart
-
                         </button>
 
                         <!-- <button type="button" class="btn btn-outline-secondary btn-sm px-1 py-0 fs-7" 
@@ -801,25 +802,44 @@
     </div>
 
     <script>
-        function abrirPieChart() {
-            alert('1');
+        function abrirPieChart(graf) {
+            //alert('1');
             // pega o valor selecionado no combo
             let categoria_id = document.getElementById('categoria').value;
-            alert('cat:' + categoria_id);
+            //alert('cat:' + categoria_id);
+            // pega o valor selecionado no combo
+            let forma_pgto_id = document.getElementById('forma_pgto_id').value;
+            //alert('pag:' + forma_pgto_id);
+            //contabusca multi-select
+            // pega todas as opções selecionadas
+            let select = document.getElementById('contabusca');
+            let contas = Array.from(select.selectedOptions).map(option => option.value);
+
+            // pega o tipo_filtro selecionado
+            let tipo_filtro = document.querySelector(
+                'input[name="tipo_filtro"]:checked'
+            ).value;
 
             // monta a rota Laravel
             let url = "{{ route('Movimentos.pie') }}";
 
             url += "?descricao=" + encodeURIComponent("{{ $descricao }}");
-            url += "&tipo_filtro=" + encodeURIComponent("{{ $tipo_filtro }}");
+            url += "&tipo_filtro=" + encodeURIComponent(tipo_filtro);
             url += "&categoria_id=" + encodeURIComponent(categoria_id);
+            url += "&forma_pgto_id=" + encodeURIComponent(forma_pgto_id);
+
+            // adiciona cada conta
+            contas.forEach(function(id) {
+                url += "&contabusca[]=" + encodeURIComponent(id);
+            });
+
             url += "&data_de=" + encodeURIComponent("{{ $data_de }}");
             url += "&data_ate=" + encodeURIComponent("{{ $data_ate }}");
-            url += "&grafico=doughnut";
-            //url += "&contabusca=1";
-            alert('aqui url:' + url);
-            // abre em nova aba
-            window.open(url, '_blank');
+            url += "&grafico=" + encodeURIComponent(graf);   // doughnut ou bar
+            
+            //alert('aqui url:' + url);
+            
+            window.open(url, '_blank');   // abre em nova aba
         }
     </script>
 

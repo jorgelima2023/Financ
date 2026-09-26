@@ -1327,15 +1327,26 @@ class MovimentoController extends Controller
 
         // ===================  categoria_id  ==============================================
         if ($request->filled('categoria_id')) {
-                $query->where('categoria_id', $request->categoria_id);
-                //dd('categ:' . $request->categoria_id);
+            $query->where('categoria_id', $request->categoria_id);
+        }
+
+        // ===================  forma_pgto_id  ==============================================
+        if ($request->filled('forma_pgto_id')) {
+            $query->where('forma_pgto_id', $request->forma_pgto_id);
         }
 
         if ($request->filled('tipo_filtro')) {
             $query->where('tipo_lc', $request->tipo_filtro);
         }
 
-        $query->where('movimentos.contascorrente_id', $request->contabusca);
+        // $query->where('movimentos.contascorrente_id', $request->contabusca);
+        
+        /*  formulario campo conta corrente multi select option, busca contas    */
+        if ($request->filled('contabusca')) {
+            $selectedContabuscaIds = $request->input('contabusca');
+            $query->whereIn('movimentos.contascorrente_id', $selectedContabuscaIds )->get();
+            
+        }
 
         if ($request->filled('data_de') && $request->filled('data_ate')) {
             $query->whereBetween('movimentos.dt', [
