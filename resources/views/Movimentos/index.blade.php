@@ -840,6 +840,8 @@
             //alert('aqui url:' + url);
             
             window.open(url, '_blank');   // abre em nova aba
+            // window.location.href = url; // abrir na mesma aba
+            // location.href = url;   // abrir na mesma aba
         }
     </script>
 
