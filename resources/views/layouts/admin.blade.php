@@ -7,6 +7,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <title>Financeiro</title>
+
 </head>
 
 {{-- file:///C:/xampp/htdocs/celk2/startbootstrap-sb-admin-gh-pages/index.html --}}
@@ -265,7 +266,7 @@
         </div>
 
     </div>
-   
+
 </body>
 
 </html>

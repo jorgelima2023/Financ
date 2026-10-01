@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-    
+        
     <div class="container-fluid px-4">
 
         <div class="mb-1 hstack gap-3">
@@ -62,7 +62,7 @@
                             <div class="col-6">
 
                                 <select name="categoria_id" id="categoria" class="form-select">
-                                    <option value="">Selecione uma categoria</option>
+                                    <option value="">Selecione uma categoria ou digite para pesquisar...</option>
 
                                     @foreach ($categorias as $categoria)
                                         <option value="{{ $categoria->id }}"
@@ -162,6 +162,7 @@
                 </div>
             </div>
         </div>
+
 
 
 @endsection
