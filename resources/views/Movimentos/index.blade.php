@@ -72,7 +72,7 @@
                             </div>
                             <div class="col-6">
                                 <select name="categoria_id" id="categoria" class="form-select">
-                                    <option value="">Selecione uma categoria</option>
+                                    <option value=""></option>
 
                                     @foreach ($categorias as $categoria)
                                         <option value="{{ $categoria->id }}"
@@ -123,7 +123,7 @@
                             </div>
                             <div class="col-5">
                                 <select name="forma_pgto_id" id="forma_pgto_id" class="form-select">
-                                        <option value="">Selecione uma Forma de Pagamento</option>
+                                        <option value=""></option>
                                             @foreach ($forma_pgtos as $forma_pgto)
                                             <option value="{{ $forma_pgto->id }}"
                                                 {{ old('forma_pgto_id') == $forma_pgto->id ? 'selected' : '' }}>
@@ -300,7 +300,7 @@
 
         <!-- Modal de cadastro -->
         <div class="modal fade" id="cadModal" tabindex="-1" aria-labelledby="cadModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <form method="POST" action="{{ route('movimentos.store') }}">
                     @csrf
                     @method('POST')
@@ -433,7 +433,8 @@
 
         <!-- Modal de Edição -->
         <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
+
         <!-- <x-alert /> -->
                     <form method="POST" action="" id="formEditMovimento">
                     @csrf
@@ -488,7 +489,7 @@
                                 </div>
                                 <div class="col-6">
                                     <select name="editcategoria_id" id="editcategoria_id" class="form-select" required>
-                                        <option value="">Selecione uma categoria</option>
+                                        <option value="">Selecione uma categoria ou digite para pesquisar...</option>
                                         @foreach ($categorias as $categoria)
                                             <option value="{{ $categoria->id }}"
                                                 {{ old('categoria_id') == $categoria->id ? 'selected' : '' }}>
@@ -576,7 +577,7 @@
         
         <!-- Modal de Exclusão -->
         <div class="modal fade" id="excluiModal" tabindex="-1" aria-labelledby="excluiModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
 
                 <x-alert />
                     <!-- action js -->

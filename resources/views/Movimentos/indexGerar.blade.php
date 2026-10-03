@@ -85,7 +85,7 @@
                                 
 
                                 <select name="categoria_id" id="categoria" class="form-select" required>
-                                    <option value="">Selecione uma categoria</option>
+                                    <option value=""></option>
 
                                     @foreach ($categorias as $categoria)
                                         <option value="{{ $categoria->id }}"
@@ -105,7 +105,7 @@
                             <div class="col-5">
 
                                 <select name="contabusca" id="contabusca" class="form-select" required>
-                                    <option value="">Selecione uma conta</option>
+                                    <option value=""></option>
 
                                     @foreach ($contascorrentes as $contascorrente)
                                         <option value="{{ $contascorrente->id }}"
@@ -124,7 +124,7 @@
                             </div>
                             <div class="col-5">
                                 <select name="eforma_pgto_id" id="eforma_pgto_id" class="form-select" required>
-                                    <option value="">Selecione uma Forma de Pagamento</option>
+                                    <option value=""></option>
 
                                     @foreach ($forma_pgtos as $forma_pgto)
                                         <option value="{{ $forma_pgto->id }}"

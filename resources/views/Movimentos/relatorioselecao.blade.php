@@ -62,7 +62,7 @@
                             <div class="col-6">
 
                                 <select name="categoria_id" id="categoria" class="form-select">
-                                    <option value="">Selecione uma categoria ou digite para pesquisar...</option>
+                                    <option value=""></option>
 
                                     @foreach ($categorias as $categoria)
                                         <option value="{{ $categoria->id }}"

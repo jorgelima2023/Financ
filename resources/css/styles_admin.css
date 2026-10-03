@@ -99,3 +99,6 @@ thead th {
     color: white;
     z-index: 10;
 }
+.ts-dropdown {  
+    z-index: 9999 !important;  /* modal editModal campo select option categoria_id tomselect */
+}
