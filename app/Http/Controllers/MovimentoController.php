@@ -662,12 +662,18 @@ class MovimentoController extends Controller
                     $vlr = $row['Valor(R$)'];
                     // 'valor' => str_replace(',', '.', str_replace('.', '', $vlr )),
                     // verificar pelo campo: historico + dt + valor + data se ja nao esta cadastrado!!!
+                    
+                    //DB::enableQueryLog();
+                    
                     $movimento_Dcto = Movimento::where('descricao', $row['Historico'])
                     ->where('dt', '=', $dt)
                     ->where('valor', '=', $vlr)
                     ->where('dcto', '=', $row['Data'])
+                    ->where('tipo_lc', '=', $request->tipo_filtro)
                     ->get();
                     
+                    //Log::info('importa_csv', DB::getQueryLog() );
+
                     //dd(' mov dcto:' . $movimento_Dcto);
 
                     if ($movimento_Dcto->isEmpty()) {
