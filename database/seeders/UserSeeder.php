@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('123456a', ['rounds' => 12])
             ]);
 
-            // Atribuir papel para o usuário
+            // Atribuir papel para o usuário:
             // caso no login aparecer: perfil "nao atribuido"
             //      ver tabela select * from roles r a id
             //      ver tabela select * from model_has_roles
