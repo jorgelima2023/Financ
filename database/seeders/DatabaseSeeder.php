@@ -23,9 +23,12 @@ class DatabaseSeeder extends Seeder
         
         $this->call([
             //CategoriaSeeder::class,
-            //UserSeeder::class,
-            PermissionSeeder::class,
             RoleSeeder::class,
+            PermissionSeeder::class,
+            UserSeeder::class,
+            CategoriaSeeder::class,
+            ContaCorrente::class,
+            FormaPgto::class,            
         ]);
     }
 }

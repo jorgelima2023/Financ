@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('categorias', function (Blueprint $table) {
             $table->id()->primary();
-            $table->string('nome'); 
+            $table->string('nome',60); 
             // $table->string('nome', 100); // string com tamanho máximo 100 caracteres
-            $table->string('classif');
-            $table->string('soma');
+            $table->string('classif',40);
+            $table->string('soma',1);
+            $table->string('lcto', 1);
+            $table->string('ativo', 1);
             //$table->foreignId('movimento_id')->constrained('movimentos');
             $table->timestamps();  // created_at , updated_at
         });
