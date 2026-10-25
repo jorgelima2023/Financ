@@ -1,4 +1,35 @@
-## Requisitos
+Olá 👋 Meu nome é jorge S. Lima
+====================================
+Desenvolvedor Programador Sênior full-stack
+====================================
+Atuação como programador PHP com Banco de dados: Oracle, sql-server e Firebird;
+Uso JavaScript, Html e CSS. 
+
+====================================
+o Projeto de Controle Financeiro - Financ  
+====================================
+Fiz esse gerenciador financeiro com FrameWork Laravel, é um sistema simples, mas buscando o lado prático e funcinal. O Objetivo não é ser um sistema financeiro completo e complexo, com todos os recursos que um sistema financeiro deve ter, mas um sistema simples para controle de finanças pessoais, o qual utilizo.
+Este foi idealizado com base no aprendizado através de um curso realizado on line, em https://celke.com.br/ com o aprendizando do Laravel. E buscando assim aprimorar o conteúdo apresentado, através do desenvolvimento deste projeto. O qual resultou nesse resultado esperado, aplicando assim os conhecimentos adquiridos. 
+Layoute: SBAdmin, Bootstrap 5, Fontawesome, node.js
+
+Funcionalidades:
+====================================
+- [x] - Página de login personalizada: email, senha, esqueceu senha e inscrever-se 
+- [x] - Menu
+- [x] - Menu - Dashboard ainda não desenvolvido
+- [x] - Menu - Cadastros: Usuários, Papéis, Categorias, Descrição categoria de/para, Formas pagamento e Conta corrente
+- [x] - Menu - Movimentos: Lançamentos de entrada e saída; 
+sendo consulta, edição, exclusão na mesma página com modal; Gráficos Bar-chart e Pie-chart, conforme seleção atual; Caso não selecione período é considerado período atual
+- [x] - Menu - Movimentos em lote: opção gerar movimentos em lote
+- [x] - Menu - Importar: opção importar movimentos - arquivo .CSV ou .OFX
+arquivos ofx formato bancário, csv campos: Data;Historico;Valor(US$);Valor(R$)
+- [x] - Menu - Movimentos relatório em html
+- [x] - Menu - Movimentos relatório Balancete, movimentos agrupados por categoria, sendo entradas e saídas
+- [x] - Cadastros formato CRUD ex.: usuários, papéis
+- [x] - Cadastros formato CRUD otimizado ex.: Categoria, Descrição categoria, Formas de pagamento e Conta corrente; sendo Consulta/inclusão/alteração/exclusão no mesmo formulário
+
+
+## Requisitos - Instalação
 
 
 * PHP 8.2 ou superior
@@ -107,7 +138,7 @@ Criar Seed
 php artisan make:seeder NomeSeeder
 ```
 ```
-php artisan make:seeder CourseSeeder
+php artisan make:seeder CategoriaSeeder
 ```
 
 Executar as seed
@@ -125,7 +156,7 @@ Criar um arquivo de Request com validações
 php artisan make:request NomeDoRequest
 ```
 ```
-php artisan make:request CourseRequest
+php artisan make:request CategoriaRequest
 ```
 
 Criar componente
