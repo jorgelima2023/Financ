@@ -9,13 +9,15 @@ Uso JavaScript, Html e CSS.
 o Projeto de Controle Financeiro - Financ  
 
 Fiz esse gerenciador financeiro com FrameWork Laravel, é um sistema simples, mas buscando o lado prático e funcional. O Objetivo não é ser um sistema financeiro completo e complexo, com todos os recursos que um sistema financeiro deve ter, mas um sistema simples para controle de finanças pessoais, o qual utilizo.
-Este foi idealizado com base no aprendizado através de um curso realizado on line, em https://celke.com.br/ com o aprendizando do Laravel. E buscando assim aprimorar o conteúdo apresentado, através do desenvolvimento deste projeto. O qual resultou nesse resultado esperado, aplicando assim os conhecimentos adquiridos. 
-Layoute: SBAdmin, Bootstrap 5, Fontawesome, node.js
+Este foi idealizado com base no aprendizado através de um curso realizado on line, em https://celke.com.br/ com o aprendizando do Laravel. E buscando assim aprimorar o conteúdo apresentado, através do desenvolvimento deste projeto. O qual resultou nesse resultado esperado, aplicando assim os conhecimentos adquiridos.
+Banco de dados Mysql; Configurável arquivo env; criado execução da Migration 
+Layoute: SBAdmin, Bootstrap 5, Fontawesome, node.js 
 
 Funcionalidades:
 
 - [x] - Página de login personalizada: email, senha, esqueceu senha e inscrever-se 
-- [x] - Menu
+Após rodar a seeder utilizar usuário:admin@financ.com.br senha:123456a já habilitado perfil super admin; o mesmo pode ser configurado em papéis
+- [x] - Menu - barra lateral esquerda com apresentação do menu
 - [x] - Menu - Dashboard ainda não desenvolvido
 - [x] - Menu - Cadastros: Usuários, Papéis, Categorias, Descrição categoria de/para, Formas pagamento e Conta corrente
 - [x] - Menu - Movimentos: Lançamentos de entrada e saída; 
