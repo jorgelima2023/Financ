@@ -1,0 +1,11 @@
+@import './styles/styles_sbadmin.css';
+@import './styles/styles_admin.css';
+@import '@fortawesome/fontawesome-free/css/all.css';
+
+html, body, #app {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+}

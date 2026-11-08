@@ -1,0 +1,20 @@
+body {
+    margin: 0;
+}
+
+.sb-sidenav-five {
+    background-color: #f9fafc;
+}
+
+#layoutSidenav_content {
+    min-width: 0;
+}
+
+.card-dashboard {
+    min-height: 110px;
+}
+
+.login-title {
+    font-size: 2rem;
+    font-weight: 400;
+}

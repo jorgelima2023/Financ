@@ -1,3 +1,11 @@
+@import './styles/styles_sbadmin.css';
+@import './styles/styles_admin.css';
+@import '@fortawesome/fontawesome-free/css/all.css';
+
+html, body, #app {
+    min-height: 100%;
+}
+
 body {
-    background-color: #f5f6fa;
+    margin: 0;
 }

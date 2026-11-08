@@ -1,0 +1,104 @@
+.bg-nav{
+    background-color: #183181;
+}
+
+.sb-sidenav-five {
+    background-color: #f9fafc;
+    box-shadow: 0 8px 14px rgba(0, 0, 0, .10), 0 8px 8px rgba(0, 0, 0, .10) !important;
+  }
+  
+  .sb-sidenav-five .sb-sidenav-menu .sb-sidenav-menu-heading {
+    color: rgba(41, 41, 41, 0.5);
+  }
+  
+  .sb-sidenav-five .sb-sidenav-menu .nav-link {
+    color: rgba(41, 41, 41, 0.9);
+  }
+  
+  .sb-sidenav-five .sb-sidenav-menu .nav-link .sb-nav-link-icon {
+    color: rgba(41, 41, 41, 0.9);
+  }
+  
+  .sb-sidenav-five .sb-sidenav-menu .nav-link .sb-sidenav-collapse-arrow {
+    color: rgba(41, 41, 41, 0.25);
+  }
+  
+  .sb-sidenav-five .sb-sidenav-menu .nav-link:hover {
+    color: #181818;
+    background-color: #f0efef;
+  }
+  
+  .sb-sidenav-five .sb-sidenav-menu .nav-link.active {
+    color: #181818;
+    background-color: #f0efef;
+  }
+  
+  .sb-sidenav-five .sb-sidenav-menu .nav-link.active .sb-nav-link-icon {
+    color: #181818;
+    background-color: #f0efef;
+  }
+  
+  .sb-sidenav-five .sb-sidenav-footer {
+    background-color: #eeeded;
+  }
+
+  .linha-excluir {
+    background-color: #f8d7da; /* Vermelho claro */
+  }
+  .pesquisar {
+    font-weight: 350; background-color: #D3D3D3
+  }
+  
+/* 
+  .valor-despesa {
+        color: red; 
+        font-weight: bold;
+    }
+    .valor-receita {
+        color: green;
+        font-weight: bold;
+    }
+   */
+ 
+  .movimento td{   /* movimentos - relatorio */
+    padding: 2px 8px !important; /* vertical horizontal */
+    line-height: 1.1;
+    font-size: 0.9rem; /* opcional */
+    border: none !important;
+}
+.movimento1 td{    /* movimentos - relatorio */
+    /* padding: 1px 8px !important;  */
+    line-height: 1;   /* line-height: 1; */
+    font-size: 0.9rem; /* font-size: 0.9rem; opcional */
+    border: none !important;
+}
+
+.movimento2 td{    /* movimentos - relatorio */
+    /* padding: 1px 8px !important;  */
+    line-height: 0.9  !important; /* line-height: 1; */
+    font-size: 0.7rem !important;/* font-size: 0.9rem; opcional */
+    border: none !important;
+}
+
+.subTotal td{    /* movimentos - relatorio */
+    /* padding: 1px 8px !important;  */
+    line-height: 1;   /* line-height: 1; */
+    font-size: 0.8rem; /* font-size: 0.9rem; opcional */
+    border: none !important;
+}
+
+/* movimentos - relatorio - congelar cabecalho !!! */
+thead th {
+    position: sticky;
+    top: 56px; /* altura da navbar */
+}
+.table-container2 thead th {
+    position: sticky;
+    top: 0;
+    background-color: #2c3e50;
+    color: white;
+    z-index: 10;
+}
+.ts-dropdown {  
+    z-index: 9999 !important;  /* modal editModal campo select option categoria_id tomselect */
+}
