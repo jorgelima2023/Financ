@@ -1,5 +1,9 @@
 import 'bootstrap';
 import './style.css';
+import {
+    renderMovimentos,
+    initMovimentos
+} from './pages/movimentos.js';
 
 const app = document.querySelector('#app');
 
