@@ -87,117 +87,246 @@ export function renderMovimentos() {
             </div>
 
             <div class="card-body">
-                <form id="formFiltrosMovimentos">
-                    <div class="row g-2 align-items-end">
+                
 
-                        <div class="col-lg-5 col-md-6">
-                            <label for="fDescricao" class="form-label">Descrição</label>
-                            <input type="search" id="fDescricao"
+                <form id="formFiltrosMovimentos">
+
+                    <!-- DESCRIÇÃO -->
+                    <div class="row mb-3 align-items-center">
+
+                        <label for="fDescricao"
+                            class="col-md-2 col-form-label">
+                            Descrição
+                        </label>
+
+                        <div class="col-md-6">
+                            <input type="search"
+                                id="fDescricao"
                                 class="form-control form-control-sm"
                                 placeholder="Descrição do movimento (qualquer posição)">
                         </div>
 
-                        <div class="col-lg-2 col-md-3">
-                            <label for="fDataDe" class="form-label">Cadastro de</label>
-                            <input type="date" id="fDataDe"
-                                class="form-control form-control-sm"
-                                value="2026-11-01">
-                        </div>
+                    </div>
 
-                        <div class="col-lg-2 col-md-3">
-                            <label for="fDataAte" class="form-label">Até</label>
-                            <input type="date" id="fDataAte"
-                                class="form-control form-control-sm"
-                                value="2026-11-30">
-                        </div>
+                    <!-- PERÍODO -->
+                    <div class="row mb-3 align-items-center">
 
-                        <div class="col-lg-3 col-md-6">
-                            <label class="form-label d-block">Tipo</label>
+                        <label for="fDataDe"
+                            class="col-md-2 col-form-label">
+                            Cadastro de / até
+                        </label>
 
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio"
-                                    name="fTipo" id="fTipoO" value="O" checked>
-                                <label class="form-check-label" for="fTipoO">
-                                    Obrigação
-                                </label>
-                            </div>
+                        <div class="col-md-10">
+                            <div class="row g-2">
 
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio"
-                                    name="fTipo" id="fTipoP" value="P">
-                                <label class="form-check-label" for="fTipoP">
-                                    Previsão
-                                </label>
-                            </div>
+                                <div class="col-md-2">
+                                    <input type="date"
+                                        id="fDataDe"
+                                        class="form-control form-control-sm"
+                                        value="2026-11-01">
+                                </div>
 
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio"
-                                    name="fTipo" id="fTipoTodos" value="">
-                                <label class="form-check-label" for="fTipoTodos">
-                                    Todos
-                                </label>
+                                <div class="col-md-1 text-center">
+                                    <span>Até</span>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <input type="date"
+                                        id="fDataAte"
+                                        class="form-control form-control-sm"
+                                        value="2026-11-30">
+                                </div>
+
                             </div>
                         </div>
 
-                        <div class="col-lg-4 col-md-6">
-                            <label for="fCategoria" class="form-label">Categoria</label>
-                            <select id="fCategoria" class="form-select form-select-sm">
+                    </div>
+
+                    <!-- TIPO -->
+                    <div class="row mb-3 align-items-center">
+
+                        <label class="col-md-2 col-form-label">
+                            Tipo
+                        </label>
+
+                        <div class="col-md-10">
+
+                            <div class="d-flex flex-wrap gap-3">
+
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                        type="radio"
+                                        name="fTipo"
+                                        id="fTipoO"
+                                        value="O"
+                                        checked>
+
+                                    <label class="form-check-label" for="fTipoO">
+                                        Obrigação
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                        type="radio"
+                                        name="fTipo"
+                                        id="fTipoP"
+                                        value="P">
+
+                                    <label class="form-check-label" for="fTipoP">
+                                        Previsão
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                        type="radio"
+                                        name="fTipo"
+                                        id="fTipoTodos"
+                                        value="">
+
+                                    <label class="form-check-label" for="fTipoTodos">
+                                        Todos
+                                    </label>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- CATEGORIA -->
+                    <div class="row mb-3 align-items-center">
+
+                        <label for="fCategoria"
+                            class="col-md-2 col-form-label">
+                            Categoria
+                        </label>
+
+                        <div class="col-md-5">
+
+                            <select id="fCategoria"
+                                class="form-select form-select-sm">
+
                                 <option value="">Todas as categorias</option>
+
                                 ${options(categorias)}
+
                             </select>
+
                         </div>
 
-                        <div class="col-lg-3 col-md-6">
-                            <label for="fConta" class="form-label">Conta</label>
-                            <select id="fConta" class="form-select form-select-sm"
-                                multiple size="3">
+                    </div>
+
+                    <!-- CONTA -->
+                    <div class="row mb-3 align-items-center">
+
+                        <label for="fConta"
+                            class="col-md-2 col-form-label">
+                            Conta
+                        </label>
+
+                        <div class="col-md-5">
+
+                            <select id="fConta"
+                                class="form-select form-select-sm"
+                                multiple
+                                size="3">
+
                                 ${options(contas)}
+
                             </select>
+
                             <small class="text-muted">
                                 Use Ctrl para selecionar mais de uma.
                             </small>
+
                         </div>
 
-                        <div class="col-lg-3 col-md-6">
-                            <label for="fForma" class="form-label">
-                                Forma de pagamento
-                            </label>
-                            <select id="fForma" class="form-select form-select-sm">
+                    </div>
+
+                    <!-- FORMA DE PAGAMENTO -->
+                    <div class="row mb-3 align-items-center">
+
+                        <label for="fForma"
+                            class="col-md-2 col-form-label">
+                            Forma de pagamento
+                        </label>
+
+                        <div class="col-md-5">
+
+                            <select id="fForma"
+                                class="form-select form-select-sm">
+
                                 <option value="">Todas</option>
+
                                 ${options(formasPgto)}
+
                             </select>
+
                         </div>
 
-                        <div class="col-lg-2 d-flex gap-1">
+                    </div>
+
+                    <!-- BOTÕES -->
+                    <div class="row mb-3">
+
+                        <div class="col-md-10 offset-md-2">
+
                             <button type="submit"
                                 class="btn btn-info btn-sm text-white">
+
                                 <i class="fa-solid fa-magnifying-glass"></i>
                                 Pesquisar
+
                             </button>
 
-                            <button type="button" id="btnLimparFiltros"
+                            <button type="button"
+                                id="btnLimparFiltros"
                                 class="btn btn-warning btn-sm">
+
                                 <i class="fa-solid fa-eraser"></i>
                                 Limpar
+
+                            </button>
+
+                            <button type="button" class="btn btn-success btn-sm"
+                                id="btnNovoMovimento">
+                                <i class="fa-solid fa-plus"></i> Cadastrar
                             </button>
                         </div>
 
                     </div>
 
-                    <div class="small fst-italic text-muted mt-2"
-                        id="resumoFiltros"></div>
+                    <!-- RESUMO -->
+                    <div class="row">
+
+                        <div class="col-md-10 offset-md-2">
+
+                            <div class="small fst-italic text-muted"
+                                id="resumoFiltros">
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </form>
+
+
+
             </div>
         </div>
 
         <div class="card mb-2 border-light shadow-sm">
             <div class="card-body py-2 d-flex flex-wrap align-items-center gap-2">
-
+                <!-- 
                 <button type="button" class="btn btn-success btn-sm"
                     id="btnNovoMovimento">
                     <i class="fa-solid fa-plus"></i> Cadastrar
                 </button>
-
+                -->
                 <span class="text-muted small ms-2">Gráficos:</span>
 
                 <button type="button"
@@ -223,6 +352,7 @@ export function renderMovimentos() {
             </div>
 
             <div class="card-body">
+                 
                 <div class="table-responsive">
                     <table class="table table-sm table-striped table-hover align-middle fs-7">
                         <thead class="table-light">
@@ -255,7 +385,7 @@ export function renderMovimentos() {
                         </tfoot>
                     </table>
                 </div>
-
+                
                 <div class="small text-muted" id="quantidadeMovimentos"></div>
             </div>
         </div>

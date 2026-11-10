@@ -153,7 +153,7 @@ function dashboard() {
 
                             <div class="sb-sidenav-menu-heading">Financeiro</div>
 
-                            <a class="nav-link" href="#/dashboard">
+                            <a class="nav-link" href="#/movimentos">
                                 <div class="sb-nav-link-icon">
                                     <i class="fas fa-money-bill"></i>
                                 </div>
@@ -268,10 +268,33 @@ function dashboard() {
 }
 
 function render() {
-    if (location.hash === '#/dashboard') {
+
+    const rota = location.hash;
+
+    if (rota === '#/dashboard') {
+
         dashboard();
+
+    } else if (rota === '#/movimentos') {
+
+        // Primeiro monta o layout SB Admin
+        dashboard();
+
+        // Localiza o conteúdo principal
+        const main = document.querySelector(
+            '#layoutSidenav_content main'
+        );
+
+        // Renderiza a página de movimentos
+        main.innerHTML = renderMovimentos();
+
+        // Inicializa filtros, tabela, cadastro e gráficos
+        initMovimentos();
+
     } else {
+
         login();
+
     }
 }
 
