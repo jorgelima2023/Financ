@@ -87,11 +87,13 @@
     border: none !important;
 }
 
-/* movimentos - relatorio - congelar cabecalho !!! */
+/* movimentos - relatorio - congelar cabecalho !!! 
+ 
 thead th {
     position: sticky;
-    top: 56px; /* altura da navbar */
+    top: 56px; -- altura da navbar 
 }
+*/
 .table-container2 thead th {
     position: sticky;
     top: 0;

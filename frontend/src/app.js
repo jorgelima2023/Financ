@@ -1,9 +1,44 @@
 import 'bootstrap';
 import './style.css';
+
 import {
     renderMovimentos,
     initMovimentos
 } from './pages/movimentos.js';
+
+import {
+    renderCategorias,
+    initCategorias
+} from './pages/categorias.js';
+
+import {
+    renderFormaPagamentos,
+    initFormaPagamentos
+} from './pages/forma-pagamentos.js';
+
+import {
+    renderContaCorrente,
+    initContaCorrente
+} from './pages/conta-corrente.js';
+
+import {
+    renderRoles,
+    initRoles
+} from './pages/roles.js';
+
+import { renderUsuarios, initUsuarios } from './pages/usuarios.js';
+
+import {
+    renderMovimentosLote,
+    initMovimentosLote
+} from './pages/movimentos-lote.js';
+
+import {
+    renderMovimentosImportar,
+    initMovimentosImportar
+} from './pages/movimentos-importar.js';
+
+import { renderRelatorio, initRelatorio } from './pages/relatorioselecao.js';
 
 const app = document.querySelector('#app');
 
@@ -126,7 +161,7 @@ function dashboard() {
                                 Dashboard
                             </a>
 
-                            <div class="sb-sidenav-menu-heading">Cadastros</div>
+                            <!--  <div class="sb-sidenav-menu-heading">Cadastros</div> -->
 
                             <a class="nav-link collapsed"
                                 href="#"
@@ -143,15 +178,15 @@ function dashboard() {
 
                             <div class="collapse" id="cadastrosMenu">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="#/dashboard">Usuários</a>
-                                    <a class="nav-link" href="#/dashboard">Papéis</a>
-                                    <a class="nav-link" href="#/dashboard">Categorias</a>
-                                    <a class="nav-link" href="#/dashboard">Formas Pagamento</a>
-                                    <a class="nav-link" href="#/dashboard">Conta Corrente</a>
+                                    <a class="nav-link" href="#/usuarios">Usuários</a>
+                                    <a class="nav-link" href="#/roles">Papéis</a>
+                                    <a class="nav-link" href="#/categorias">Categorias</a>
+                                    <a class="nav-link" href="#/forma-pagamentos">Formas Pagamento</a>
+                                    <a class="nav-link" href="#/conta-corrente">Conta Corrente</a>
                                 </nav>
                             </div>
 
-                            <div class="sb-sidenav-menu-heading">Financeiro</div>
+                            <!-- <div class="sb-sidenav-menu-heading">Financeiro</div> -->
 
                             <a class="nav-link" href="#/movimentos">
                                 <div class="sb-nav-link-icon">
@@ -160,21 +195,21 @@ function dashboard() {
                                 Movimentos
                             </a>
 
-                            <a class="nav-link" href="#/dashboard">
+                            <a class="nav-link" href="#/movimentos-lote">
                                 <div class="sb-nav-link-icon">
                                     <i class="fas fa-file-alt"></i>
                                 </div>
                                 Movimentos em lote
                             </a>
 
-                            <a class="nav-link" href="#/dashboard">
+                            <a class="nav-link" href="#/movimentos-importar">
                                 <div class="sb-nav-link-icon">
                                     <i class="fas fa-file-import"></i>
                                 </div>
                                 Movimentos importar
                             </a>
 
-                            <a class="nav-link" href="#/dashboard">
+                            <a class="nav-link" href="#/relatorioselecao">
                                 <div class="sb-nav-link-icon">
                                     <i class="fas fa-chart-bar"></i>
                                 </div>
@@ -291,11 +326,92 @@ function render() {
         // Inicializa filtros, tabela, cadastro e gráficos
         initMovimentos();
 
-    } else {
+    } else if (rota === '#/categorias') {
+        dashboard();
+
+        const main = document.querySelector(
+            '#layoutSidenav_content main'
+        );
+
+        main.innerHTML = renderCategorias();
+
+        initCategorias();
+    
+    } else if (rota === '#/forma-pagamentos') {
+        dashboard();
+
+        const main = document.querySelector(
+            '#layoutSidenav_content main'
+        );
+
+        main.innerHTML = renderFormaPagamentos();
+
+        initFormaPagamentos();
+
+    } else if (rota === '#/conta-corrente') {
+        dashboard();
+
+        const main = document.querySelector(
+            '#layoutSidenav_content main'
+        );
+
+        main.innerHTML = renderContaCorrente();
+
+        initContaCorrente();
+    } else if (rota === '#/roles') {
+        dashboard();
+
+        const main = document.querySelector(
+            '#layoutSidenav_content main'
+        );
+
+        main.innerHTML = renderRoles();
+
+        initRoles();
+
+    }else if (rota === '#/usuarios') {
+        dashboard();
+
+        const main = document.querySelector('#layoutSidenav_content main');
+
+        main.innerHTML = renderUsuarios();
+
+        initUsuarios();
+    } else if (rota === '#/movimentos-lote') {
+        dashboard();
+
+        const main = document.querySelector('#layoutSidenav_content main');
+
+        main.innerHTML = renderMovimentosLote();
+
+        initMovimentosLote();
+
+    } else if (rota === '#/movimentos-importar') {
+        dashboard();
+
+        const main = document.querySelector('#layoutSidenav_content main');
+
+        main.innerHTML = renderMovimentosImportar();
+
+        initMovimentosImportar();
+
+    }else if (rota === '#/relatorioselecao') {
+        dashboard();
+
+        const main = document.querySelector('#layoutSidenav_content main');
+
+        main.innerHTML = renderRelatorio();
+
+        initRelatorio();
+    }
+    else {
 
         login();
 
     }
+
+
+
 }
 
 window.addEventListener('hashchange', render);
