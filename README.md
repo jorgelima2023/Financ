@@ -36,6 +36,40 @@ arquivos ofx formato bancário, csv campos: Data;Historico;Valor(US$);Valor(R$)
 - [x] - Cadastros formato CRUD ex.: usuários, papéis
 - [x] - Cadastros formato CRUD otimizado ex.: Categoria, Descrição categoria, Formas de pagamento e Conta corrente; sendo Consulta/inclusão/alteração/exclusão no mesmo formulário
 
+Publicação fontend - páginas da aplicação e publicar vercel
+Configuração : vercel/dist
+
+As telas da aplicação, está separado em frontend/, essas telas serão feitas em JavaScript, 
+sem Blade e sem chamadas ao banco dados. Os cadastros e alterações serão demonstrativos, apenas no navegador.
+Arquivos .js renderiza as telas da aplicação
+Ao acessar o sitema monta o layout SB Admin e depois substitui as telas com o conteúdo demostrativo.
+
+Para rodar local, nas pasta frontend
+execute: npm run build
+
+Estrutura
+
+frontend/
+├── index.html
+├── package.json
+├── vite.config.js
+└── src/
+    ├── app.js
+    ├── style.css
+    ├── styles/
+    │   ├── styles_sbadmin.css
+    │   └── styles_admin.css
+    ├── components/
+    │   ├── navbar.js
+    │   └── sidebar.js
+    └── pages/
+        ├── login.js
+        └── dashboard.js
+
+Para acessar no vercel 
+https://financ-alpha.vercel.app/
+
+
 
 ## Requisitos - Instalação
 
