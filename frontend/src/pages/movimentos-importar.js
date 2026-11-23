@@ -269,10 +269,11 @@ export function renderMovimentosImportar() {
                             Movimentos importar extrato/arquivo (.ofx):
                         </div>
 
-                        <div>📢 Escolher arquivo - selecionar o arquivo (.ofx).</div>
-                        <div>Botão OFX - faz a importação e abre um pré-form de confirmação.</div>
+                        <div>📢 Escolher arquivo - selecionar o arquivo (.ofx) em "c:\temp"</div>
+                        <div>🏷️ o arquivo do Banco .OFX deverá ser salvo na pasta "c:\temp"</div>
+                        <div>Botão OFX - faz a importação e abre um pré-form mostrando os registors, e importados com a confirmação.</div>
                         <div>🏷️ Os registros serão validados pelo campo documento no arquivo.</div>
-
+                      
                     </div>
 
                     <div class="modal-footer">
